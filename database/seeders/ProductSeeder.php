@@ -46,11 +46,11 @@ class ProductSeeder extends Seeder
                         <h2>Bảo quản</h2>
                         <p>Bảo quản nơi khô ráo, thoáng mát. Tránh ánh nắng trực tiếp.</p>
                     ',
-                    'featured_image' => 'images/products/' . Str::slug($name) . '.jpg',
+                    'featured_image' => 'images/products/' . Str::slug($name) . '.webp',
                     'gallery' => json_encode([
-                        'images/products/' . Str::slug($name) . '-1.jpg',
-                        'images/products/' . Str::slug($name) . '-2.jpg',
-                        'images/products/' . Str::slug($name) . '-3.jpg',
+                        'images/products/' . Str::slug($name) . '-1.webp',
+                        'images/products/' . Str::slug($name) . '-2.webp',
+                        'images/products/' . Str::slug($name) . '-3.webp',
                     ]),
                     'price' => rand(1000000, 5000000),
                     'sale_price' => rand(800000, 4000000),

@@ -16,7 +16,26 @@ class HomeController extends Controller
     {
         $sliders = Slider::active()->ordered()->get();
         $categories = Category::active()->withCount('products')->get();
-        $featuredProducts = Product::active()->featured()->latest()->take(8)->get();
+        
+        // Fetch products by type
+        $yenChungProducts = Product::active()
+            ->where('type', Product::TYPE_YEN_CHUNG)
+            ->latest()
+            ->take(4)
+            ->get();
+            
+        $yenToProducts = Product::active()
+            ->where('type', Product::TYPE_YEN_TO)
+            ->latest()
+            ->take(4)
+            ->get();
+            
+        $giftSetProducts = Product::active()
+            ->where('type', Product::TYPE_GIFT_SET)
+            ->latest()
+            ->take(4)
+            ->get();
+            
         $latestPosts = Post::published()->latest()->take(3)->get();
         $testimonials = Testimonial::active()->ordered()->take(6)->get();
         $certificates = Certificate::active()->ordered()->get();
@@ -24,7 +43,9 @@ class HomeController extends Controller
         return view('frontend.home', compact(
             'sliders',
             'categories',
-            'featuredProducts',
+            'yenChungProducts',
+            'yenToProducts',
+            'giftSetProducts',
             'latestPosts',
             'testimonials',
             'certificates'
