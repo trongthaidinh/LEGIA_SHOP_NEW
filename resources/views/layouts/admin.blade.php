@@ -92,6 +92,11 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a href="{{ route('admin.products.index') }}" class="nav-link">
+                        <i class="fas fa-box"></i> Products
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a href="#" class="nav-link">
                         <i class="fas fa-shopping-cart"></i> Orders
                     </a>
