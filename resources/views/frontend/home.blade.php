@@ -35,14 +35,14 @@
                         <img src="{{ asset('images/title.png') }}" alt="Yến sào Legia'Nest" class="mb-2 w-[200px]">
                         <h2 class="text-3xl font-bold text-green-700">YẾN SÀO LEGIA'NEST</h2>
                     </div>
-                    <p class="text-gray-700 mb-4 align-justify">
+                    <p class="text-gray-700 mb-4 text-justify">
                         Chuyên phân phối <span class="font-semibold">tổ yến tưới, yến sào, yến chưng</span> nguyên chất 100%, 
                         cam kết <span class="text-red-600 font-bold">CHẤT LƯỢNG – KHÔNG PHA TRỘN</span>. Với mong muốn mang đến 
                         nguồn sản phẩm <span class="text-red-600 font-bold">NÂNG CAO SỨC KHỎE</span> cho người dùng, 
                         <span class="font-semibold">Legia'Nest</span> luôn đặt chất lượng sản phẩm lên hàng đầu, đặc biệt 
                         <span class="font-semibold">Yến sào Legia'Nest</span> đảm bảo giữ nguyên vị thuần tụy 100% từ tổ Yến tự nhiên.
                     </p>
-                    <p class="text-gray-700 align-justify">
+                    <p class="text-gray-700 text-justify">
                         Mỗi sản phẩm yến sào mà chúng tôi cung cấp đều được chọn lọc kỹ lưỡng từ những nguồn nguyên liệu tốt nhất, 
                         đảm bảo an toàn và chất lượng. Yến sào không chỉ là một món ăn ngon mà còn là một nguồn dinh dụng phong phú, 
                         giúp tăng cường sức đề kháng, cải thiện sức khỏe tim mạch và hỗ trợ tiêu hóa.
@@ -59,70 +59,59 @@
         </div>
     </section>
 
-    <!-- Featured Categories -->
-    <section class="py-16 bg-gray-50">
+    <!-- Yến Chưng Products Section -->
+    <section class="py-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 class="text-3xl font-bold text-gray-900 text-center mb-12">Danh mục sản phẩm</h2>
+            <div class="flex items-center justify-between mb-12">
+                <h2 class="text-3xl font-bold text-[var(--color-primary-600)]">Yến chưng thượng hạng</h2>
+                <a href="{{ route('products', ['type' => 'yen_chung']) }}" class="text-[var(--color-primary-600)] hover:text-[var(--color-primary-700)] font-medium flex items-center gap-2">
+                    Xem Thêm
+                    <i class="fas fa-chevron-right text-sm"></i>
+                </a>
+            </div>
+            
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                @foreach($categories->take(4) as $category)
-                    <a href="{{ route('products', ['category' => $category->slug]) }}" 
-                       class="group relative rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
-                        <div class="aspect-w-3 aspect-h-2">
-                            <img src="{{ Storage::url($category->image) }}" 
-                                 alt="{{ $category->name }}"
-                                 class="object-cover transform group-hover:scale-110 transition-transform duration-500">
-                        </div>
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                        <div class="absolute bottom-0 left-0 right-0 p-6">
-                            <h3 class="text-xl font-semibold text-white">{{ $category->name }}</h3>
-                            <p class="text-sm text-gray-200 mt-2">{{ $category->products_count }} sản phẩm</p>
-                        </div>
-                    </a>
+                @foreach($yenChungProducts as $product)
+                    @include('frontend.partials.product-card', ['product' => $product])
                 @endforeach
             </div>
         </div>
     </section>
 
-    <!-- Featured Products -->
-    <section class="py-16">
+    <!-- Yến Tổ Products Section -->
+    <section class="py-16 bg-gray-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 class="text-3xl font-bold text-gray-900 text-center mb-12">Sản phẩm nổi bật</h2>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                @foreach($featuredProducts as $product)
-                    <div class="group">
-                        <div class="relative rounded-lg overflow-hidden">
-                            <img src="{{ Storage::url($product->featured_image) }}" 
-                                 alt="{{ $product->name }}"
-                                 class="w-full h-64 object-cover transform group-hover:scale-110 transition-transform duration-500">
-                            @if($product->is_featured)
-                                <div class="absolute top-4 left-4">
-                                    <span class="bg-primary-600 text-white px-3 py-1 rounded-full text-sm">Hot</span>
-                                </div>
-                            @endif
-                            <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-opacity duration-300"></div>
-                            <div class="absolute bottom-4 left-4 right-4 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                                <button onclick="window.location.href='{{ route('cart.add', ['product_id' => $product->id]) }}'"
-                                        class="w-full bg-white text-gray-900 px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors duration-300">
-                                    Thêm vào giỏ hàng
-                                </button>
-                            </div>
-                        </div>
-                        <div class="mt-4">
-                            <h3 class="text-lg font-medium text-gray-900">
-                                <a href="{{ route('products.show', $product->slug) }}" class="hover:text-primary-600">
-                                    {{ $product->name }}
-                                </a>
-                            </h3>
-                            <p class="mt-1 text-lg font-semibold text-primary-600">{{ $product->price_formatted }}</p>
-                        </div>
-                    </div>
+            <div class="flex items-center justify-between mb-12">
+                <h2 class="text-3xl font-bold text-[var(--color-primary-600)]">Yến tổ cao cấp</h2>
+                <a href="{{ route('products', ['type' => 'yen_to']) }}" class="text-[var(--color-primary-600)] hover:text-[var(--color-primary-700)] font-medium flex items-center gap-2">
+                    Xem Thêm
+                    <i class="fas fa-chevron-right text-sm"></i>
+                </a>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                @foreach($yenToProducts as $product)
+                    @include('frontend.partials.product-card', ['product' => $product])
                 @endforeach
             </div>
-            <div class="text-center mt-12">
-                <a href="{{ route('products') }}" 
-                   class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700">
-                    Xem tất cả sản phẩm
+        </div>
+    </section>
+
+    <!-- Gift Set Products Section -->
+    <section class="py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between mb-12">
+                <h2 class="text-3xl font-bold text-[var(--color-primary-600)]">Set quà tặng cao cấp</h2>
+                <a href="{{ route('products', ['type' => 'gift_set']) }}" class="text-[var(--color-primary-600)] hover:text-[var(--color-primary-700)] font-medium flex items-center gap-2">
+                    Xem Thêm
+                    <i class="fas fa-chevron-right text-sm"></i>
                 </a>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                @foreach($giftSetProducts as $product)
+                    @include('frontend.partials.product-card', ['product' => $product])
+                @endforeach
             </div>
         </div>
     </section>
