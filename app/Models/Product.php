@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'category_id',
@@ -28,34 +29,19 @@ class Product extends Model
 
     protected $casts = [
         'gallery' => 'array',
+        'price' => 'decimal:2',
+        'sale_price' => 'decimal:2',
         'is_featured' => 'boolean',
-        'is_active' => 'boolean'
+        'is_active' => 'boolean',
     ];
 
-    // Relationships
     public function category()
     {
         return $this->belongsTo(Category::class);
     }
 
-    public function reviews()
+    public function categories()
     {
-        return $this->hasMany(ProductReview::class);
-    }
-
-    // Scopes
-    public function scopeActive($query)
-    {
-        return $query->where('is_active', true);
-    }
-
-    public function scopeFeatured($query)
-    {
-        return $query->where('is_featured', true);
-    }
-
-    public function scopePublished($query)
-    {
-        return $query->where('status', 'published');
+        return $this->belongsToMany(Category::class);
     }
 }

@@ -2,9 +2,9 @@
 
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Frontend\HomeController;
-use App\Http\Controllers\Frontend\ProductController;
 use App\Http\Controllers\Frontend\CartController;
 use App\Http\Controllers\Frontend\CheckoutController;
 use App\Http\Controllers\Frontend\PostController;
@@ -53,7 +53,8 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::resource('categories', CategoryController::class);
+    Route::resource('/categories', CategoryController::class);
+    Route::resource('/products', ProductController::class);
 });
 
 require __DIR__.'/auth.php';
