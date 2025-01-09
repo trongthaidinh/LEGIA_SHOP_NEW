@@ -47,7 +47,7 @@
                         đảm bảo an toàn và chất lượng. Yến sào không chỉ là một món ăn ngon mà còn là một nguồn dinh dụng phong phú, 
                         giúp tăng cường sức đề kháng, cải thiện sức khỏe tim mạch và hỗ trợ tiêu hóa.
                     </p>
-                    <a href="{{ route('products') }}" class="flex items-center justify-center gap-2 hover:gap-4 w-full inline-block mt-6 px-6 py-2 bg-[var(--color-primary-600)] text-white text-center font-semibold rounded-[20px] hover:bg-[var(--color-primary-700)] transition-all duration-300 ease-in-out">
+                    <a href="{{ route(app()->getLocale() . '.products') }}" class="flex items-center justify-center gap-2 hover:gap-4 w-full inline-block mt-6 px-6 py-2 bg-[var(--color-primary-600)] text-white text-center font-semibold rounded-[20px] hover:bg-[var(--color-primary-700)] transition-all duration-300 ease-in-out">
                         XEM THÊM
                         <i class="fas fa-arrow-right"></i>
                     </a>
@@ -62,9 +62,9 @@
     <!-- Yến Chưng Products Section -->
     <section class="py-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between mb-12">
+            <div class="flex items-center justify-between mb-8">
                 <h2 class="text-3xl font-bold text-[var(--color-primary-600)]">Yến chưng thượng hạng</h2>
-                <a href="{{ route('products', ['type' => 'yen_chung']) }}" class="text-[var(--color-primary-600)] hover:text-[var(--color-primary-700)] font-medium flex items-center gap-2">
+                <a href="{{ route(app()->getLocale() . '.products', ['type' => 'yen_chung']) }}" class="text-[var(--color-primary-600)] hover:text-[var(--color-primary-700)] font-medium flex items-center gap-2">
                     Xem Thêm
                     <i class="fas fa-chevron-right text-sm"></i>
                 </a>
@@ -81,9 +81,9 @@
     <!-- Yến Tổ Products Section -->
     <section class="py-16 bg-gray-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between mb-12">
+            <div class="flex items-center justify-between mb-8">
                 <h2 class="text-3xl font-bold text-[var(--color-primary-600)]">Yến tổ cao cấp</h2>
-                <a href="{{ route('products', ['type' => 'yen_to']) }}" class="text-[var(--color-primary-600)] hover:text-[var(--color-primary-700)] font-medium flex items-center gap-2">
+                <a href="{{ route(app()->getLocale() . '.products', ['type' => 'yen_to']) }}" class="text-[var(--color-primary-600)] hover:text-[var(--color-primary-700)] font-medium flex items-center gap-2">
                     Xem Thêm
                     <i class="fas fa-chevron-right text-sm"></i>
                 </a>
@@ -100,9 +100,9 @@
     <!-- Gift Set Products Section -->
     <section class="py-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between mb-12">
+            <div class="flex items-center justify-between mb-8">
                 <h2 class="text-3xl font-bold text-[var(--color-primary-600)]">Set quà tặng cao cấp</h2>
-                <a href="{{ route('products', ['type' => 'gift_set']) }}" class="text-[var(--color-primary-600)] hover:text-[var(--color-primary-700)] font-medium flex items-center gap-2">
+                <a href="{{ route(app()->getLocale() . '.products', ['type' => 'gift_set']) }}" class="text-[var(--color-primary-600)] hover:text-[var(--color-primary-700)] font-medium flex items-center gap-2">
                     Xem Thêm
                     <i class="fas fa-chevron-right text-sm"></i>
                 </a>
@@ -169,14 +169,14 @@
                             </div>
                         </div>
                         <h3 class="text-xl font-semibold text-gray-900 mb-2 group-hover:text-primary-600">
-                            <a href="{{ route('posts.show', $post->slug) }}">{{ $post->title }}</a>
+                            <a href="{{ route(app()->getLocale() . '.posts.show', $post->slug) }}">{{ $post->title }}</a>
                         </h3>
                         <p class="text-gray-600 line-clamp-2">{{ $post->excerpt }}</p>
                     </article>
                 @endforeach
             </div>
             <div class="text-center mt-12">
-                <a href="{{ route('posts') }}" 
+                <a href="{{ route(app()->getLocale() . '.posts') }}" 
                    class="inline-flex items-center px-6 py-3 border border-primary-600 text-base font-medium rounded-md text-primary-600 hover:bg-primary-50">
                     Xem tất cả tin tức
                 </a>

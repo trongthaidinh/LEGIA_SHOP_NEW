@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Traits\HasLanguage;
 
 class Product extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, HasLanguage;
 
     const TYPE_YEN_CHUNG = 'yen_chung';
     const TYPE_YEN_TO = 'yen_to';
@@ -29,7 +30,8 @@ class Product extends Model
         'sku',
         'is_featured',
         'is_active',
-        'status'
+        'status',
+        'language'
     ];
 
     protected $casts = [

@@ -14,7 +14,7 @@
                 </div>
                 <h3 class="text-lg font-medium text-gray-900 mb-2">Giỏ hàng trống</h3>
                 <p class="text-gray-500 mb-4">Hãy thêm sản phẩm vào giỏ hàng của bạn</p>
-                <a href="{{ route('products') }}" class="btn btn-primary">
+                <a href="{{ route(app()->getLocale() . '.products') }}" class="btn btn-primary">
                     Tiếp tục mua sắm
                 </a>
             </div>
@@ -35,7 +35,7 @@
                                         <div>
                                             <div class="flex justify-between text-base font-medium text-gray-900">
                                                 <h3>
-                                                    <a href="{{ route('products.show', $item->attributes->slug) }}">
+                                                    <a href="{{ route(app()->getLocale() . '.products.show', $item->attributes->slug) }}">
                                                         {{ $item->name }}
                                                     </a>
                                                 </h3>
@@ -86,11 +86,11 @@
                 </div>
 
                 <div class="px-6 py-4 bg-gray-50 border-t border-gray-200">
-                    <a href="{{ route('checkout') }}" class="btn btn-primary w-full">
+                    <a href="{{ route(app()->getLocale() . '.checkout') }}" class="btn btn-primary w-full">
                         Thanh toán
                     </a>
                     <div class="mt-4 text-center">
-                        <a href="{{ route('products') }}" class="text-sm font-medium text-primary-600 hover:text-primary-500">
+                        <a href="{{ route(app()->getLocale() . '.products') }}" class="text-sm font-medium text-primary-600 hover:text-primary-500">
                             Tiếp tục mua sắm
                             <span aria-hidden="true"> &rarr;</span>
                         </a>
