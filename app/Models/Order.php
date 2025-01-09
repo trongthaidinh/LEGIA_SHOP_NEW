@@ -2,12 +2,18 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Order extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
+
+    const STATUS_PENDING = 'pending';
+    const STATUS_PROCESSING = 'processing';
+    const STATUS_COMPLETED = 'completed';
+    const STATUS_CANCELLED = 'cancelled';
 
     protected $fillable = [
         'order_number',
@@ -24,41 +30,38 @@ class Order extends Model
         'notes'
     ];
 
-    // Relationships
+    protected $casts = [
+        'total_amount' => 'decimal:2',
+        'shipping_amount' => 'decimal:2',
+    ];
+
     public function items()
     {
         return $this->hasMany(OrderItem::class);
     }
 
-    // Scopes
-    public function scopePending($query)
+    public static function getStatuses(): array
     {
-        return $query->where('status', 'pending');
+        return [
+            self::STATUS_PENDING => 'Pending',
+            self::STATUS_PROCESSING => 'Processing',
+            self::STATUS_COMPLETED => 'Completed',
+            self::STATUS_CANCELLED => 'Cancelled'
+        ];
     }
 
-    public function scopeCompleted($query)
+    public function getStatusLabelAttribute(): string
     {
-        return $query->where('status', 'completed');
+        return self::getStatuses()[$this->status] ?? 'Unknown';
     }
 
-    // Accessors
-    public function getTotalAmountFormattedAttribute()
+    public function getTotalItemsAttribute(): int
     {
-        return number_format($this->total_amount, 0, ',', '.') . ' đ';
+        return $this->items->sum('quantity');
     }
 
-    public function getShippingAmountFormattedAttribute()
+    public function getFinalTotalAttribute(): float
     {
-        return number_format($this->shipping_amount, 0, ',', '.') . ' đ';
-    }
-
-    // Boot method để tự động tạo order number
-    protected static function boot()
-    {
-        parent::boot();
-        
-        static::creating(function ($order) {
-            $order->order_number = 'ORD-' . date('Ymd') . '-' . strtoupper(uniqid());
-        });
+        return $this->total_amount + $this->shipping_amount;
     }
 }

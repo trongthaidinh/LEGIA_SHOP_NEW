@@ -24,6 +24,7 @@
                             <th>ID</th>
                             <th>Image</th>
                             <th>Name</th>
+                            <th>Type</th>
                             <th>Category</th>
                             <th>Price</th>
                             <th>Stock</th>
@@ -43,8 +44,9 @@
                                     @endif
                                 </td>
                                 <td>{{ $product->name }}</td>
+                                <td>{{ $product->getTypeLabel() }}</td>
                                 <td>{{ $product->category->name }}</td>
-                                <td>${{ number_format($product->price, 2) }}</td>
+                                <td>{{ number_format($product->price) }}đ</td>
                                 <td>{{ $product->stock }}</td>
                                 <td>
                                     <span class="badge bg-{{ $product->status === 'published' ? 'success' : 'warning' }}">
@@ -66,7 +68,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="8" class="text-center">No products found.</td>
+                                <td colspan="9" class="text-center">No products found.</td>
                             </tr>
                         @endforelse
                     </tbody>

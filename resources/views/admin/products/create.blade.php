@@ -26,6 +26,21 @@
                         </div>
 
                         <div class="mb-3">
+                            <label for="type" class="form-label">Product Type</label>
+                            <select class="form-select @error('type') is-invalid @enderror" 
+                                id="type" name="type" required>
+                                @foreach(\App\Models\Product::getTypes() as $value => $label)
+                                    <option value="{{ $value }}" {{ old('type') == $value ? 'selected' : '' }}>
+                                        {{ $label }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('type')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3">
                             <label for="description" class="form-label">Short Description</label>
                             <textarea class="form-control @error('description') is-invalid @enderror" 
                                 id="description" name="description" rows="3">{{ old('description') }}</textarea>
@@ -63,7 +78,7 @@
 
                         <div class="mb-3">
                             <label for="price" class="form-label">Price</label>
-                            <input type="number" step="0.01" class="form-control @error('price') is-invalid @enderror" 
+                            <input type="number" step="1" class="form-control @error('price') is-invalid @enderror" 
                                 id="price" name="price" value="{{ old('price') }}" required>
                             @error('price')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -72,7 +87,7 @@
 
                         <div class="mb-3">
                             <label for="sale_price" class="form-label">Sale Price</label>
-                            <input type="number" step="0.01" class="form-control @error('sale_price') is-invalid @enderror" 
+                            <input type="number" step="1" class="form-control @error('sale_price') is-invalid @enderror" 
                                 id="sale_price" name="sale_price" value="{{ old('sale_price') }}">
                             @error('sale_price')
                                 <div class="invalid-feedback">{{ $message }}</div>

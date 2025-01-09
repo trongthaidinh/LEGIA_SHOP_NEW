@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class OrderItem extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'order_id',
         'product_id',
@@ -15,7 +18,11 @@ class OrderItem extends Model
         'total'
     ];
 
-    // Relationships
+    protected $casts = [
+        'price' => 'decimal:2',
+        'total' => 'decimal:2',
+    ];
+
     public function order()
     {
         return $this->belongsTo(Order::class);
@@ -24,16 +31,5 @@ class OrderItem extends Model
     public function product()
     {
         return $this->belongsTo(Product::class);
-    }
-
-    // Accessors
-    public function getPriceFormattedAttribute()
-    {
-        return number_format($this->price, 0, ',', '.') . ' đ';
-    }
-
-    public function getTotalFormattedAttribute()
-    {
-        return number_format($this->total, 0, ',', '.') . ' đ';
     }
 }

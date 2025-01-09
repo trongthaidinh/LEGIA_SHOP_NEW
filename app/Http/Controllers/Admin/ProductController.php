@@ -8,98 +8,262 @@ use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ProductController extends Controller
 {
-    public function index()
+    /**
+     * Display a listing of products.
+     *
+     * @param Request $request
+     * @return \Illuminate\View\View
+     */
+    public function index(Request $request)
     {
-        $products = Product::with('category')->latest()->paginate(10);
-        return view('admin.products.index', compact('products'));
+        try {
+            $query = Product::with('category')->latest();
+
+            // Search functionality
+            if ($search = $request->input('search')) {
+                $query->where('name', 'like', "%{$search}%")
+                    ->orWhere('sku', 'like', "%{$search}%");
+            }
+
+            // Filter by type
+            if ($type = $request->input('type')) {
+                $query->where('type', $type);
+            }
+
+            // Filter by status
+            if ($status = $request->input('status')) {
+                $query->where('status', $status);
+            }
+
+            $products = $query->paginate(10);
+
+            return view('admin.products.index', compact('products'));
+        } catch (\Exception $e) {
+            Log::error('Error in ProductController@index: ' . $e->getMessage());
+            return back()->with('error', 'An error occurred while fetching products.');
+        }
     }
 
+    /**
+     * Show the form for creating a new product.
+     *
+     * @return \Illuminate\View\View
+     */
     public function create()
     {
-        $categories = Category::all();
-        return view('admin.products.create', compact('categories'));
+        try {
+            $categories = Category::select('id', 'name')->orderBy('name')->get();
+            $types = Product::getTypes();
+            
+            return view('admin.products.create', compact('categories', 'types'));
+        } catch (\Exception $e) {
+            Log::error('Error in ProductController@create: ' . $e->getMessage());
+            return back()->with('error', 'An error occurred while loading the create form.');
+        }
     }
 
+    /**
+     * Store a newly created product in storage.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|max:255',
-            'category_id' => 'required|exists:categories,id',
-            'description' => 'nullable',
-            'content' => 'nullable',
-            'price' => 'required|numeric|min:0',
-            'sale_price' => 'nullable|numeric|min:0',
-            'stock' => 'required|integer|min:0',
-            'sku' => 'required|unique:products,sku',
-            'featured_image' => 'nullable|image|max:2048',
-            'status' => 'required|in:draft,published',
-            'is_featured' => 'boolean'
-        ]);
+        try {
+            DB::beginTransaction();
 
-        $validated['slug'] = Str::slug($request->name);
-        $validated['is_featured'] = $request->has('is_featured');
+            $validated = $this->validateProduct($request);
+            
+            // Handle boolean fields
+            $validated = array_merge($validated, [
+                'slug' => $this->generateUniqueSlug($request->name),
+                'is_featured' => $request->boolean('is_featured'),
+                'is_active' => true
+            ]);
 
-        if ($request->hasFile('featured_image')) {
-            $validated['featured_image'] = $request->file('featured_image')->store('products', 'public');
+            if ($request->hasFile('featured_image')) {
+                $validated['featured_image'] = $this->handleImageUpload($request->file('featured_image'));
+            }
+
+            Product::create($validated);
+
+            DB::commit();
+            return redirect()->route('admin.products.index')
+                ->with('success', 'Product created successfully.');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error in ProductController@store: ' . $e->getMessage());
+            return back()->withInput()
+                ->with('error', 'An error occurred while creating the product.');
         }
-
-        Product::create($validated);
-
-        return redirect()->route('admin.products.index')
-            ->with('success', 'Product created successfully.');
     }
 
+    /**
+     * Show the form for editing the specified product.
+     *
+     * @param Product $product
+     * @return \Illuminate\View\View
+     */
     public function edit(Product $product)
     {
-        $categories = Category::all();
-        return view('admin.products.edit', compact('product', 'categories'));
+        try {
+            $categories = Category::select('id', 'name')->orderBy('name')->get();
+            $types = Product::getTypes();
+            
+            return view('admin.products.edit', compact('product', 'categories', 'types'));
+        } catch (\Exception $e) {
+            Log::error('Error in ProductController@edit: ' . $e->getMessage());
+            return back()->with('error', 'An error occurred while loading the edit form.');
+        }
     }
 
+    /**
+     * Update the specified product in storage.
+     *
+     * @param Request $request
+     * @param Product $product
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function update(Request $request, Product $product)
     {
-        $validated = $request->validate([
-            'name' => 'required|max:255',
-            'category_id' => 'required|exists:categories,id',
-            'description' => 'nullable',
-            'content' => 'nullable',
-            'price' => 'required|numeric|min:0',
-            'sale_price' => 'nullable|numeric|min:0',
-            'stock' => 'required|integer|min:0',
-            'sku' => 'required|unique:products,sku,' . $product->id,
-            'featured_image' => 'nullable|image|max:2048',
-            'status' => 'required|in:draft,published',
-            'is_featured' => 'boolean'
-        ]);
+        try {
+            DB::beginTransaction();
 
-        $validated['slug'] = Str::slug($request->name);
-        $validated['is_featured'] = $request->has('is_featured');
+            $validated = $this->validateProduct($request, $product->id);
+            
+            // Handle boolean fields
+            $validated = array_merge($validated, [
+                'slug' => $this->generateUniqueSlug($request->name, $product->id),
+                'is_featured' => $request->boolean('is_featured')
+            ]);
 
-        if ($request->hasFile('featured_image')) {
-            // Delete old image
-            if ($product->featured_image) {
-                Storage::disk('public')->delete($product->featured_image);
+            if ($request->hasFile('featured_image')) {
+                $this->deleteImage($product->featured_image);
+                $validated['featured_image'] = $this->handleImageUpload($request->file('featured_image'));
             }
-            $validated['featured_image'] = $request->file('featured_image')->store('products', 'public');
+
+            $product->update($validated);
+
+            DB::commit();
+            return redirect()->route('admin.products.index')
+                ->with('success', 'Product updated successfully.');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error in ProductController@update: ' . $e->getMessage());
+            return back()->withInput()
+                ->with('error', 'An error occurred while updating the product.');
         }
-
-        $product->update($validated);
-
-        return redirect()->route('admin.products.index')
-            ->with('success', 'Product updated successfully.');
     }
 
+    /**
+     * Remove the specified product from storage.
+     *
+     * @param Product $product
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function destroy(Product $product)
     {
-        if ($product->featured_image) {
-            Storage::disk('public')->delete($product->featured_image);
-        }
-        
-        $product->delete();
+        try {
+            DB::beginTransaction();
 
-        return redirect()->route('admin.products.index')
-            ->with('success', 'Product deleted successfully.');
+            if ($product->featured_image) {
+                $this->deleteImage($product->featured_image);
+            }
+            
+            $product->delete();
+
+            DB::commit();
+            return redirect()->route('admin.products.index')
+                ->with('success', 'Product deleted successfully.');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error in ProductController@destroy: ' . $e->getMessage());
+            return back()->with('error', 'An error occurred while deleting the product.');
+        }
+    }
+
+    /**
+     * Validate product data.
+     *
+     * @param Request $request
+     * @param int|null $productId
+     * @return array
+     */
+    private function validateProduct(Request $request, ?int $productId = null): array
+    {
+        return $request->validate([
+            'name' => 'required|max:255',
+            'type' => 'required|in:' . implode(',', array_keys(Product::getTypes())),
+            'category_id' => 'required|exists:categories,id',
+            'description' => 'nullable|string|max:1000',
+            'content' => 'nullable|string',
+            'price' => 'required|numeric|min:0',
+            'sale_price' => 'nullable|numeric|min:0|lt:price',
+            'stock' => 'required|integer|min:0',
+            'sku' => 'required|string|max:50|unique:products,sku' . ($productId ? ',' . $productId : ''),
+            'featured_image' => 'nullable|image|max:2048|mimes:jpeg,png,jpg,gif',
+            'status' => 'required|in:draft,published'
+        ]);
+    }
+
+    /**
+     * Generate unique slug for product.
+     *
+     * @param string $name
+     * @param int|null $excludeId
+     * @return string
+     */
+    private function generateUniqueSlug(string $name, ?int $excludeId = null): string
+    {
+        $slug = Str::slug($name);
+        $count = 1;
+
+        $query = Product::where('slug', $slug);
+        if ($excludeId) {
+            $query->where('id', '!=', $excludeId);
+        }
+
+        while ($query->exists()) {
+            $slug = Str::slug($name) . '-' . $count++;
+            $query = Product::where('slug', $slug);
+            if ($excludeId) {
+                $query->where('id', '!=', $excludeId);
+            }
+        }
+
+        return $slug;
+    }
+
+    /**
+     * Handle image upload.
+     *
+     * @param \Illuminate\Http\UploadedFile $image
+     * @return string
+     */
+    private function handleImageUpload($image): string
+    {
+        return $image->store('products', 'public');
+    }
+
+    /**
+     * Delete image from storage.
+     *
+     * @param string|null $path
+     * @return void
+     */
+    private function deleteImage(?string $path): void
+    {
+        if ($path && Storage::disk('public')->exists($path)) {
+            Storage::disk('public')->delete($path);
+        }
     }
 }
