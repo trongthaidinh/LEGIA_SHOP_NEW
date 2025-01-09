@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\App;
 
 class Slider extends Model
 {
@@ -19,13 +20,15 @@ class Slider extends Model
         'is_active',
         'starts_at',
         'ends_at',
-        'status'
+        'status',
+        'language'
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
         'starts_at' => 'datetime',
-        'ends_at' => 'datetime'
+        'ends_at' => 'datetime',
+        'order' => 'integer'
     ];
 
     // Scopes
@@ -50,5 +53,11 @@ class Slider extends Model
     public function scopePublished($query)
     {
         return $query->where('status', 'published');
+    }
+
+    public function scopeByLanguage($query, $language = null)
+    {
+        $lang = $language ?? App::getLocale();
+        return $query->where('language', $lang);
     }
 }

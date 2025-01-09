@@ -20,6 +20,11 @@ class MenuItem extends Model
         'is_active'
     ];
 
+    protected $casts = [
+        'is_active' => 'boolean',
+        'order' => 'integer'
+    ];
+
     // Relationships
     public function menu()
     {
@@ -33,7 +38,9 @@ class MenuItem extends Model
 
     public function children()
     {
-        return $this->hasMany(MenuItem::class, 'parent_id');
+        return $this->hasMany(MenuItem::class, 'parent_id')
+            ->orderBy('order')
+            ->where('is_active', true);
     }
 
     // Scopes
@@ -47,15 +54,8 @@ class MenuItem extends Model
         return $query->orderBy('order');
     }
 
-    // Helper method để tạo cấu trúc menu đa cấp
-    public function nest()
+    public function scopeParents($query)
     {
-        return $this->where('parent_id', null)
-            ->with(['children' => function ($query) {
-                $query->active()->ordered();
-            }])
-            ->active()
-            ->ordered()
-            ->get();
+        return $query->whereNull('parent_id');
     }
 }

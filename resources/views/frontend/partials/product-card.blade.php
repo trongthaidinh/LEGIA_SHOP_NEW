@@ -22,7 +22,7 @@
     <!-- Hover Overlay -->
     <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all duration-500">
         <div class="absolute inset-0 flex items-center justify-center">
-            <a href="{{ route('products.show', $product->slug) }}" 
+            <a href="{{ route(app()->getLocale() . '.products.show', $product->slug) }}" 
                class="bg-[var(--color-primary-500)] text-white px-6 py-2.5 rounded-md font-medium 
                       transform translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 
                       transition-all duration-500 hover:bg-[var(--color-primary-600)]
