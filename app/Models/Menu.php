@@ -12,7 +12,12 @@ class Menu extends Model
     protected $fillable = [
         'name',
         'type',
+        'language',
         'is_active'
+    ];
+
+    protected $casts = [
+        'is_active' => 'boolean'
     ];
 
     // Relationships
@@ -21,19 +26,27 @@ class Menu extends Model
         return $this->hasMany(MenuItem::class);
     }
 
-    // Scope
+    // Scopes
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
     }
 
-    // Helper method để lấy menu items đã sắp xếp
+    public function scopeByLanguage($query, $language)
+    {
+        return $query->where('language', $language);
+    }
+
+    // Get ordered menu items
     public function getOrderedItems()
     {
         return $this->items()
-            ->where('is_active', true)
+            ->whereNull('parent_id')
+            ->with(['children' => function ($query) {
+                $query->active()->orderBy('order');
+            }])
+            ->active()
             ->orderBy('order')
-            ->get()
-            ->nest();
+            ->get();
     }
 }

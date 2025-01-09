@@ -14,6 +14,9 @@ class Product extends Model
     const TYPE_YEN_CHUNG = 'yen_chung';
     const TYPE_YEN_TO = 'yen_to';
     const TYPE_GIFT_SET = 'gift_set';
+    const TYPE_YEN_CHUNG_LABEL = 'Yến chưng';
+    const TYPE_YEN_TO_LABEL = 'Yến tổ';
+    const TYPE_GIFT_SET_LABEL = 'Set quà tặng';
 
     protected $fillable = [
         'category_id',
@@ -73,12 +76,18 @@ class Product extends Model
         return $query->where('status', 'published');
     }
 
+    public function scopeByLanguage($query, $language = null)
+    {
+        $lang = $language ?? App::getLocale();
+        return $query->where('language', $lang);
+    }
+
     public static function getTypes(): array
     {
         return [
-            self::TYPE_YEN_CHUNG => 'Yến chưng',
-            self::TYPE_YEN_TO => 'Yến tổ',
-            self::TYPE_GIFT_SET => 'Set quà tặng'
+            self::TYPE_YEN_CHUNG => self::TYPE_YEN_CHUNG_LABEL,
+            self::TYPE_YEN_TO => self::TYPE_YEN_TO_LABEL,
+            self::TYPE_GIFT_SET => self::TYPE_GIFT_SET_LABEL
         ];
     }
 

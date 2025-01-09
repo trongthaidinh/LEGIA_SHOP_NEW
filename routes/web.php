@@ -2,11 +2,12 @@
 
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
-use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\CartController;
 use App\Http\Controllers\Frontend\CheckoutController;
 use App\Http\Controllers\Frontend\PostController;
+use App\Http\Controllers\Frontend\ProductController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\OrderController;
@@ -86,19 +87,6 @@ Route::prefix('vi')->group(function () {
     // Language Route
     Route::get('language/{lang}', [LanguageController::class, 'switchLang'])->name('vi.language.switch');
 
-    // Test Language Route
-    Route::get('/test-lang', function() {
-        return [
-            'current_locale' => app()->getLocale(),
-            'session_locale' => session('locale'),
-            'translations' => [
-                'welcome' => __('Welcome'),
-                'products' => __('Products'),
-                'cart' => __('Cart')
-            ]
-        ];
-    })->name('vi.test-lang');
-
     // Admin Routes
     Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
         Route::get('/', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
@@ -111,7 +99,7 @@ Route::prefix('vi')->group(function () {
             'destroy' => 'admin.categories.destroy'
         ]);
 
-        Route::resource('products', ProductController::class)->names([
+        Route::resource('products', AdminProductController::class)->names([
             'index' => 'admin.products.index',
             'create' => 'admin.products.create',
             'store' => 'admin.products.store',
@@ -187,19 +175,6 @@ Route::prefix('zh')->group(function () {
     // Language Route
     Route::get('language/{lang}', [LanguageController::class, 'switchLang'])->name('zh.language.switch');
 
-    // Test Language Route
-    Route::get('/test-lang', function() {
-        return [
-            'current_locale' => app()->getLocale(),
-            'session_locale' => session('locale'),
-            'translations' => [
-                'welcome' => __('Welcome'),
-                'products' => __('Products'),
-                'cart' => __('Cart')
-            ]
-        ];
-    })->name('zh.test-lang');
-
     // Admin Routes
     Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
         Route::get('/', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
@@ -212,7 +187,7 @@ Route::prefix('zh')->group(function () {
             'destroy' => 'admin.categories.destroy'
         ]);
 
-        Route::resource('products', ProductController::class)->names([
+        Route::resource('products', AdminProductController::class)->names([
             'index' => 'admin.products.index',
             'create' => 'admin.products.create',
             'store' => 'admin.products.store',

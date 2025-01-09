@@ -11,6 +11,7 @@ use Database\Seeders\SliderSeeder;
 use Database\Seeders\PostSeeder;
 use Database\Seeders\TestimonialSeeder;
 use Database\Seeders\CertificateSeeder;
+use Database\Seeders\MenuSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -27,6 +28,7 @@ class DatabaseSeeder extends Seeder
             PostSeeder::class,
             TestimonialSeeder::class,
             CertificateSeeder::class,
+            MenuSeeder::class,
         ]);
     }
 }
