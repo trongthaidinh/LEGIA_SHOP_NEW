@@ -1,116 +1,87 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="container-fluid">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="mb-0">Orders</h2>
-        <a href="{{ route('admin.orders.create') }}" class="btn btn-primary">
-            <i class="fas fa-plus"></i> Create Order
-        </a>
+<div class="container mx-auto px-4">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-semibold text-gray-900">{{ __('Orders') }}</h1>
     </div>
 
     @if(session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
+        <div class="mb-6 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+            <span class="block sm:inline">{{ session('success') }}</span>
         </div>
     @endif
 
-    @if(session('error'))
-        <div class="alert alert-danger">
-            {{ session('error') }}
-        </div>
-    @endif
-
-    <!-- Filters -->
-    <div class="card mb-4">
-        <div class="card-body">
-            <form action="{{ route('admin.orders.index') }}" method="GET" class="row g-3">
-                <div class="col-md-4">
-                    <input type="text" class="form-control" name="search" 
-                        value="{{ request('search') }}" placeholder="Search orders...">
-                </div>
-                <div class="col-md-3">
-                    <select name="status" class="form-select">
-                        <option value="">All Statuses</option>
-                        @foreach($statuses as $value => $label)
-                            <option value="{{ $value }}" {{ request('status') == $value ? 'selected' : '' }}>
-                                {{ $label }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <button type="submit" class="btn btn-primary w-100">
-                        <i class="fas fa-search"></i> Search
-                    </button>
-                </div>
-                <div class="col-md-2">
-                    <a href="{{ route('admin.orders.index') }}" class="btn btn-secondary w-100">
-                        <i class="fas fa-redo"></i> Reset
-                    </a>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <div class="card">
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>Order #</th>
-                            <th>Customer</th>
-                            <th>Items</th>
-                            <th>Total Amount</th>
-                            <th>Status</th>
-                            <th>Date</th>
-                            <th>Actions</th>
+    <div class="bg-white rounded-lg shadow overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Order ID') }}</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Customer') }}</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Total') }}</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Status') }}</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Created at') }}</th>
+                        <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Actions') }}</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    @foreach($orders as $order)
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">#{{ $order->id }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900">{{ $order->customer_name }}</div>
+                                <div class="text-sm text-gray-500">{{ $order->customer_email }}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                {{ number_format($order->total) }}đ
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                    @switch($order->status)
+                                        @case('pending')
+                                            bg-yellow-100 text-yellow-800
+                                            @break
+                                        @case('processing')
+                                            bg-blue-100 text-blue-800
+                                            @break
+                                        @case('completed')
+                                            bg-green-100 text-green-800
+                                            @break
+                                        @case('cancelled')
+                                            bg-red-100 text-red-800
+                                            @break
+                                        @default
+                                            bg-gray-100 text-gray-800
+                                    @endswitch">
+                                    {{ __($order->status) }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {{ $order->created_at->format('d/m/Y H:i') }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
+                                <a href="{{ route('admin.orders.show', $order) }}" class="text-indigo-600 hover:text-indigo-900">
+                                    <i class="fas fa-eye"></i> {{ __('View') }}
+                                </a>
+                                <form action="{{ route('admin.orders.destroy', $order) }}" method="POST" class="inline-block">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('{{ __('Are you sure?') }}')">
+                                        <i class="fas fa-trash"></i> {{ __('Delete') }}
+                                    </button>
+                                </form>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($orders as $order)
-                            <tr>
-                                <td>{{ $order->order_number }}</td>
-                                <td>
-                                    <div>{{ $order->customer_name }}</div>
-                                    <small class="text-muted">{{ $order->customer_phone }}</small>
-                                </td>
-                                <td>{{ $order->total_items }} items</td>
-                                <td>{{ number_format($order->final_total) }}đ</td>
-                                <td>
-                                    <span class="badge bg-{{ $order->status === 'completed' ? 'success' : ($order->status === 'cancelled' ? 'danger' : 'warning') }}">
-                                        {{ $order->status_label }}
-                                    </span>
-                                </td>
-                                <td>{{ $order->created_at->format('d/m/Y H:i') }}</td>
-                                <td>
-                                    <a href="{{ route('admin.orders.show', $order) }}" class="btn btn-sm btn-info">
-                                        <i class="fas fa-eye"></i>
-                                    </a>
-                                    <form action="{{ route('admin.orders.destroy', $order) }}" method="POST" class="d-inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-danger" 
-                                            onclick="return confirm('Are you sure you want to delete this order?')">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </form>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="7" class="text-center">No orders found.</td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="mt-4">
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+        @if($orders->hasPages())
+            <div class="px-6 py-4 border-t border-gray-200">
                 {{ $orders->links() }}
             </div>
-        </div>
+        @endif
     </div>
 </div>
 @endsection 

@@ -1,157 +1,195 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="container-fluid">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="mb-0">Add New Product</h2>
-        <a href="{{ route('admin.products.index') }}" class="btn btn-secondary">
-            <i class="fas fa-arrow-left"></i> Back to Products
+<div class="container mx-auto px-4">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-semibold text-gray-900">{{ __('Create Product') }}</h1>
+        <a href="{{ route('admin.products.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white font-medium rounded-md">
+            <i class="fas fa-arrow-left mr-2"></i> {{ __('Back') }}
         </a>
     </div>
 
-    <div class="card">
-        <div class="card-body">
-            <form action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data">
-                @csrf
-                
-                <div class="row">
-                    <div class="col-md-8">
-                        <div class="mb-3">
-                            <label for="name" class="form-label">Product Name</label>
-                            <input type="text" class="form-control @error('name') is-invalid @enderror" 
-                                id="name" name="name" value="{{ old('name') }}" required>
-                            @error('name')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
+    <div class="bg-white rounded-lg shadow overflow-hidden">
+        <form action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data" class="p-6 space-y-6">
+            @csrf
 
-                        <div class="mb-3">
-                            <label for="type" class="form-label">Product Type</label>
-                            <select class="form-select @error('type') is-invalid @enderror" 
-                                id="type" name="type" required>
-                                @foreach(\App\Models\Product::getTypes() as $value => $label)
-                                    <option value="{{ $value }}" {{ old('type') == $value ? 'selected' : '' }}>
-                                        {{ $label }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('type')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="description" class="form-label">Short Description</label>
-                            <textarea class="form-control @error('description') is-invalid @enderror" 
-                                id="description" name="description" rows="3">{{ old('description') }}</textarea>
-                            @error('description')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="content" class="form-label">Detailed Content</label>
-                            <textarea class="form-control @error('content') is-invalid @enderror" 
-                                id="content" name="content" rows="5">{{ old('content') }}</textarea>
-                            @error('content')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <div class="col-md-4">
-                        <div class="mb-3">
-                            <label for="category_id" class="form-label">Category</label>
-                            <select class="form-select @error('category_id') is-invalid @enderror" 
-                                id="category_id" name="category_id" required>
-                                <option value="">Select Category</option>
-                                @foreach($categories as $category)
-                                    <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
-                                        {{ $category->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('category_id')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="price" class="form-label">Price</label>
-                            <input type="number" step="1" class="form-control @error('price') is-invalid @enderror" 
-                                id="price" name="price" value="{{ old('price') }}" required>
-                            @error('price')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="sale_price" class="form-label">Sale Price</label>
-                            <input type="number" step="1" class="form-control @error('sale_price') is-invalid @enderror" 
-                                id="sale_price" name="sale_price" value="{{ old('sale_price') }}">
-                            @error('sale_price')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="stock" class="form-label">Stock</label>
-                            <input type="number" class="form-control @error('stock') is-invalid @enderror" 
-                                id="stock" name="stock" value="{{ old('stock', 0) }}" required>
-                            @error('stock')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="sku" class="form-label">SKU</label>
-                            <input type="text" class="form-control @error('sku') is-invalid @enderror" 
-                                id="sku" name="sku" value="{{ old('sku') }}" required>
-                            @error('sku')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="featured_image" class="form-label">Featured Image</label>
-                            <input type="file" class="form-control @error('featured_image') is-invalid @enderror" 
-                                id="featured_image" name="featured_image">
-                            @error('featured_image')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="status" class="form-label">Status</label>
-                            <select class="form-select @error('status') is-invalid @enderror" 
-                                id="status" name="status" required>
-                                <option value="draft" {{ old('status') == 'draft' ? 'selected' : '' }}>Draft</option>
-                                <option value="published" {{ old('status') == 'published' ? 'selected' : '' }}>Published</option>
-                            </select>
-                            @error('status')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="mb-3">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="is_featured" 
-                                    name="is_featured" {{ old('is_featured') ? 'checked' : '' }}>
-                                <label class="form-check-label" for="is_featured">
-                                    Featured Product
-                                </label>
-                            </div>
-                        </div>
-                    </div>
+            <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+                <div>
+                    <label for="name" class="block text-sm font-medium text-gray-700">
+                        {{ __('Name') }} <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" 
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('name') border-red-300 @enderror" 
+                        id="name" 
+                        name="name" 
+                        value="{{ old('name') }}" 
+                        required>
+                    @error('name')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
                 </div>
 
-                <div class="text-end">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save"></i> Save Product
-                    </button>
+                <div>
+                    <label for="category_id" class="block text-sm font-medium text-gray-700">{{ __('Category') }}</label>
+                    <select class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('category_id') border-red-300 @enderror" 
+                        id="category_id" 
+                        name="category_id">
+                        <option value="">{{ __('Select Category') }}</option>
+                        @foreach($categories as $category)
+                            <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                                {{ $category->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('category_id')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
                 </div>
-            </form>
-        </div>
+
+                <div>
+                    <label for="type" class="block text-sm font-medium text-gray-700">{{ __('Type') }}</label>
+                    <select class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('type') border-red-300 @enderror" 
+                        id="type" 
+                        name="type">
+                        @foreach(\App\Models\Product::getTypes() as $key => $value)
+                            <option value="{{ $key }}" {{ old('type') == $key ? 'selected' : '' }}>
+                                {{ $value }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('type')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div>
+                    <label for="sku" class="block text-sm font-medium text-gray-700">{{ __('SKU') }}</label>
+                    <input type="text" 
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('sku') border-red-300 @enderror" 
+                        id="sku" 
+                        name="sku" 
+                        value="{{ old('sku') }}">
+                    @error('sku')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div>
+                    <label for="price" class="block text-sm font-medium text-gray-700">{{ __('Price') }} <span class="text-red-500">*</span></label>
+                    <input type="number" 
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('price') border-red-300 @enderror" 
+                        id="price" 
+                        name="price" 
+                        value="{{ old('price') }}" 
+                        min="0" 
+                        step="1" 
+                        required>
+                    @error('price')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div>
+                    <label for="sale_price" class="block text-sm font-medium text-gray-700">{{ __('Sale Price') }}</label>
+                    <input type="number" 
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('sale_price') border-red-300 @enderror" 
+                        id="sale_price" 
+                        name="sale_price" 
+                        value="{{ old('sale_price') }}" 
+                        min="0" 
+                        step="1">
+                    @error('sale_price')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div>
+                    <label for="stock" class="block text-sm font-medium text-gray-700">{{ __('Stock') }} <span class="text-red-500">*</span></label>
+                    <input type="number" 
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('stock') border-red-300 @enderror" 
+                        id="stock" 
+                        name="stock" 
+                        value="{{ old('stock', 0) }}" 
+                        min="0" 
+                        step="1" 
+                        required>
+                    @error('stock')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+            </div>
+
+            <div>
+                <label for="description" class="block text-sm font-medium text-gray-700">{{ __('Description') }}</label>
+                <textarea class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('description') border-red-300 @enderror" 
+                    id="description" 
+                    name="description" 
+                    rows="3">{{ old('description') }}</textarea>
+                @error('description')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div>
+                <label for="content" class="block text-sm font-medium text-gray-700">{{ __('Content') }}</label>
+                <textarea class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('content') border-red-300 @enderror" 
+                    id="content" 
+                    name="content" 
+                    rows="5">{{ old('content') }}</textarea>
+                @error('content')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div>
+                <label for="featured_image" class="block text-sm font-medium text-gray-700">{{ __('Featured Image') }}</label>
+                <input type="file" 
+                    class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 @error('featured_image') border-red-300 @enderror" 
+                    id="featured_image" 
+                    name="featured_image">
+                @error('featured_image')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div>
+                    <div class="flex items-center">
+                        <input type="checkbox" 
+                            class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 @error('is_active') border-red-300 @enderror" 
+                            id="is_active" 
+                            name="is_active" 
+                            value="1" 
+                            {{ old('is_active', true) ? 'checked' : '' }}>
+                        <label for="is_active" class="ml-2 block text-sm text-gray-700">{{ __('Active') }}</label>
+                    </div>
+                    @error('is_active')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div>
+                    <div class="flex items-center">
+                        <input type="checkbox" 
+                            class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 @error('is_featured') border-red-300 @enderror" 
+                            id="is_featured" 
+                            name="is_featured" 
+                            value="1" 
+                            {{ old('is_featured') ? 'checked' : '' }}>
+                        <label for="is_featured" class="ml-2 block text-sm text-gray-700">{{ __('Featured') }}</label>
+                    </div>
+                    @error('is_featured')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+            </div>
+
+            <div class="flex justify-end">
+                <button type="submit" class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-md">
+                    <i class="fas fa-save mr-2"></i> {{ __('Save') }}
+                </button>
+            </div>
+        </form>
     </div>
 </div>
 @endsection 

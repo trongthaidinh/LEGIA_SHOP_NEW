@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }} Admin</title>
+    <title>{{ config('app.name', 'Laravel') }} - {{ __('Admin Panel') }}</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,147 +13,117 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     
     <!-- Styles -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #f8f9fa;
-        }
-        
-        #sidebar {
-            min-height: 100vh;
-            width: 250px;
-            background: #343a40;
-            color: #fff;
-            transition: all 0.3s;
-        }
-        
-        #sidebar .nav-link {
-            color: #fff;
-            padding: 10px 20px;
-            transition: all 0.3s;
-        }
-        
-        #sidebar .nav-link:hover {
-            background: #495057;
-        }
-        
-        #sidebar .nav-link i {
-            margin-right: 10px;
-        }
-        
-        .content {
-            width: calc(100% - 250px);
-        }
-        
-        .navbar {
-            background: #fff;
-            box-shadow: 0 2px 4px rgba(0,0,0,.1);
-        }
-        
-        .main-content {
-            padding: 20px;
-        }
-        
-        .sidebar-header {
-            padding: 20px;
-            background: #2c3136;
-        }
-        
-        .admin-brand {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #fff;
-            text-decoration: none;
-        }
-    </style>
 </head>
-<body>
-    <div class="d-flex">
+<body class="font-sans antialiased bg-gray-100">
+    <div class="flex h-screen">
         <!-- Sidebar -->
-        <div id="sidebar">
-            <div class="sidebar-header">
-                <a href="{{ route('admin.dashboard') }}" class="admin-brand">
-                    {{ config('app.name', 'Laravel') }}
+        <div id="sidebar" class="w-64 bg-gray-800 text-white transition-all duration-300">
+            <div class="px-6 py-4 bg-gray-900">
+                <a href="{{ route('admin.dashboard') }}" class="text-xl font-bold text-white hover:text-gray-200">
+                    {{ config('app.name', 'Laravel') }} {{ __('Admin Panel') }}
                 </a>
             </div>
             
-            <ul class="nav flex-column">
-                <li class="nav-item">
-                    <a href="{{ route('admin.dashboard') }}" class="nav-link">
-                        <i class="fas fa-tachometer-alt"></i> Dashboard
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('admin.categories.index') }}" class="nav-link">
-                        <i class="fas fa-list"></i> Categories
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('admin.products.index') }}" class="nav-link">
-                        <i class="fas fa-box"></i> Products
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('admin.orders.index') }}" class="nav-link">
-                        <i class="fas fa-shopping-cart"></i> Orders
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="fas fa-cog"></i> Settings
-                    </a>
-                </li>
-            </ul>
+            <nav class="mt-4">
+                <a href="{{ route('admin.dashboard') }}" class="flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+                    <i class="fas fa-tachometer-alt w-5"></i>
+                    <span class="ml-3">{{ __('Dashboard') }}</span>
+                </a>
+                <a href="{{ route('admin.categories.index') }}" class="flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+                    <i class="fas fa-list w-5"></i>
+                    <span class="ml-3">{{ __('Categories') }}</span>
+                </a>
+                <a href="{{ route('admin.products.index') }}" class="flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+                    <i class="fas fa-box w-5"></i>
+                    <span class="ml-3">{{ __('Products') }}</span>
+                </a>
+                <a href="{{ route('admin.orders.index') }}" class="flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+                    <i class="fas fa-shopping-cart w-5"></i>
+                    <span class="ml-3">{{ __('Orders') }}</span>
+                </a>
+                <a href="#" class="flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+                    <i class="fas fa-cog w-5"></i>
+                    <span class="ml-3">{{ __('Settings') }}</span>
+                </a>
+            </nav>
         </div>
 
         <!-- Content -->
-        <div class="content">
+        <div class="flex-1">
             <!-- Top Navbar -->
-            <nav class="navbar navbar-expand-lg">
-                <div class="container-fluid">
-                    <button class="btn btn-link">
-                        <i class="fas fa-bars"></i>
-                    </button>
-                    
-                    <div class="ms-auto d-flex align-items-center">
-                        <div class="dropdown">
-                            <button class="btn btn-link dropdown-toggle text-dark" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown">
-                                <i class="fas fa-user-circle"></i> {{ Auth::user()->name ?? 'Admin' }}
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i> Profile</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li>
-                                    <form method="POST" action="{{ route('logout') }}">
-                                        @csrf
-                                        <button type="submit" class="dropdown-item">
-                                            <i class="fas fa-sign-out-alt me-2"></i> Logout
-                                        </button>
-                                    </form>
-                                </li>
-                            </ul>
+            <nav class="bg-white shadow">
+                <div class="px-4 py-2">
+                    <div class="flex justify-between items-center">
+                        <button type="button" class="text-gray-500 hover:text-gray-600 focus:outline-none" aria-label="{{ __('Toggle navigation') }}" id="sidebarToggle">
+                            <i class="fas fa-bars text-xl"></i>
+                        </button>
+                        
+                        <div class="flex items-center space-x-4">
+                            <!-- Language Switcher -->
+                            <div class="relative" x-data="{ open: false }">
+                                <button @click="open = !open" class="flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none">
+                                    @if(app()->getLocale() == 'vi')
+                                        <i class="fas fa-flag mr-2"></i> {{ __('Vietnamese') }}
+                                    @else
+                                        <i class="fas fa-flag mr-2"></i> {{ __('Chinese') }}
+                                    @endif
+                                </button>
+                                <div x-show="open" @click.away="open = false" class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                                    <div class="py-1">
+                                        <a href="{{ route('language.switch', 'vi') }}" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 {{ app()->getLocale() == 'vi' ? 'bg-gray-100' : '' }}">
+                                            <img src="{{ asset('images/flags/vi.png') }}" alt="VN" class="w-5 h-4 mr-2"> {{ __('Vietnamese') }}
+                                        </a>
+                                        <a href="{{ route('language.switch', 'zh') }}" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 {{ app()->getLocale() == 'zh' ? 'bg-gray-100' : '' }}">
+                                            <img src="{{ asset('images/flags/zh.png') }}" alt="CN" class="w-5 h-4 mr-2"> {{ __('Chinese') }}
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- User Dropdown -->
+                            <div class="relative" x-data="{ open: false }">
+                                <button @click="open = !open" class="flex items-center text-gray-700 hover:text-gray-900 focus:outline-none">
+                                    <i class="fas fa-user-circle text-xl mr-2"></i>
+                                    <span>{{ __('Welcome') }}, {{ Auth::user()->name ?? 'Admin' }}</span>
+                                </button>
+                                <div x-show="open" @click.away="open = false" class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                                    <div class="py-1">
+                                        <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                            <i class="fas fa-user mr-2"></i> {{ __('My Profile') }}
+                                        </a>
+                                        <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                            <i class="fas fa-cog mr-2"></i> {{ __('Account Settings') }}
+                                        </a>
+                                        <div class="border-t border-gray-100"></div>
+                                        <form method="POST" action="{{ route('logout') }}">
+                                            @csrf
+                                            <button type="submit" class="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                                <i class="fas fa-sign-out-alt mr-2"></i> {{ __('Sign Out') }}
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </nav>
 
             <!-- Main Content -->
-            <main class="main-content">
+            <main class="p-6">
                 @yield('content')
             </main>
         </div>
     </div>
 
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Alpine.js -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script>
         // Toggle sidebar
-        document.querySelector('.btn-link').addEventListener('click', function() {
-            document.getElementById('sidebar').classList.toggle('d-none');
-            document.querySelector('.content').classList.toggle('w-100');
+        document.getElementById('sidebarToggle').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('hidden');
         });
     </script>
 </body>

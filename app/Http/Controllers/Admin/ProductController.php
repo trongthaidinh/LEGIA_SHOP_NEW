@@ -10,9 +10,15 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rule;
 
 class ProductController extends Controller
 {
+    /**
+     * Path for storing product images
+     */
+    const IMAGE_PATH = 'image/product';
+
     /**
      * Display a listing of products.
      *
@@ -87,8 +93,12 @@ class ProductController extends Controller
                 'is_active' => true
             ]);
 
+            // Handle image upload
             if ($request->hasFile('featured_image')) {
-                $validated['featured_image'] = $this->handleImageUpload($request->file('featured_image'));
+                $validated['featured_image'] = $this->handleImageUpload(
+                    $request->file('featured_image'),
+                    $validated['slug']
+                );
             }
 
             Product::create($validated);
@@ -101,7 +111,7 @@ class ProductController extends Controller
             DB::rollBack();
             Log::error('Error in ProductController@store: ' . $e->getMessage());
             return back()->withInput()
-                ->with('error', 'An error occurred while creating the product.');
+                ->with('error', 'An error occurred while creating the product: ' . $e->getMessage());
         }
     }
 
@@ -144,9 +154,16 @@ class ProductController extends Controller
                 'is_featured' => $request->boolean('is_featured')
             ]);
 
+            // Handle image upload
             if ($request->hasFile('featured_image')) {
+                // Delete old image
                 $this->deleteImage($product->featured_image);
-                $validated['featured_image'] = $this->handleImageUpload($request->file('featured_image'));
+                
+                // Upload new image
+                $validated['featured_image'] = $this->handleImageUpload(
+                    $request->file('featured_image'),
+                    $validated['slug']
+                );
             }
 
             $product->update($validated);
@@ -159,7 +176,7 @@ class ProductController extends Controller
             DB::rollBack();
             Log::error('Error in ProductController@update: ' . $e->getMessage());
             return back()->withInput()
-                ->with('error', 'An error occurred while updating the product.');
+                ->with('error', 'An error occurred while updating the product: ' . $e->getMessage());
         }
     }
 
@@ -174,6 +191,7 @@ class ProductController extends Controller
         try {
             DB::beginTransaction();
 
+            // Delete product image
             if ($product->featured_image) {
                 $this->deleteImage($product->featured_image);
             }
@@ -200,19 +218,35 @@ class ProductController extends Controller
      */
     private function validateProduct(Request $request, ?int $productId = null): array
     {
-        return $request->validate([
+        $rules = [
             'name' => 'required|max:255',
             'type' => 'required|in:' . implode(',', array_keys(Product::getTypes())),
             'category_id' => 'required|exists:categories,id',
             'description' => 'nullable|string|max:1000',
             'content' => 'nullable|string',
             'price' => 'required|numeric|min:0',
-            'sale_price' => 'nullable|numeric|min:0|lt:price',
+            'sale_price' => [
+                'nullable',
+                'numeric',
+                'min:0',
+                function ($attribute, $value, $fail) use ($request) {
+                    if ($value && $value >= $request->input('price')) {
+                        $fail('The sale price must be less than the regular price.');
+                    }
+                },
+            ],
             'stock' => 'required|integer|min:0',
-            'sku' => 'required|string|max:50|unique:products,sku' . ($productId ? ',' . $productId : ''),
+            'sku' => [
+                'required',
+                'string',
+                'max:50',
+                Rule::unique('products')->ignore($productId),
+            ],
             'featured_image' => 'nullable|image|max:2048|mimes:jpeg,png,jpg,gif',
             'status' => 'required|in:draft,published'
-        ]);
+        ];
+
+        return $request->validate($rules);
     }
 
     /**
@@ -247,11 +281,18 @@ class ProductController extends Controller
      * Handle image upload.
      *
      * @param \Illuminate\Http\UploadedFile $image
+     * @param string $slug
      * @return string
      */
-    private function handleImageUpload($image): string
+    private function handleImageUpload($image, string $slug): string
     {
-        return $image->store('products', 'public');
+        // Create a unique filename using the slug and timestamp
+        $filename = $slug . '-' . time() . '.' . $image->getClientOriginalExtension();
+        
+        // Store the image in the specified path
+        $path = $image->storeAs(self::IMAGE_PATH, $filename, 'public');
+        
+        return $path;
     }
 
     /**
