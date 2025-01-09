@@ -15,7 +15,6 @@ class HomeController extends Controller
     public function index()
     {
         $sliders = Slider::active()->ordered()->get();
-        $categories = Category::active()->withCount('products')->get();
         
         // Fetch products by type
         $yenChungProducts = Product::active()
@@ -42,7 +41,6 @@ class HomeController extends Controller
 
         return view('frontend.home', compact(
             'sliders',
-            'categories',
             'yenChungProducts',
             'yenToProducts',
             'giftSetProducts',

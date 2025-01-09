@@ -1,0 +1,21 @@
+{
+    "Welcome": "欢迎",
+    "Home": "主页",
+    "Products": "产品",
+    "Categories": "分类",
+    "Cart": "购物车",
+    "Search": "搜索",
+    "Login": "登录",
+    "Register": "注册",
+    "Logout": "登出",
+    "Profile": "个人资料",
+    "Contact": "联系我们",
+    "About": "关于我们",
+    "Add to Cart": "加入购物车",
+    "Price": "价格",
+    "Description": "描述",
+    "Quantity": "数量",
+    "Total": "总计",
+    "Checkout": "结账",
+    "Order": "下单"
+}
