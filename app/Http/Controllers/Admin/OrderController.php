@@ -84,19 +84,58 @@ class OrderController extends Controller
         try {
             DB::beginTransaction();
 
-            $validated = $this->validateOrder($request);
-            
+            // First validate basic order information
+            $validated = $request->validate([
+                'customer_name' => 'required|string|max:255',
+                'customer_phone' => 'required|string|max:20',
+                'customer_email' => 'nullable|email|max:255',
+                'shipping_address' => 'required|string|max:255',
+                'shipping_city' => 'required|string|max:255',
+                'shipping_district' => 'required|string|max:255',
+                'shipping_ward' => 'required|string|max:255',
+                'shipping_amount' => 'numeric|min:0',
+                'notes' => 'nullable|string',
+                'items' => 'array|min:1',
+                'items.*.product_id' => 'exists:products,id',
+                'items.*.quantity' => 'integer|min:1'
+            ]);
+
             // Generate order number
             $validated['order_number'] = $this->generateOrderNumber();
+            $validated['status'] = Order::STATUS_PENDING;
+            $validated['total_amount'] = 0; // Will be updated after creating items
 
             // Create order
             $order = Order::create($validated);
 
-            // Create order items
-            $this->createOrderItems($order, $request->input('items', []));
+            // Validate and create order items
+            $totalAmount = 0;
+            foreach ($request->input('items', []) as $item) {
+                $product = Product::findOrFail($item['product_id']);
+                
+                // Validate stock
+                if ($product->stock < $item['quantity']) {
+                    throw new \Exception("Insufficient stock for product: {$product->name}");
+                }
 
-            // Update product stock
-            $this->updateProductStock($request->input('items', []));
+                // Create order item
+                $orderItem = $order->items()->create([
+                    'product_id' => $product->id,
+                    'product_name' => $product->name,
+                    'quantity' => $item['quantity'],
+                    'price' => $product->price,
+                    'total' => $product->price * $item['quantity']
+                ]);
+
+                // Update total amount
+                $totalAmount += $orderItem->total;
+
+                // Update product stock
+                $product->decrement('stock', $item['quantity']);
+            }
+
+            // Update order total
+            $order->update(['total_amount' => $totalAmount]);
 
             DB::commit();
             return redirect()->route('admin.orders.show', $order)
@@ -106,7 +145,7 @@ class OrderController extends Controller
             DB::rollBack();
             Log::error('Error in OrderController@store: ' . $e->getMessage());
             return back()->withInput()
-                ->with('error', 'An error occurred while creating the order.');
+                ->with('error', 'An error occurred while creating the order: ' . $e->getMessage());
         }
     }
 
@@ -192,82 +231,15 @@ class OrderController extends Controller
     }
 
     /**
-     * Validate order data.
-     *
-     * @param Request $request
-     * @return array
-     */
-    private function validateOrder(Request $request): array
-    {
-        return $request->validate([
-            'customer_name' => 'required|string|max:255',
-            'customer_phone' => 'required|string|max:20',
-            'customer_email' => 'nullable|email|max:255',
-            'shipping_address' => 'required|string|max:255',
-            'shipping_city' => 'required|string|max:255',
-            'shipping_district' => 'required|string|max:255',
-            'shipping_ward' => 'required|string|max:255',
-            'shipping_amount' => 'required|numeric|min:0',
-            'notes' => 'nullable|string',
-            'items' => 'required|array|min:1',
-            'items.*.product_id' => 'required|exists:products,id',
-            'items.*.quantity' => 'required|integer|min:1'
-        ]);
-    }
-
-    /**
      * Generate unique order number.
      *
      * @return string
      */
     private function generateOrderNumber(): string
     {
-        return 'ORD-' . date('Ymd') . '-' . strtoupper(uniqid());
-    }
-
-    /**
-     * Create order items and calculate totals.
-     *
-     * @param Order $order
-     * @param array $items
-     * @return void
-     */
-    private function createOrderItems(Order $order, array $items): void
-    {
-        $totalAmount = 0;
-
-        foreach ($items as $item) {
-            $product = Product::findOrFail($item['product_id']);
-            
-            if ($product->stock < $item['quantity']) {
-                throw new \Exception("Insufficient stock for product: {$product->name}");
-            }
-
-            $orderItem = $order->items()->create([
-                'product_id' => $product->id,
-                'product_name' => $product->name,
-                'quantity' => $item['quantity'],
-                'price' => $product->price,
-                'total' => $product->price * $item['quantity']
-            ]);
-
-            $totalAmount += $orderItem->total;
-        }
-
-        $order->update(['total_amount' => $totalAmount]);
-    }
-
-    /**
-     * Update product stock after order creation.
-     *
-     * @param array $items
-     * @return void
-     */
-    private function updateProductStock(array $items): void
-    {
-        foreach ($items as $item) {
-            $product = Product::findOrFail($item['product_id']);
-            $product->decrement('stock', $item['quantity']);
-        }
+        $prefix = 'ORD';
+        $date = now()->format('Ymd');
+        $random = strtoupper(substr(uniqid(), -5));
+        return "{$prefix}-{$date}-{$random}";
     }
 } 
