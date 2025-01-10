@@ -2,16 +2,18 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\App;
 
 class Post extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'admin_id',
+        'post_category_id',
         'title',
         'slug',
         'excerpt',
@@ -19,26 +21,23 @@ class Post extends Model
         'featured_image',
         'status',
         'published_at',
-        'is_featured',
-        'language'
+        'language',
+        'is_featured'
     ];
 
     protected $casts = [
         'published_at' => 'datetime',
-        'is_featured' => 'boolean'
+        'is_featured' => 'boolean',
     ];
-
-    // Relationships
-    public function admin()
-    {
-        return $this->belongsTo(Admin::class);
-    }
 
     // Scopes
     public function scopePublished($query)
     {
         return $query->where('status', 'published')
-            ->where('published_at', '<=', now());
+                    ->where(function($q) {
+                        $q->whereNull('published_at')
+                          ->orWhere('published_at', '<=', now());
+                    });
     }
 
     public function scopeFeatured($query)
@@ -50,5 +49,16 @@ class Post extends Model
     {
         $lang = $language ?? App::getLocale();
         return $query->where('language', $lang);
+    }
+
+    // Relationships
+    public function category()
+    {
+        return $this->belongsTo(PostCategory::class, 'post_category_id');
+    }
+
+    public function admin()
+    {
+        return $this->belongsTo(Admin::class, 'admin_id');
     }
 }

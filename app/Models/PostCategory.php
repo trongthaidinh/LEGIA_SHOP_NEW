@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class PostCategory extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'name',
@@ -16,15 +17,19 @@ class PostCategory extends Model
         'is_active'
     ];
 
-    // Relationships
-    public function posts()
-    {
-        return $this->hasMany(Post::class);
-    }
+    protected $casts = [
+        'is_active' => 'boolean',
+    ];
 
     // Scopes
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
+    }
+
+    // Relationships
+    public function posts()
+    {
+        return $this->hasMany(Post::class);
     }
 }

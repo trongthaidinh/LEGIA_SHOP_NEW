@@ -21,6 +21,8 @@ use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Admin\PostCategoryController;
+use App\Http\Controllers\Admin\PostController as AdminPostController;
 use Illuminate\Support\Facades\Route;
 
 // Redirect root to Vietnamese version
@@ -163,6 +165,8 @@ Route::prefix('vi/admin')->middleware(['auth'])->group(function () {
     Route::resource('products', AdminProductController::class)->names('vi.admin.products');
     Route::resource('orders', OrderController::class)->except(['edit', 'update'])->names('vi.admin.orders');
     Route::patch('orders/{order}/status', [OrderController::class, 'updateStatus'])->name('vi.admin.orders.update-status');
+    Route::resource('post-categories', PostCategoryController::class)->names('vi.admin.post-categories');
+    Route::resource('posts', AdminPostController::class)->names('vi.admin.posts');
 });
 
 // Chinese Admin Routes  
@@ -173,6 +177,8 @@ Route::prefix('zh/admin')->middleware(['auth'])->group(function () {
     Route::resource('products', AdminProductController::class)->names('zh.admin.products');
     Route::resource('orders', OrderController::class)->except(['edit', 'update'])->names('zh.admin.orders');
     Route::patch('orders/{order}/status', [OrderController::class, 'updateStatus'])->name('zh.admin.orders.update-status');
+    Route::resource('post-categories', PostCategoryController::class)->names('zh.admin.post-categories');
+    Route::resource('posts', AdminPostController::class)->names('zh.admin.posts');
 });
 
 require __DIR__ . '/auth.php';

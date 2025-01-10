@@ -43,6 +43,14 @@
                     <i class="fas fa-shopping-cart w-5"></i>
                     <span class="ml-3">{{ __('Orders') }}</span>
                 </a>
+                <a href="{{ route(request()->segment(1) . '.admin.post-categories.index') }}" class="flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+                    <i class="fas fa-folder w-5"></i>
+                    <span class="ml-3">{{ __('Post Categories') }}</span>
+                </a>
+                <a href="{{ route(request()->segment(1) . '.admin.posts.index') }}" class="flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+                    <i class="fas fa-newspaper w-5"></i>
+                    <span class="ml-3">{{ __('Posts') }}</span>
+                </a>
                 <a href="#" class="flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
                     <i class="fas fa-cog w-5"></i>
                     <span class="ml-3">{{ __('Settings') }}</span>
