@@ -12,12 +12,13 @@ class ProductController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Product::active();
+        $query = Product::active()->byLanguage(app()->getLocale());
 
-        // Filter by category
-        if ($request->category) {
-            $query->whereHas('categories', function($q) use ($request) {
-                $q->where('slug', $request->category);
+        // Filter by categories (multiple)
+        if ($request->categories) {
+            $categoryIds = explode(',', $request->categories);
+            $query->whereHas('categories', function($q) use ($categoryIds) {
+                $q->whereIn('categories.id', $categoryIds);
             });
         }
 
@@ -37,23 +38,36 @@ class ProductController extends Controller
             case 'price_desc':
                 $query->orderBy('price', 'desc');
                 break;
+            case 'name_asc':
+                $query->orderBy('name', 'asc');
+                break;
+            case 'name_desc':
+                $query->orderBy('name', 'desc');
+                break;
             default:
                 $query->latest();
         }
 
-        $products = $query->paginate(12);
+        $products = $query->paginate(12)->withQueryString();
         $categories = Category::active()->withCount('products')->get();
 
-        return view('frontend.products.index', compact('products', 'categories'));
+        // Get min and max prices for filter
+        $priceRange = Product::active()
+            ->selectRaw('MIN(price) as min_price, MAX(price) as max_price')
+            ->first();
+
+        return view('frontend.products.index', compact('products', 'categories', 'priceRange'));
     }
 
     public function show($slug)
     {
         $product = Product::active()
+            ->byLanguage(app()->getLocale())
             ->where('slug', $slug)
             ->firstOrFail();
 
         $relatedProducts = Product::active()
+            ->byLanguage(app()->getLocale())
             ->whereHas('categories', function($q) use ($product) {
                 $q->whereIn('categories.id', $product->categories->pluck('id'));
             })
@@ -66,7 +80,7 @@ class ProductController extends Controller
 
     public function search(Request $request)
     {
-        $query = Product::active();
+        $query = Product::active()->byLanguage(app()->getLocale());
 
         if ($request->q) {
             $query->where(function($q) use ($request) {
@@ -99,6 +113,6 @@ class ProductController extends Controller
             'comment' => $request->comment
         ]);
 
-        return back()->with('success', 'Cảm ơn bạn đã đánh giá sản phẩm!');
+        return back()->with('success', __('review_submitted'));
     }
 }

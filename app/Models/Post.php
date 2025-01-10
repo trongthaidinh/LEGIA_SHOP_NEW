@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\App;
 
 class Post extends Model
 {
@@ -43,5 +44,11 @@ class Post extends Model
     public function scopeFeatured($query)
     {
         return $query->where('is_featured', true);
+    }
+
+    public function scopeByLanguage($query, $language = null)
+    {
+        $lang = $language ?? App::getLocale();
+        return $query->where('language', $lang);
     }
 }

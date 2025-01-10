@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\App;
 
 class Testimonial extends Model
 {
@@ -15,7 +16,8 @@ class Testimonial extends Model
         'position',
         'content',
         'rating',
-        'status'
+        'status',
+        'language'
     ];
 
     protected $casts = [
@@ -31,5 +33,11 @@ class Testimonial extends Model
     public function scopeOrdered($query)
     {
         return $query->orderBy('created_at', 'desc');
+    }
+
+    public function scopeByLanguage($query, $language = null)
+    {
+        $lang = $language ?? App::getLocale();
+        return $query->where('language', $lang);
     }
 }

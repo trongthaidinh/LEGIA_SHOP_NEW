@@ -24,11 +24,19 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        $request->authenticate();
+        // Attempt to authenticate using admin guard
+        if (Auth::guard('admin')->attempt($request->only('email', 'password'))) {
+            $request->session()->regenerate();
+            
+            // Redirect to admin dashboard with language prefix
+            $locale = app()->getLocale();
+            return redirect()->intended("/$locale/admin");
+        }
 
-        $request->session()->regenerate();
-
-        return redirect()->intended(route('admin.vi.dashboard'));
+        // Authentication failed
+        return back()->withErrors([
+            'email' => 'The provided credentials do not match our records.',
+        ]);
     }
 
     /**
@@ -36,7 +44,7 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
-        Auth::guard('web')->logout();
+        Auth::guard('admin')->logout();
 
         $request->session()->invalidate();
 

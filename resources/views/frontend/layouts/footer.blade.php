@@ -10,83 +10,83 @@
 
                     <div class="flex items-center gap-2 text-[var(--color-secondary-500)] mb-2">
                         <i class="fas fa-user-friends"></i>
-                        <span class="text-white">Truy cập hôm nay: <span class="text-[var(--color-secondary-500)]">11</span></span>
+                        <span class="text-white">{{ __('today_visits') }}: <span class="text-[var(--color-secondary-500)]">11</span></span>
                     </div>
 
                     <div class="flex items-center gap-2 text-[var(--color-secondary-500)] mb-6">
                         <i class="fas fa-chart-line"></i>
-                        <span class="text-white">Tổng số lượt truy cập: <span class="text-[var(--color-secondary-500)]">52226</span></span>
+                        <span class="text-white">{{ __('total_visits') }}: <span class="text-[var(--color-secondary-500)]">52226</span></span>
                     </div>
 
                     <div class="space-y-2">
                         <div class="flex items-center gap-2">
                             <i class="fas fa-map-marker-alt text-[var(--color-secondary-500)] w-5"></i>
-                            <span class="text-white">60 - 62 Nguyễn Hữu Thọ, Phường Tân An, TP. Buôn Ma Thuột, Tỉnh Đắk Lắk</span>
+                            <span class="text-white">{{ __('company_address') }}</span>
                         </div>
                         <div class="flex items-center gap-2">
                             <i class="fas fa-phone text-[var(--color-secondary-500)] w-5"></i>
-                            <span class="text-white">077 233 2255</span>
+                            <span class="text-white">{{ __('company_phone') }}</span>
                         </div>
                         <div class="flex items-center gap-2">
                             <i class="fas fa-envelope text-[var(--color-secondary-500)] w-5"></i>
-                            <span class="text-white">lxchinh@gmail.com</span>
+                            <span class="text-white">{{ __('company_email') }}</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Chính sách -->
+            <!-- Policies -->
             <div class="col-span-3">
-                <h3 class="text-[var(--color-secondary-500)] text-lg font-semibold mb-6">Chính sách</h3>
+                <h3 class="text-[var(--color-secondary-500)] text-lg font-semibold mb-6">{{ __('policies') }}</h3>
                 <ul class="space-y-3">
                     <li>
                         <a href="#" class="text-white hover:text-[var(--color-secondary-300)] transition-colors">
-                            Chính sách quy định chung
+                            {{ __('general_policies') }}
                         </a>
                     </li>
                     <li>
                         <a href="#" class="text-white hover:text-[var(--color-secondary-300)] transition-colors">
-                            Chính sách bảo mật
+                            {{ __('privacy_policy') }}
                         </a>
                     </li>
                     <li>
                         <a href="#" class="text-white hover:text-[var(--color-secondary-300)] transition-colors">
-                            Chính sách bảo hành
+                            {{ __('warranty_policy') }}
                         </a>
                     </li>
                     <li>
                         <a href="#" class="text-white hover:text-[var(--color-secondary-300)] transition-colors">
-                            Chính sách đổi trả hàng
+                            {{ __('return_policy') }}
                         </a>
                     </li>
                 </ul>
             </div>
 
-            <!-- Hỗ trợ khách hàng -->
+            <!-- Customer Support -->
             <div class="col-span-3">
-                <h3 class="text-[var(--color-secondary-500)] text-lg font-semibold mb-6">Hỗ trợ khách hàng</h3>
+                <h3 class="text-[var(--color-secondary-500)] text-lg font-semibold mb-6">{{ __('customer_support') }}</h3>
                 <ul class="space-y-3">
                     <li>
                         <a href="#" class="text-white hover:text-[var(--color-secondary-300)] transition-colors">
-                            Chính sách đặt hàng - thanh toán
+                            {{ __('order_payment_policy') }}
                         </a>
                     </li>
                     <li>
                         <a href="#" class="text-white hover:text-[var(--color-secondary-300)] transition-colors">
-                            Chính sách vận chuyển - kiểm hàng
+                            {{ __('shipping_policy') }}
                         </a>
                     </li>
                     <li>
                         <a href="#" class="text-white hover:text-[var(--color-secondary-300)] transition-colors">
-                            Câu hỏi thường gặp
+                            {{ __('faq') }}
                         </a>
                     </li>
                 </ul>
             </div>
 
-            <!-- Kết nối với chúng tôi -->
+            <!-- Connect with us -->
             <div class="col-span-2">
-                <h3 class="text-[var(--color-secondary-500)] text-lg font-semibold mb-6">Kết nối với chúng tôi</h3>
+                <h3 class="text-[var(--color-secondary-500)] text-lg font-semibold mb-6">{{ __('connect_with_us') }}</h3>
                 <div class="flex gap-4">
                     <a href="#" class="text-white hover:text-[var(--color-secondary-300)] transition-colors">
                         <i class="fab fa-facebook-f text-2xl"></i>
@@ -95,10 +95,7 @@
                         <i class="fab fa-instagram text-2xl"></i>
                     </a>
                     <a href="#" class="text-white hover:text-[var(--color-secondary-300)] transition-colors">
-                        <i class="fab fa-twitter text-2xl"></i>
-                    </a>
-                    <a href="#" class="text-white hover:text-[var(--color-secondary-300)] transition-colors">
-                        <i class="fas fa-arrow-right text-2xl"></i>
+                        <i class="fab fa-youtube text-2xl"></i>
                     </a>
                 </div>
             </div>
@@ -108,10 +105,7 @@
     <!-- Copyright -->
     <div class="bg-[var(--color-secondary-500)] py-4">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <span class="text-[var(--color-primary-900)]">Copyright 2024 </span>
-            <span class="text-[var(--color-primary-900)] font-semibold">Yến Sào LeGia'Nest</span>
-            <span class="text-[var(--color-primary-900)]">. All Rights Reserved. Thiết kế bởi </span>
-            <span class="text-[var(--color-primary-900)] font-semibold">TakaTech</span>
+            <p class="text-white">&copy; {{ date('Y') }} {{ __('copyright_text') }}</p>
         </div>
     </div>
 </footer>
