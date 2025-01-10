@@ -148,7 +148,7 @@
                         </div>
                         <div class="ml-2 text-yellow-400">
                             <div class="text-sm font-medium">{{ __('shopping_cart') }}</div>
-                            <div class="font-medium">{{ Cart::getTotalQuantity() }} {{ __('items') }}</div>
+                            <div class="font-medium cart-count">0 {{ __('items') }}</div>
                         </div>
                     </a>
                 </div>
@@ -192,3 +192,22 @@
         </div>
     </div>
 </header>
+
+@push('scripts')
+<script>
+function updateCartCount() {
+    const currentLang = '{{ app()->getLocale() }}';
+    const carts = JSON.parse(localStorage.getItem('carts')) || {};
+    const currentCart = carts[currentLang] || {};
+    
+    const totalItems = Object.values(currentCart).reduce((sum, item) => sum + item.quantity, 0);
+    document.querySelectorAll('.cart-count').forEach(el => {
+        el.textContent = `${totalItems} {{ __('items') }}`;
+    });
+}
+
+// Lắng nghe sự kiện cart updated
+document.addEventListener('cartUpdated', updateCartCount);
+document.addEventListener('DOMContentLoaded', updateCartCount);
+</script>
+@endpush

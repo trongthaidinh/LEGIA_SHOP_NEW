@@ -23,6 +23,7 @@ use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\PostCategoryController;
 use App\Http\Controllers\Admin\PostController as AdminPostController;
+use App\Http\Controllers\Frontend\PaymentController;
 use Illuminate\Support\Facades\Route;
 
 // Redirect root to Vietnamese version
@@ -78,8 +79,8 @@ Route::prefix('vi')->group(function () {
 
     // Checkout
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('vi.checkout');
-    Route::post('/checkout', [CheckoutController::class, 'process'])->name('vi.checkout.process');
-    Route::get('/checkout/success/{orderId}', [CheckoutController::class, 'success'])->name('vi.checkout.success');
+    Route::post('/checkout/process', [CheckoutController::class, 'process'])->name('vi.checkout.process');
+    Route::get('/checkout/success', [CheckoutController::class, 'success'])->name('vi.checkout.success');
 
     // Posts
     Route::get('/posts', [PostController::class, 'index'])->name('vi.posts');
@@ -88,6 +89,8 @@ Route::prefix('vi')->group(function () {
 
     // Language Route
     Route::get('language/{lang}', [LanguageController::class, 'switchLang'])->name('vi.language.switch');
+
+    Route::get('/payment/bank', [PaymentController::class, 'bank'])->name('vi.payment.bank');
 });
 
 // Chinese Frontend Routes
@@ -138,8 +141,8 @@ Route::prefix('zh')->group(function () {
 
     // Checkout
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('zh.checkout');
-    Route::post('/checkout', [CheckoutController::class, 'process'])->name('zh.checkout.process');
-    Route::get('/checkout/success/{orderId}', [CheckoutController::class, 'success'])->name('zh.checkout.success');
+    Route::post('/checkout/process', [CheckoutController::class, 'process'])->name('zh.checkout.process');
+    Route::get('/checkout/success', [CheckoutController::class, 'success'])->name('zh.checkout.success');
 
     // Posts
     Route::get('/posts', [PostController::class, 'index'])->name('zh.posts');
@@ -148,6 +151,8 @@ Route::prefix('zh')->group(function () {
 
     // Language Route
     Route::get('language/{lang}', [LanguageController::class, 'switchLang'])->name('zh.language.switch');
+
+    Route::get('/payment/bank', [PaymentController::class, 'bank'])->name('zh.payment.bank');
 });
 
 // Auth Routes (chung cho cả hai ngôn ngữ)

@@ -8,9 +8,9 @@
         <!-- Product gallery -->
         <div class="border border-[var(--color-primary-200)] rounded-lg p-4">
             <div class="aspect-w-1 aspect-h-1 mb-4">
-                <img id="mainImage" src="{{ Storage::url($product->featured_image) }}" 
-                     alt="{{ $product->name }}" 
-                     class="h-full w-full object-contain object-center">
+                <img id="mainImage" src="{{ Storage::url($product->featured_image) }}"
+                    alt="{{ $product->name }}"
+                    class="h-full w-full object-contain object-center">
             </div>
 
             <!-- @if($product->gallery)
@@ -40,23 +40,23 @@
         <!-- Product details -->
         <div>
             @if($product->sale_price && $product->price > $product->sale_price)
-                <div class="mb-4">
-                    <span class="inline-flex items-center px-3 py-1 rounded text-sm font-medium bg-[var(--color-secondary-500)] text-white">
-                        -{{ round((($product->price - $product->sale_price) / $product->price) * 100) }}%
-                    </span>
-                </div>
+            <div class="mb-4">
+                <span class="inline-flex items-center px-3 py-1 rounded text-sm font-medium bg-[var(--color-secondary-500)] text-white">
+                    -{{ round((($product->price - $product->sale_price) / $product->price) * 100) }}%
+                </span>
+            </div>
             @endif
 
             <div class="flex flex-col border-b border-[var(--color-primary-200)] mb-4">
                 <h1 class="text-3xl font-[800] text-[var(--color-primary-600)] pb-2">{{ $product->name }}</h1>
                 <div class="text-gray-600 pb-4">{{ $product->description }}</div>
             </div>
-            
+
             <!-- Price -->
             <div class="mt-4 flex items-center gap-4">
                 <p class="text-2xl font-bold text-[var(--color-primary-600)]">{{ number_format($product->sale_price) }}đ</p>
                 @if($product->price > $product->sale_price)
-                    <p class="text-sm text-gray-400 line-through">{{ number_format($product->price) }}đ</p>
+                <p class="text-sm text-gray-400 line-through">{{ number_format($product->price) }}đ</p>
                 @endif
             </div>
 
@@ -86,34 +86,36 @@
                 <div class="flex items-center gap-4">
                     <label class="text-sm text-gray-600">{{ __('quantity') }}:</label>
                     <div class="flex items-center">
-                        <button onclick="decrementQuantity()" 
-                                class="w-8 h-8 flex items-center justify-center bg-[var(--color-primary-600)] text-white rounded-l hover:bg-[var(--color-primary-700)]">
+                        <button onclick="decrementQuantity()"
+                            class="w-8 h-8 flex items-center justify-center bg-[var(--color-primary-600)] text-white rounded-l hover:bg-[var(--color-primary-700)]">
                             <i class="fas fa-minus text-xs"></i>
                         </button>
                         <input type="number" id="quantity" name="quantity" value="1" min="1"
-                               class="w-16 h-8 border-t border-b border-gray-300 text-center focus:outline-none focus:ring-0">
+                            class="w-16 h-8 border-t border-b border-gray-300 text-center focus:outline-none focus:ring-0">
                         <button onclick="incrementQuantity()"
-                                class="w-8 h-8 flex items-center justify-center bg-[var(--color-primary-600)] text-white rounded-r hover:bg-[var(--color-primary-700)]">
+                            class="w-8 h-8 flex items-center justify-center bg-[var(--color-primary-600)] text-white rounded-r hover:bg-[var(--color-primary-700)]">
                             <i class="fas fa-plus text-xs"></i>
                         </button>
                     </div>
                     @if($product->stock > 0)
-                        <span class="text-sm text-gray-500">({{ $product->stock }} {{ __('products_in_stock') }})</span>
+                    <span class="text-sm text-gray-500">({{ $product->stock }} {{ __('products_in_stock') }})</span>
                     @else
-                        <span class="text-sm text-red-500">{{ __('out_of_stock') }}</span>
+                    <span class="text-sm text-red-500">{{ __('out_of_stock') }}</span>
                     @endif
                 </div>
 
                 <div class="flex flex-col gap-4 mt-6">
-                    <form action="{{ route(app()->getLocale() . '.cart.add') }}" method="POST" class="contents">
-                        @csrf
-                        <input type="hidden" name="product_id" value="{{ $product->id }}">
-                        <button type="submit"
-                                class="w-full bg-[var(--color-primary-600)] text-white px-6 py-3 rounded-lg hover:bg-[var(--color-primary-700)] transition-colors">
-                            <i class="fas fa-shopping-cart mr-2"></i>
-                            {{ __('add_to_cart') }}
-                        </button>
-                    </form>
+                    <button type="button" 
+                        data-id="{{ $product->id }}"
+                        data-name="{{ $product->name }}"
+                        data-price="{{ $product->sale_price }}"
+                        data-original-price="{{ $product->price }}"
+                        data-image="{{ Storage::url($product->featured_image) }}"
+                        onclick="addToCartFromButton(this)"
+                        class="w-full bg-[var(--color-primary-600)] text-white px-6 py-3 rounded-lg hover:bg-[var(--color-primary-700)] transition-colors">
+                        <i class="fas fa-shopping-cart mr-2"></i>
+                        {{ __('add_to_cart') }}
+                    </button>
 
                     <div class="grid grid-cols-2 gap-4">
                         <a href="tel:077 233 2255" class="flex items-center justify-center gap-2 bg-white border-2 border-[var(--color-primary-600)] text-[var(--color-primary-600)] px-6 py-3 rounded-lg hover:bg-[var(--color-primary-50)] transition-colors">
@@ -121,7 +123,7 @@
                             077 233 2255
                         </a>
                         <button type="button" onclick="window.open('https://zalo.me/077233225', '_blank')"
-                                class="flex items-center justify-center gap-2 bg-white border-2 border-[var(--color-primary-600)] text-[var(--color-primary-600)] px-6 py-3 rounded-lg hover:bg-[var(--color-primary-50)] transition-colors">
+                            class="flex items-center justify-center gap-2 bg-white border-2 border-[var(--color-primary-600)] text-[var(--color-primary-600)] px-6 py-3 rounded-lg hover:bg-[var(--color-primary-50)] transition-colors">
                             <i class="fas fa-comment-dots"></i>
                             ZALO
                         </button>
@@ -134,12 +136,12 @@
     <!-- Tabs -->
     <div class="mt-12 bg-gray-100 rounded-lg p-6">
         <div class="flex gap-4 mb-6">
-            <button onclick="openTab('description')" 
-                    class="tab-btn active px-8 py-3 text-md font-medium rounded-lg bg-transparent text-[var(--color-primary-600)] border border-[var(--color-primary-600)]">
+            <button onclick="openTab('description')"
+                class="tab-btn active px-8 py-3 text-md font-medium rounded-lg bg-transparent text-[var(--color-primary-600)] border border-[var(--color-primary-600)]">
                 {{ __('product_information') }}
             </button>
             <button onclick="openTab('reviews')"
-                    class="tab-btn px-8 py-3 text-md font-medium rounded-lg bg-transparent text-[var(--color-primary-600)] border border-[var(--color-primary-600)]">
+                class="tab-btn px-8 py-3 text-md font-medium rounded-lg bg-transparent text-[var(--color-primary-600)] border border-[var(--color-primary-600)]">
                 {{ __('customer_reviews') }}
             </button>
         </div>
@@ -163,24 +165,24 @@
                             <div>
                                 <label for="reviewer_name" class="block text-sm font-medium text-gray-700">{{ __('your_name') }}</label>
                                 <input type="text" name="reviewer_name" id="reviewer_name" required
-                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[var(--color-primary-500)] focus:ring-[var(--color-primary-500)]">
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[var(--color-primary-500)] focus:ring-[var(--color-primary-500)]">
                             </div>
                             <div>
                                 <label for="reviewer_email" class="block text-sm font-medium text-gray-700">{{ __('your_email') }}</label>
                                 <input type="email" name="reviewer_email" id="reviewer_email" required
-                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[var(--color-primary-500)] focus:ring-[var(--color-primary-500)]">
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[var(--color-primary-500)] focus:ring-[var(--color-primary-500)]">
                             </div>
                         </div>
 
                         <div>
                             <label for="comment" class="block text-sm font-medium text-gray-700">{{ __('your_review') }}</label>
                             <textarea name="comment" id="comment" rows="4" required
-                                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[var(--color-primary-500)] focus:ring-[var(--color-primary-500)]"></textarea>
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[var(--color-primary-500)] focus:ring-[var(--color-primary-500)]"></textarea>
                         </div>
 
                         <div class="flex justify-end">
-                            <button type="submit" 
-                                    class="px-6 py-2 text-sm font-medium bg-[var(--color-primary-600)] text-white rounded-lg hover:bg-[var(--color-primary-700)]">
+                            <button type="submit"
+                                class="px-6 py-2 text-sm font-medium bg-[var(--color-primary-600)] text-white rounded-lg hover:bg-[var(--color-primary-700)]">
                                 {{ __('submit_review') }}
                             </button>
                         </div>
@@ -191,21 +193,21 @@
                 <div>
                     <h3 class="text-lg font-medium text-gray-900 mb-4">{{ __('customer_reviews') }}</h3>
                     @forelse($product->reviews()->approved()->latest()->get() as $review)
-                        <div class="border-b border-gray-200 pb-4 mb-4">
-                            <div class="flex items-start">
-                                <div class="flex-1">
-                                    <h4 class="text-sm font-medium text-gray-900">{{ $review->reviewer_name }}</h4>
-                                    <div class="mt-1 text-xs text-gray-500">
-                                        {{ $review->created_at->diffForHumans() }}
-                                    </div>
-                                    <div class="mt-2 text-sm text-gray-600">
-                                        {{ $review->comment }}
-                                    </div>
+                    <div class="border-b border-gray-200 pb-4 mb-4">
+                        <div class="flex items-start">
+                            <div class="flex-1">
+                                <h4 class="text-sm font-medium text-gray-900">{{ $review->reviewer_name }}</h4>
+                                <div class="mt-1 text-xs text-gray-500">
+                                    {{ $review->created_at->diffForHumans() }}
+                                </div>
+                                <div class="mt-2 text-sm text-gray-600">
+                                    {{ $review->comment }}
                                 </div>
                             </div>
                         </div>
+                    </div>
                     @empty
-                        <p class="text-gray-500 text-center py-4">{{ __('no_reviews_yet') }}</p>
+                    <p class="text-gray-500 text-center py-4">{{ __('no_reviews_yet') }}</p>
                     @endforelse
                 </div>
             </div>
@@ -218,11 +220,12 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 <style>
     /* Hide number input arrows */
-    input[type=number]::-webkit-inner-spin-button, 
-    input[type=number]::-webkit-outer-spin-button { 
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
         -webkit-appearance: none;
         margin: 0;
     }
+
     input[type=number] {
         -moz-appearance: textfield;
     }
@@ -236,7 +239,7 @@
         const mainImage = document.getElementById('mainImage');
         mainImage.style.transform = 'scale(0.95)';
         mainImage.style.transition = 'transform 0.2s ease-in-out';
-        
+
         setTimeout(() => {
             mainImage.src = src;
             mainImage.style.transform = 'scale(1)';
@@ -281,5 +284,61 @@
     document.addEventListener('DOMContentLoaded', function() {
         document.querySelector('.tab-btn').click();
     });
+
+    function addToCart(id, name, price, originalPrice, image) {
+        const quantity = parseInt(document.getElementById('quantity').value);
+        const currentLang = '{{ app()->getLocale() }}';
+        let carts = JSON.parse(localStorage.getItem('carts')) || {};
+
+        if (!carts[currentLang]) {
+            carts[currentLang] = {};
+        }
+
+        if (carts[currentLang][id]) {
+            carts[currentLang][id].quantity += quantity;
+        } else {
+            carts[currentLang][id] = {
+                id: id,
+                name: name,
+                price: price,
+                original_price: originalPrice,
+                image: image,
+                quantity: quantity
+            };
+        }
+
+        localStorage.setItem('carts', JSON.stringify(carts));
+        updateCartCount();
+
+        // Show success toast instead of alert
+        showToast('{{ __("Product added to cart successfully") }}', 'success');
+    }
+
+    function updateCartCount() {
+        const currentLang = '{{ app()->getLocale() }}';
+        const carts = JSON.parse(localStorage.getItem('carts')) || {};
+        const currentCart = carts[currentLang] || {};
+
+        const totalItems = Object.values(currentCart).reduce((sum, item) => sum + item.quantity, 0);
+
+        // Update cart count in header
+        const cartCountElement = document.querySelector('.cart-count');
+        if (cartCountElement) {
+            cartCountElement.textContent = `${totalItems} {{ __('items') }}`;
+        }
+    }
+
+    // Initialize cart count on page load
+    document.addEventListener('DOMContentLoaded', updateCartCount);
+
+    function addToCartFromButton(button) {
+        addToCart(
+            parseInt(button.dataset.id),
+            button.dataset.name,
+            parseFloat(button.dataset.price),
+            parseFloat(button.dataset.originalPrice),
+            button.dataset.image
+        );
+    }
 </script>
 @endpush
