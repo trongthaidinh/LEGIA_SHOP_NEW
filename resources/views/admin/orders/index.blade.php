@@ -61,10 +61,10 @@
                                 {{ $order->created_at->format('d/m/Y H:i') }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
-                                <a href="{{ route('admin.orders.show', $order) }}" class="text-indigo-600 hover:text-indigo-900">
+                                <a href="{{ route('admin.' . request()->segment(2) . '.orders.show', $order) }}" class="text-indigo-600 hover:text-indigo-900">
                                     <i class="fas fa-eye"></i> {{ __('View') }}
                                 </a>
-                                <form action="{{ route('admin.orders.destroy', $order) }}" method="POST" class="inline-block">
+                                <form action="{{ route('admin.' . request()->segment(2) . '.orders.destroy', $order) }}" method="POST" class="inline-block">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('{{ __('Are you sure?') }}')">

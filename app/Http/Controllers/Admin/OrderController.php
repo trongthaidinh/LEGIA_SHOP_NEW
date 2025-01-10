@@ -20,7 +20,10 @@ class OrderController extends Controller
     public function index(Request $request)
     {
         try {
-            $query = Order::with('items')->latest();
+            $language = request()->segment(2);
+            $query = Order::with('items')
+                ->where('language', $language)
+                ->latest();
 
             // Search functionality
             if ($search = $request->input('search')) {
@@ -57,8 +60,10 @@ class OrderController extends Controller
     public function create()
     {
         try {
+            $language = request()->segment(2);
             $products = Product::where('is_active', true)
                              ->where('stock', '>', 0)
+                             ->where('language', $language)
                              ->select('id', 'name', 'price', 'stock')
                              ->orderBy('name')
                              ->get();
@@ -88,6 +93,7 @@ class OrderController extends Controller
             
             // Generate order number
             $validated['order_number'] = $this->generateOrderNumber();
+            $validated['language'] = request()->segment(2);
 
             // Create order
             $order = Order::create($validated);
@@ -99,7 +105,7 @@ class OrderController extends Controller
             $this->updateProductStock($request->input('items', []));
 
             DB::commit();
-            return redirect()->route('admin.orders.show', $order)
+            return redirect()->route('admin.' . $validated['language'] . '.orders.show', $order)
                 ->with('success', 'Order created successfully.');
 
         } catch (\Exception $e) {
@@ -181,7 +187,8 @@ class OrderController extends Controller
             $order->delete();
 
             DB::commit();
-            return redirect()->route('admin.orders.index')
+            $language = request()->segment(2);
+            return redirect()->route('admin.' . $language . '.orders.index')
                 ->with('success', 'Order deleted successfully.');
 
         } catch (\Exception $e) {

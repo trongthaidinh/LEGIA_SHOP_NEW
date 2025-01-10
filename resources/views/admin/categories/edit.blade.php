@@ -4,7 +4,7 @@
 <div class="container mx-auto px-4">
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-semibold text-gray-900">{{ __('Edit Category') }}</h1>
-        <a href="{{ route('admin.categories.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white font-medium rounded-md">
+        <a href="{{ route('admin.' . request()->segment(2) . '.categories.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white font-medium rounded-md">
             <i class="fas fa-arrow-left mr-2"></i> {{ __('Back') }}
         </a>
     </div>

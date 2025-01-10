@@ -47,11 +47,11 @@
                         </a>
                     </li>
                     <li>
-                        <a href="/admin" class="hover:text-white hover:translate-x-1 transition-all duration-200 flex items-center gap-2">
+                        <a href="{{ route('admin.' . app()->getLocale() . '.dashboard') }}" class="hover:text-white hover:translate-x-1 transition-all duration-200 flex items-center gap-2">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                             </svg>
-                            <span>Quản lý đào tạo</span>
+                            <span>{{ __('Admin Panel') }}</span>
                         </a>
                     </li>
                     <li>

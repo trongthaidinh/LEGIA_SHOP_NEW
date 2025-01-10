@@ -28,7 +28,10 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         try {
-            $query = Product::with('category')->latest();
+            $language = request()->segment(2);
+            $query = Product::with('category')
+                ->where('language', $language)
+                ->latest();
 
             // Search functionality
             if ($search = $request->input('search')) {
@@ -63,7 +66,11 @@ class ProductController extends Controller
     public function create()
     {
         try {
-            $categories = Category::select('id', 'name')->orderBy('name')->get();
+            $language = request()->segment(2);
+            $categories = Category::select('id', 'name')
+                ->where('language', $language)
+                ->orderBy('name')
+                ->get();
             $types = Product::getTypes();
             
             return view('admin.products.create', compact('categories', 'types'));
@@ -90,7 +97,8 @@ class ProductController extends Controller
             $validated = array_merge($validated, [
                 'slug' => $this->generateUniqueSlug($request->name),
                 'is_featured' => $request->boolean('is_featured'),
-                'is_active' => true
+                'is_active' => true,
+                'language' => request()->segment(2)
             ]);
 
             // Handle image upload
@@ -104,7 +112,7 @@ class ProductController extends Controller
             Product::create($validated);
 
             DB::commit();
-            return redirect()->route('admin.products.index')
+            return redirect()->route('admin.' . $validated['language'] . '.products.index')
                 ->with('success', 'Product created successfully.');
 
         } catch (\Exception $e) {
@@ -124,7 +132,11 @@ class ProductController extends Controller
     public function edit(Product $product)
     {
         try {
-            $categories = Category::select('id', 'name')->orderBy('name')->get();
+            $language = request()->segment(2);
+            $categories = Category::select('id', 'name')
+                ->where('language', $language)
+                ->orderBy('name')
+                ->get();
             $types = Product::getTypes();
             
             return view('admin.products.edit', compact('product', 'categories', 'types'));
@@ -151,7 +163,8 @@ class ProductController extends Controller
             // Handle boolean fields
             $validated = array_merge($validated, [
                 'slug' => $this->generateUniqueSlug($request->name, $product->id),
-                'is_featured' => $request->boolean('is_featured')
+                'is_featured' => $request->boolean('is_featured'),
+                'language' => request()->segment(2)
             ]);
 
             // Handle image upload
@@ -169,7 +182,7 @@ class ProductController extends Controller
             $product->update($validated);
 
             DB::commit();
-            return redirect()->route('admin.products.index')
+            return redirect()->route('admin.' . $validated['language'] . '.products.index')
                 ->with('success', 'Product updated successfully.');
 
         } catch (\Exception $e) {
@@ -199,7 +212,8 @@ class ProductController extends Controller
             $product->delete();
 
             DB::commit();
-            return redirect()->route('admin.products.index')
+            $language = request()->segment(2);
+            return redirect()->route('admin.' . $language . '.products.index')
                 ->with('success', 'Product deleted successfully.');
 
         } catch (\Exception $e) {

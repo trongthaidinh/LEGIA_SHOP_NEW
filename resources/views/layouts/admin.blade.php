@@ -21,25 +21,25 @@
         <!-- Sidebar -->
         <div id="sidebar" class="w-64 bg-gray-800 text-white transition-all duration-300">
             <div class="px-6 py-4 bg-gray-900">
-                <a href="{{ route('admin.dashboard') }}" class="text-xl font-bold text-white hover:text-gray-200">
+                <a href="{{ route('admin.' . request()->segment(2) . '.dashboard') }}" class="text-xl font-bold text-white hover:text-gray-200">
                     {{ config('app.name', 'Laravel') }} {{ __('Admin Panel') }}
                 </a>
             </div>
             
             <nav class="mt-4">
-                <a href="{{ route('admin.dashboard') }}" class="flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+                <a href="{{ route('admin.' . request()->segment(2) . '.dashboard') }}" class="flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
                     <i class="fas fa-tachometer-alt w-5"></i>
                     <span class="ml-3">{{ __('Dashboard') }}</span>
                 </a>
-                <a href="{{ route('admin.categories.index') }}" class="flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+                <a href="{{ route('admin.' . request()->segment(2) . '.categories.index') }}" class="flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
                     <i class="fas fa-list w-5"></i>
                     <span class="ml-3">{{ __('Categories') }}</span>
                 </a>
-                <a href="{{ route('admin.products.index') }}" class="flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+                <a href="{{ route('admin.' . request()->segment(2) . '.products.index') }}" class="flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
                     <i class="fas fa-box w-5"></i>
                     <span class="ml-3">{{ __('Products') }}</span>
                 </a>
-                <a href="{{ route('admin.orders.index') }}" class="flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+                <a href="{{ route('admin.' . request()->segment(2) . '.orders.index') }}" class="flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
                     <i class="fas fa-shopping-cart w-5"></i>
                     <span class="ml-3">{{ __('Orders') }}</span>
                 </a>

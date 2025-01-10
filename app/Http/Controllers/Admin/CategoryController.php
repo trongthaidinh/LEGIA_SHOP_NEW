@@ -12,13 +12,20 @@ class CategoryController extends Controller
 {
     public function index()
     {
-        $categories = Category::with('parent')->latest()->paginate(10);
+        $language = request()->segment(2); // Get language from URL (vi or zh)
+        $categories = Category::with('parent')
+            ->where('language', $language)
+            ->latest()
+            ->paginate(10);
         return view('admin.categories.index', compact('categories'));
     }
 
     public function create()
     {
-        $categories = Category::where('parent_id', null)->get();
+        $language = request()->segment(2);
+        $categories = Category::where('parent_id', null)
+            ->where('language', $language)
+            ->get();
         return view('admin.categories.create', compact('categories'));
     }
 
@@ -36,6 +43,7 @@ class CategoryController extends Controller
 
         $data = $request->all();
         $data['slug'] = Str::slug($request->name);
+        $data['language'] = request()->segment(2);
 
         if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')->store('categories', 'public');
@@ -43,7 +51,7 @@ class CategoryController extends Controller
 
         Category::create($data);
 
-        return redirect()->route('admin.categories.index')
+        return redirect()->route('admin.' . $data['language'] . '.categories.index')
             ->with('success', 'Category created successfully.');
     }
 
@@ -54,8 +62,10 @@ class CategoryController extends Controller
 
     public function edit(Category $category)
     {
+        $language = request()->segment(2);
         $categories = Category::where('parent_id', null)
             ->where('id', '!=', $category->id)
+            ->where('language', $language)
             ->get();
         return view('admin.categories.edit', compact('category', 'categories'));
     }
@@ -74,6 +84,7 @@ class CategoryController extends Controller
 
         $data = $request->all();
         $data['slug'] = Str::slug($request->name);
+        $data['language'] = request()->segment(2);
 
         if ($request->hasFile('image')) {
             // Delete old image
@@ -85,7 +96,7 @@ class CategoryController extends Controller
 
         $category->update($data);
 
-        return redirect()->route('admin.categories.index')
+        return redirect()->route('admin.' . $data['language'] . '.categories.index')
             ->with('success', 'Category updated successfully.');
     }
 
@@ -97,7 +108,8 @@ class CategoryController extends Controller
         
         $category->delete();
 
-        return redirect()->route('admin.categories.index')
+        $language = request()->segment(2);
+        return redirect()->route('admin.' . $language . '.categories.index')
             ->with('success', 'Category deleted successfully.');
     }
 } 
