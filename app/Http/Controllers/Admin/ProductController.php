@@ -28,7 +28,7 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         try {
-            $language = request()->segment(2);
+            $language = request()->segment(1);
             $query = Product::with('category')
                 ->where('language', $language)
                 ->latest();
@@ -66,7 +66,7 @@ class ProductController extends Controller
     public function create()
     {
         try {
-            $language = request()->segment(2);
+            $language = request()->segment(1);
             $categories = Category::select('id', 'name')
                 ->where('language', $language)
                 ->orderBy('name')
@@ -98,7 +98,7 @@ class ProductController extends Controller
                 'slug' => $this->generateUniqueSlug($request->name),
                 'is_featured' => $request->boolean('is_featured'),
                 'is_active' => true,
-                'language' => request()->segment(2)
+                'language' => request()->segment(1) // Get language from URL
             ]);
 
             // Handle image upload
@@ -112,7 +112,7 @@ class ProductController extends Controller
             Product::create($validated);
 
             DB::commit();
-            return redirect()->route('admin.' . $validated['language'] . '.products.index')
+            return redirect()->route($validated['language'] . '.admin.products.index')
                 ->with('success', 'Product created successfully.');
 
         } catch (\Exception $e) {
@@ -132,7 +132,7 @@ class ProductController extends Controller
     public function edit(Product $product)
     {
         try {
-            $language = request()->segment(2);
+            $language = request()->segment(1);
             $categories = Category::select('id', 'name')
                 ->where('language', $language)
                 ->orderBy('name')
@@ -164,7 +164,7 @@ class ProductController extends Controller
             $validated = array_merge($validated, [
                 'slug' => $this->generateUniqueSlug($request->name, $product->id),
                 'is_featured' => $request->boolean('is_featured'),
-                'language' => request()->segment(2)
+                'language' => request()->segment(1) // Get language from URL
             ]);
 
             // Handle image upload
@@ -182,7 +182,7 @@ class ProductController extends Controller
             $product->update($validated);
 
             DB::commit();
-            return redirect()->route('admin.' . $validated['language'] . '.products.index')
+            return redirect()->route($validated['language'] . '.admin.products.index')
                 ->with('success', 'Product updated successfully.');
 
         } catch (\Exception $e) {
@@ -212,8 +212,8 @@ class ProductController extends Controller
             $product->delete();
 
             DB::commit();
-            $language = request()->segment(2);
-            return redirect()->route('admin.' . $language . '.products.index')
+            $language = request()->segment(1);
+            return redirect()->route($language . '.admin.products.index')
                 ->with('success', 'Product deleted successfully.');
 
         } catch (\Exception $e) {

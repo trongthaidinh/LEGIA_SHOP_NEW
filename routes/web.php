@@ -155,27 +155,24 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// Admin Routes with language prefixes
-Route::middleware(['auth'])->group(function () {
-    // Vietnamese Admin Routes
-    Route::prefix('admin/vi')->name('admin.vi.')->group(function () {
-        Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
-        Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
-        Route::resource('categories', CategoryController::class);
-        Route::resource('products', AdminProductController::class);
-        Route::resource('orders', OrderController::class)->except(['edit', 'update']);
-        Route::patch('orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.update-status');
-    });
-
-    // Chinese Admin Routes
-    Route::prefix('admin/zh')->name('admin.zh.')->group(function () {
-        Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
-        Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
-        Route::resource('categories', CategoryController::class);
-        Route::resource('products', AdminProductController::class);
-        Route::resource('orders', OrderController::class)->except(['edit', 'update']);
-        Route::patch('orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.update-status');
-    });
+// Vietnamese Admin Routes
+Route::prefix('vi/admin')->middleware(['auth'])->group(function () {
+    Route::get('/', [AdminDashboardController::class, 'index'])->name('vi.admin.dashboard');
+    Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('vi.admin.dashboard');
+    Route::resource('categories', CategoryController::class)->names('vi.admin.categories');
+    Route::resource('products', AdminProductController::class)->names('vi.admin.products');
+    Route::resource('orders', OrderController::class)->except(['edit', 'update'])->names('vi.admin.orders');
+    Route::patch('orders/{order}/status', [OrderController::class, 'updateStatus'])->name('vi.admin.orders.update-status');
 });
 
-require __DIR__.'/auth.php';
+// Chinese Admin Routes  
+Route::prefix('zh/admin')->middleware(['auth'])->group(function () {
+    Route::get('/', [AdminDashboardController::class, 'index'])->name('zh.admin.dashboard');
+    Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('zh.admin.dashboard');
+    Route::resource('categories', CategoryController::class)->names('zh.admin.categories');
+    Route::resource('products', AdminProductController::class)->names('zh.admin.products');
+    Route::resource('orders', OrderController::class)->except(['edit', 'update'])->names('zh.admin.orders');
+    Route::patch('orders/{order}/status', [OrderController::class, 'updateStatus'])->name('zh.admin.orders.update-status');
+});
+
+require __DIR__ . '/auth.php';

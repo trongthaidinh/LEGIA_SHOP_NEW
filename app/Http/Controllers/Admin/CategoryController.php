@@ -27,7 +27,8 @@ class CategoryController extends Controller
     public function index(Request $request)
     {
         try {
-            $language = request()->segment(2);
+            
+            $language = request()->segment(1);
             $query = Category::with('parent')
                 ->where('language', $language)
                 ->latest();
@@ -59,7 +60,7 @@ class CategoryController extends Controller
     public function create()
     {
         try {
-            $language = request()->segment(2);
+            $language = request()->segment(1);
             $categories = Category::select('id', 'name')
                 ->where('language', $language)
                 ->orderBy('name')
@@ -81,7 +82,6 @@ class CategoryController extends Controller
     public function store(CategoryRequest $request)
     {
         try {
-            // Enable query logging
             DB::enableQueryLog();
             
             DB::beginTransaction();
@@ -93,7 +93,7 @@ class CategoryController extends Controller
                 'slug' => $this->generateUniqueSlug($request->name),
                 'is_featured' => $request->boolean('is_featured'),
                 'is_active' => true,
-                'language' => request()->segment(2)
+                'language' => request()->segment(1) // Get language from URL
             ]);
 
             // Handle image upload
@@ -106,17 +106,15 @@ class CategoryController extends Controller
 
             Category::create($validated);
             
-            // Dump query log
             Log::info('Query Log:', DB::getQueryLog());
             
             DB::commit();
-            return redirect()->route('admin.' . $validated['language'] . '.categories.index')
+            return redirect()->route($validated['language'] . '.admin.categories.index')
                 ->with('success', 'Category created successfully.');
 
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Error in CategoryController@store: ' . $e->getMessage());
-            // Also log queries in case of error
             Log::error('Failed Queries:', DB::getQueryLog());
             return back()->withInput()
                 ->with('error', 'An error occurred while creating the category: ' . $e->getMessage());
@@ -132,7 +130,7 @@ class CategoryController extends Controller
     public function edit(Category $category)
     {
         try {
-            $language = request()->segment(2);
+            $language = request()->segment(1);
             $categories = Category::select('id', 'name')
                 ->where('language', $language)
                 ->where('id', '!=', $category->id)
@@ -164,7 +162,7 @@ class CategoryController extends Controller
             $validated = array_merge($validated, [
                 'slug' => $this->generateUniqueSlug($request->name, $category->id),
                 'is_featured' => $request->boolean('is_featured'),
-                'language' => request()->segment(2)
+                'language' => request()->segment(1) // Get language from URL
             ]);
 
             // Handle image upload
@@ -182,7 +180,7 @@ class CategoryController extends Controller
             $category->update($validated);
 
             DB::commit();
-            return redirect()->route('admin.' . $validated['language'] . '.categories.index')
+            return redirect()->route($validated['language'] . '.admin.categories.index')
                 ->with('success', 'Category updated successfully.');
 
         } catch (\Exception $e) {
@@ -222,8 +220,8 @@ class CategoryController extends Controller
             $category->delete();
 
             DB::commit();
-            $language = request()->segment(2);
-            return redirect()->route('admin.' . $language . '.categories.index')
+            $language = request()->segment(1);
+            return redirect()->route($language . '.admin.categories.index')
                 ->with('success', 'Category deleted successfully.');
 
         } catch (\Exception $e) {

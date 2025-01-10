@@ -21,25 +21,25 @@
         <!-- Sidebar -->
         <div id="sidebar" class="w-64 bg-gray-800 text-white transition-all duration-300">
             <div class="px-6 py-4 bg-gray-900">
-                <a href="{{ route('admin.' . request()->segment(2) . '.dashboard') }}" class="text-xl font-bold text-white hover:text-gray-200">
+                <a href="{{ route(request()->segment(1) . '.admin.dashboard') }}" class="text-xl font-bold text-white hover:text-gray-200">
                     {{ config('app.name', 'Laravel') }} {{ __('Admin Panel') }}
                 </a>
             </div>
             
             <nav class="mt-4">
-                <a href="{{ route('admin.' . request()->segment(2) . '.dashboard') }}" class="flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+                <a href="{{ route(request()->segment(1) . '.admin.dashboard') }}" class="flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
                     <i class="fas fa-tachometer-alt w-5"></i>
                     <span class="ml-3">{{ __('Dashboard') }}</span>
                 </a>
-                <a href="{{ route('admin.' . request()->segment(2) . '.categories.index') }}" class="flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+                <a href="{{ route(request()->segment(1) . '.admin.categories.index') }}" class="flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
                     <i class="fas fa-list w-5"></i>
                     <span class="ml-3">{{ __('Categories') }}</span>
                 </a>
-                <a href="{{ route('admin.' . request()->segment(2) . '.products.index') }}" class="flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+                <a href="{{ route(request()->segment(1) . '.admin.products.index') }}" class="flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
                     <i class="fas fa-box w-5"></i>
                     <span class="ml-3">{{ __('Products') }}</span>
                 </a>
-                <a href="{{ route('admin.' . request()->segment(2) . '.orders.index') }}" class="flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+                <a href="{{ route(request()->segment(1) . '.admin.orders.index') }}" class="flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
                     <i class="fas fa-shopping-cart w-5"></i>
                     <span class="ml-3">{{ __('Orders') }}</span>
                 </a>
@@ -70,16 +70,7 @@
                                         <i class="fas fa-flag mr-2"></i> {{ __('Chinese') }}
                                     @endif
                                 </button>
-                                <div x-show="open" @click.away="open = false" class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
-                                    <div class="py-1">
-                                        <a href="{{ route('language.switch', 'vi') }}" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 {{ app()->getLocale() == 'vi' ? 'bg-gray-100' : '' }}">
-                                            <img src="{{ asset('images/flags/vi.png') }}" alt="VN" class="w-5 h-4 mr-2"> {{ __('Vietnamese') }}
-                                        </a>
-                                        <a href="{{ route('language.switch', 'zh') }}" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 {{ app()->getLocale() == 'zh' ? 'bg-gray-100' : '' }}">
-                                            <img src="{{ asset('images/flags/zh.png') }}" alt="CN" class="w-5 h-4 mr-2"> {{ __('Chinese') }}
-                                        </a>
-                                    </div>
-                                </div>
+                              
                             </div>
 
                             <!-- User Dropdown -->

@@ -4,7 +4,7 @@
 <div class="container mx-auto px-4">
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-semibold text-gray-900">{{ __('Products') }}</h1>
-        <a href="{{ route('admin.' . request()->segment(2) . '.products.create') }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-md">
+        <a href="{{ route(request()->segment(1) . '.admin.products.create') }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-md">
             <i class="fas fa-plus mr-2"></i> {{ __('Create') }}
         </a>
     </div>
@@ -65,10 +65,10 @@
                                 </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
-                                <a href="{{ route('admin.' . request()->segment(2) . '.products.edit', $product) }}" class="text-indigo-600 hover:text-indigo-900">
+                                <a href="{{ route(request()->segment(1) . '.admin.products.edit', $product) }}" class="text-indigo-600 hover:text-indigo-900">
                                     <i class="fas fa-edit"></i> {{ __('Edit') }}
                                 </a>
-                                <form action="{{ route('admin.' . request()->segment(2) . '.products.destroy', $product) }}" method="POST" class="inline-block">
+                                <form action="{{ route(request()->segment(1) . '.admin.products.destroy', $product) }}" method="POST" class="inline-block">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('{{ __('Are you sure?') }}')">

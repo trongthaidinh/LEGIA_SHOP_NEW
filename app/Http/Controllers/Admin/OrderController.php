@@ -21,7 +21,7 @@ class OrderController extends Controller
     public function index(Request $request)
     {
         try {
-            $language = request()->segment(2);
+            $language = request()->segment(1);
             $query = Order::with('items')
                 ->where('language', $language)
                 ->latest();
@@ -61,7 +61,7 @@ class OrderController extends Controller
     public function create()
     {
         try {
-            $language = request()->segment(2);
+            $language = request()->segment(1);
             $products = Product::where('is_active', true)
                              ->where('stock', '>', 0)
                              ->where('language', $language)
@@ -110,6 +110,7 @@ class OrderController extends Controller
             $validated['order_number'] = $this->generateOrderNumber();
             $validated['status'] = Order::STATUS_PENDING;
             $validated['total_amount'] = 0; // Will be updated after creating items
+            $validated['language'] = request()->segment(1);
 
             // Create order
             $order = Order::create($validated);
@@ -144,7 +145,7 @@ class OrderController extends Controller
             $order->update(['total_amount' => $totalAmount]);
 
             DB::commit();
-            return redirect()->route('admin.' . $validated['language'] . '.orders.show', $order)
+            return redirect()->route($validated['language'] . '.admin.orders.show', $order)
                 ->with('success', 'Order created successfully.');
 
         } catch (\Exception $e) {
