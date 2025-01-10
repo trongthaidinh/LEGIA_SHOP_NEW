@@ -10,9 +10,10 @@
     </div>
 
     <div class="bg-white rounded-lg shadow overflow-hidden">
-        <form action="{{ route('admin.categories.update', $category) }}" method="POST" enctype="multipart/form-data" class="p-6 space-y-6">
+        <form action="{{ route('admin.' . request()->segment(2) . '.categories.update', $category) }}" method="POST" enctype="multipart/form-data" class="p-6 space-y-6">
             @csrf
             @method('PUT')
+            <input type="hidden" name="language" value="{{ request()->segment(2) }}">
 
             <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
                 <div>
@@ -35,13 +36,11 @@
                     <select class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('parent_id') border-red-300 @enderror" 
                         id="parent_id" 
                         name="parent_id">
-                        <option value="">{{ __('None') }}</option>
-                        @foreach($categories as $cat)
-                            @if($cat->id !== $category->id)
-                                <option value="{{ $cat->id }}" {{ old('parent_id', $category->parent_id) == $cat->id ? 'selected' : '' }}>
-                                    {{ $cat->name }}
-                                </option>
-                            @endif
+                        <option value="">{{ __('Select Parent Category') }}</option>
+                        @foreach($categories as $parent)
+                            <option value="{{ $parent->id }}" {{ old('parent_id', $category->parent_id) == $parent->id ? 'selected' : '' }}>
+                                {{ $parent->name }}
+                            </option>
                         @endforeach
                     </select>
                     @error('parent_id')
@@ -55,39 +54,55 @@
                 <textarea class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('description') border-red-300 @enderror" 
                     id="description" 
                     name="description" 
-                    rows="3">{{ old('description', $category->description) }}</textarea>
+                    rows="4">{{ old('description', $category->description) }}</textarea>
                 @error('description')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
             </div>
 
             <div>
-                <label for="image" class="block text-sm font-medium text-gray-700">{{ __('Image') }}</label>
-                @if($category->image)
-                    <div class="mt-2 mb-4">
-                        <img src="{{ asset('storage/' . $category->image) }}" alt="{{ $category->name }}" class="h-32 w-32 object-cover rounded-lg">
+                <label for="featured_image" class="block text-sm font-medium text-gray-700">{{ __('Featured Image') }}</label>
+                @if($category->featured_image)
+                    <div class="mt-2">
+                        <img src="{{ Storage::url($category->featured_image) }}" alt="{{ $category->name }}" class="w-32 h-32 object-cover rounded-md">
                     </div>
                 @endif
                 <input type="file" 
-                    class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 @error('image') border-red-300 @enderror" 
-                    id="image" 
-                    name="image">
-                @error('image')
+                    class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 @error('featured_image') border-red-300 @enderror" 
+                    id="featured_image" 
+                    name="featured_image"
+                    accept="image/*">
+                @error('featured_image')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
             </div>
 
-            <div>
-                <div class="flex items-center">
-                    <input type="checkbox" 
-                        class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 @error('is_active') border-red-300 @enderror" 
-                        id="is_active" 
-                        name="is_active" 
-                        value="1" 
-                        {{ old('is_active', $category->is_active) ? 'checked' : '' }}>
-                    <label for="is_active" class="ml-2 block text-sm text-gray-700">{{ __('Active') }}</label>
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div>
+                    <div class="flex items-center">
+                        <input type="checkbox" 
+                            class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 @error('is_featured') border-red-300 @enderror" 
+                            id="is_featured" 
+                            name="is_featured" 
+                            value="1" 
+                            {{ old('is_featured', $category->is_featured) ? 'checked' : '' }}>
+                        <label for="is_featured" class="ml-2 block text-sm text-gray-700">{{ __('Featured') }}</label>
+                    </div>
+                    @error('is_featured')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
                 </div>
-                @error('is_active')
+            </div>
+
+            <div>
+                <label for="status" class="block text-sm font-medium text-gray-700">{{ __('Status') }}</label>
+                <select class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('status') border-red-300 @enderror" 
+                    id="status" 
+                    name="status">
+                    <option value="draft" {{ old('status', $category->status) == 'draft' ? 'selected' : '' }}>{{ __('Draft') }}</option>
+                    <option value="published" {{ old('status', $category->status) == 'published' ? 'selected' : '' }}>{{ __('Published') }}</option>
+                </select>
+                @error('status')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
             </div>

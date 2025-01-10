@@ -4,14 +4,15 @@
 <div class="container mx-auto px-4">
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-semibold text-gray-900">{{ __('Create Product') }}</h1>
-        <a href="{{ route('admin.products.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white font-medium rounded-md">
+        <a href="{{ route('admin.' . request()->segment(2) . '.products.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white font-medium rounded-md">
             <i class="fas fa-arrow-left mr-2"></i> {{ __('Back') }}
         </a>
     </div>
 
     <div class="bg-white rounded-lg shadow overflow-hidden">
-        <form action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data" class="p-6 space-y-6">
+        <form action="{{ route('admin.' . request()->segment(2) . '.products.store') }}" method="POST" enctype="multipart/form-data" class="p-6 space-y-6">
             @csrf
+            <input type="hidden" name="language" value="{{ request()->segment(2) }}">
 
             <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
                 <div>
@@ -51,7 +52,7 @@
                     <select class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('type') border-red-300 @enderror" 
                         id="type" 
                         name="type">
-                        @foreach(\App\Models\Product::getTypes() as $key => $value)
+                        @foreach($types as $key => $value)
                             <option value="{{ $key }}" {{ old('type') == $key ? 'selected' : '' }}>
                                 {{ $value }}
                             </option>
@@ -182,6 +183,19 @@
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
+            </div>
+
+            <div>
+                <label for="status" class="block text-sm font-medium text-gray-700">{{ __('Status') }}</label>
+                <select class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('status') border-red-300 @enderror" 
+                    id="status" 
+                    name="status">
+                    <option value="draft" {{ old('status') == 'draft' ? 'selected' : '' }}>{{ __('Draft') }}</option>
+                    <option value="published" {{ old('status') == 'published' ? 'selected' : '' }}>{{ __('Published') }}</option>
+                </select>
+                @error('status')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @enderror
             </div>
 
             <div class="flex justify-end">

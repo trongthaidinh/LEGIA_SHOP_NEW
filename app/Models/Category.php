@@ -19,7 +19,8 @@ class Category extends Model
         'order',
         'is_active',
         'is_featured',
-        'status'
+        'status',
+        'language'
     ];
 
     protected $casts = [

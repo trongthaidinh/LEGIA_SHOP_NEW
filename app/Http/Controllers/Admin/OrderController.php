@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\OrderRequest;
 use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -81,15 +82,15 @@ class OrderController extends Controller
     /**
      * Store a newly created order in storage.
      *
-     * @param Request $request
+     * @param OrderRequest $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request)
+    public function store(OrderRequest $request)
     {
         try {
             DB::beginTransaction();
 
-            $validated = $this->validateOrder($request);
+            $validated = $request->validated();
             
             // Generate order number
             $validated['order_number'] = $this->generateOrderNumber();
@@ -140,19 +141,16 @@ class OrderController extends Controller
     /**
      * Update the specified order status.
      *
-     * @param Request $request
+     * @param OrderRequest $request
      * @param Order $order
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function updateStatus(Request $request, Order $order)
+    public function updateStatus(OrderRequest $request, Order $order)
     {
         try {
             DB::beginTransaction();
 
-            $validated = $request->validate([
-                'status' => 'required|in:' . implode(',', array_keys(Order::getStatuses()))
-            ]);
-
+            $validated = $request->validated();
             $order->update($validated);
 
             DB::commit();
@@ -196,30 +194,6 @@ class OrderController extends Controller
             Log::error('Error in OrderController@destroy: ' . $e->getMessage());
             return back()->with('error', 'An error occurred while deleting the order.');
         }
-    }
-
-    /**
-     * Validate order data.
-     *
-     * @param Request $request
-     * @return array
-     */
-    private function validateOrder(Request $request): array
-    {
-        return $request->validate([
-            'customer_name' => 'required|string|max:255',
-            'customer_phone' => 'required|string|max:20',
-            'customer_email' => 'nullable|email|max:255',
-            'shipping_address' => 'required|string|max:255',
-            'shipping_city' => 'required|string|max:255',
-            'shipping_district' => 'required|string|max:255',
-            'shipping_ward' => 'required|string|max:255',
-            'shipping_amount' => 'required|numeric|min:0',
-            'notes' => 'nullable|string',
-            'items' => 'required|array|min:1',
-            'items.*.product_id' => 'required|exists:products,id',
-            'items.*.quantity' => 'required|integer|min:1'
-        ]);
     }
 
     /**

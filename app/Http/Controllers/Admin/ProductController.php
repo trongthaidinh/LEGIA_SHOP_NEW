@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\ProductRequest;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -10,7 +11,6 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Validation\Rule;
 
 class ProductController extends Controller
 {
@@ -83,15 +83,15 @@ class ProductController extends Controller
     /**
      * Store a newly created product in storage.
      *
-     * @param Request $request
+     * @param ProductRequest $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request)
+    public function store(ProductRequest $request)
     {
         try {
             DB::beginTransaction();
 
-            $validated = $this->validateProduct($request);
+            $validated = $request->validated();
             
             // Handle boolean fields
             $validated = array_merge($validated, [
@@ -149,16 +149,16 @@ class ProductController extends Controller
     /**
      * Update the specified product in storage.
      *
-     * @param Request $request
+     * @param ProductRequest $request
      * @param Product $product
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, Product $product)
+    public function update(ProductRequest $request, Product $product)
     {
         try {
             DB::beginTransaction();
 
-            $validated = $this->validateProduct($request, $product->id);
+            $validated = $request->validated();
             
             // Handle boolean fields
             $validated = array_merge($validated, [
@@ -221,46 +221,6 @@ class ProductController extends Controller
             Log::error('Error in ProductController@destroy: ' . $e->getMessage());
             return back()->with('error', 'An error occurred while deleting the product.');
         }
-    }
-
-    /**
-     * Validate product data.
-     *
-     * @param Request $request
-     * @param int|null $productId
-     * @return array
-     */
-    private function validateProduct(Request $request, ?int $productId = null): array
-    {
-        $rules = [
-            'name' => 'required|max:255',
-            'type' => 'required|in:' . implode(',', array_keys(Product::getTypes())),
-            'category_id' => 'required|exists:categories,id',
-            'description' => 'nullable|string|max:1000',
-            'content' => 'nullable|string',
-            'price' => 'required|numeric|min:0',
-            'sale_price' => [
-                'nullable',
-                'numeric',
-                'min:0',
-                function ($attribute, $value, $fail) use ($request) {
-                    if ($value && $value >= $request->input('price')) {
-                        $fail('The sale price must be less than the regular price.');
-                    }
-                },
-            ],
-            'stock' => 'required|integer|min:0',
-            'sku' => [
-                'required',
-                'string',
-                'max:50',
-                Rule::unique('products')->ignore($productId),
-            ],
-            'featured_image' => 'nullable|image|max:2048|mimes:jpeg,png,jpg,gif',
-            'status' => 'required|in:draft,published'
-        ];
-
-        return $request->validate($rules);
     }
 
     /**

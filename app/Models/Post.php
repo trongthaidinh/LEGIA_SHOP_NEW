@@ -18,7 +18,8 @@ class Post extends Model
         'featured_image',
         'status',
         'published_at',
-        'is_featured'
+        'is_featured',
+        'language'
     ];
 
     protected $casts = [

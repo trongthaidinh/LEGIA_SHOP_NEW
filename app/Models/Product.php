@@ -29,7 +29,8 @@ class Product extends Model
         'sku',
         'is_featured',
         'is_active',
-        'status'
+        'status',
+        'language'
     ];
 
     protected $casts = [
