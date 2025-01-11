@@ -105,6 +105,12 @@ return [
             'processors' => [PsrLogMessageProcessor::class],
         ],
 
+        'debug' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/debug.log'),
+            'level' => 'debug',
+        ],
+
         'syslog' => [
             'driver' => 'syslog',
             'level' => env('LOG_LEVEL', 'debug'),

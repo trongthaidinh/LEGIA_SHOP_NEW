@@ -24,4 +24,9 @@ class PostCategory extends Model
     {
         return $this->hasMany(Post::class, 'post_category_id');
     }
+
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
 }

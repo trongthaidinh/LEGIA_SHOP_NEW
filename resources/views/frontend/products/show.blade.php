@@ -12,29 +12,6 @@
                     alt="{{ $product->name }}"
                     class="h-full w-full object-contain object-center">
             </div>
-
-            <!-- @if($product->gallery)
-            <div class="grid grid-cols-4 gap-4">
-                <div>
-                    <button onclick="changeMainImage('{{ Storage::url($product->featured_image) }}')" 
-                            class="w-full aspect-w-1 aspect-h-1 rounded border-2 border-[var(--color-primary-200)] hover:border-[var(--color-primary-600)] overflow-hidden">
-                        <img src="{{ Storage::url($product->featured_image) }}" 
-                             alt="{{ $product->name }}" 
-                             class="h-full w-full object-contain object-center">
-                    </button>
-                </div>
-                @foreach(json_decode($product->gallery) as $image)
-                <div>
-                    <button onclick="changeMainImage('{{ Storage::url($image) }}')" 
-                            class="w-full aspect-w-1 aspect-h-1 rounded border-2 border-[var(--color-primary-200)] hover:border-[var(--color-primary-600)] overflow-hidden">
-                        <img src="{{ Storage::url($image) }}" 
-                             alt="{{ $product->name }}" 
-                             class="h-full w-full object-contain object-center">
-                    </button>
-                </div>
-                @endforeach
-            </div>
-            @endif -->
         </div>
 
         <!-- Product details -->
@@ -215,7 +192,6 @@
     </div>
 </div>
 @endsection
-
 @push('styles')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 <style>

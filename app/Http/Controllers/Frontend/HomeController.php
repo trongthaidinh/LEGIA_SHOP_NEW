@@ -9,7 +9,9 @@ use App\Models\Slider;
 use App\Models\Category;
 use App\Models\Testimonial;
 use App\Models\Certificate;
+use App\Models\ContactSubmission;
 use Illuminate\Support\Facades\App;
+use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
@@ -80,5 +82,28 @@ class HomeController extends Controller
     public function contact()
     {
         return view('frontend.contact');
+    }
+
+    public function submitContact(Request $request)
+    {
+        $validator = ContactSubmission::validateSubmission($request->all());
+
+        if ($validator->fails()) {
+            return back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        $contactSubmission = ContactSubmission::create([
+            'name' => $request->input('name'),
+            'email' => $request->input('email'),
+            'message' => $request->input('message'),
+            'locale' => App::getLocale(),
+            'ip_address' => $request->ip(),
+        ]);
+
+        // Optional: Add notification logic here (e.g., send email to admin)
+
+        return back()->with('success', __('Your message has been sent successfully!'));
     }
 }

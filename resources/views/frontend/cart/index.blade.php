@@ -9,11 +9,10 @@
         </div>
 
         <div id="cart-content">
-            <!-- Cart items will be rendered here -->
         </div>
     </div>
 </div>
-
+ 
 @push('scripts')
 <script>
 function renderCart() {
