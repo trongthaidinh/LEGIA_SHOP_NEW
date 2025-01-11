@@ -61,4 +61,9 @@ class Post extends Model
     {
         return $this->belongsTo(Admin::class, 'admin_id');
     }
+
+    public function categories()
+    {
+        return $this->belongsToMany(PostCategory::class, 'post_post_category', 'post_id', 'post_category_id');
+    }
 }

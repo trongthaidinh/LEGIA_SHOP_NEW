@@ -11,7 +11,7 @@ class PostController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Post::published();
+        $query = Post::published()->byLanguage(app()->getLocale());
 
         // Filter by category
         if ($request->category) {
@@ -22,22 +22,26 @@ class PostController extends Controller
 
         $posts = $query->latest()->paginate(9);
         $categories = PostCategory::active()->withCount('posts')->get();
-        $featuredPosts = Post::published()->featured()->latest()->take(3)->get();
+        $featuredPosts = Post::published()
+            ->byLanguage(app()->getLocale())
+            ->featured()
+            ->latest()
+            ->take(3)
+            ->get();
 
-        return view('frontend.posts.index', compact('posts', 'categories', 'featuredPosts'));
+        return view('frontend.posts.index', compact('posts', 'categories', 'featuredPosts', 'request'));
     }
 
     public function show($slug)
     {
-        $post = Post::published()
-            ->where('slug', $slug)
+        $post = Post::where('slug', $slug)
+            ->where('status', 'published')
             ->firstOrFail();
 
-        $relatedPosts = Post::published()
-            ->where('post_category_id', $post->post_category_id)
-            ->where('id', '!=', $post->id)
+        $relatedPosts = Post::where('id', '!=', $post->id)
+            ->where('status', 'published')
             ->latest()
-            ->take(3)
+            ->take(4)
             ->get();
 
         return view('frontend.posts.show', compact('post', 'relatedPosts'));

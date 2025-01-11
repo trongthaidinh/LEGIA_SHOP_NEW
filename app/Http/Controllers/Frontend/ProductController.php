@@ -12,26 +12,84 @@ class ProductController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Product::active()->byLanguage(app()->getLocale());
+        // Extensive logging for debugging
+        \Log::info('Product Filter Request', [
+            'full_request' => $request->all(),
+            'categories' => $request->input('categories'),
+            'min_price' => $request->input('min_price'),
+            'max_price' => $request->input('max_price'),
+            'sort' => $request->input('sort'),
+            'type' => $request->input('type'),
+            'current_locale' => app()->getLocale()
+        ]);
 
-        // Filter by categories (multiple)
-        if ($request->categories) {
-            $categoryIds = explode(',', $request->categories);
+        // Start with a base query
+        $query = Product::query()
+            ->where('is_active', true)
+            ->where('status', 'published')
+            ->where('language', app()->getLocale())
+            ->with('categories');
+
+        // Handle product type filtering
+        $type = $request->input('type');
+        $typeMap = [
+            'yen-to' => Product::TYPE_YEN_TO,
+            'yen-chung' => Product::TYPE_YEN_CHUNG,
+            'gift-set' => Product::TYPE_GIFT_SET
+        ];
+
+        if ($type && isset($typeMap[$type]) && $request->route()->getName() === app()->getLocale() . '.products.type') {
+            $query->where('type', $typeMap[$type]);
+        }
+
+        // Detailed category filtering
+        $categoryParam = $request->input('categories');
+        $categoryIds = is_string($categoryParam) 
+            ? array_map('intval', explode(',', $categoryParam)) 
+            : [];
+
+        // Debugging category filtering
+        \Log::info('Category Filtering Debug', [
+            'category_ids' => $categoryIds,
+            'category_param' => $categoryParam
+        ]);
+
+        if (!empty($categoryIds)) {
             $query->whereHas('categories', function($q) use ($categoryIds) {
                 $q->whereIn('categories.id', $categoryIds);
             });
         }
 
-        // Filter by price
-        if ($request->min_price) {
-            $query->where('price', '>=', $request->min_price);
+        // Precise price filtering
+        $minPrice = $request->input('min_price');
+        $maxPrice = $request->input('max_price');
+
+        // Ensure price is converted to numeric and handle empty strings
+        $minPrice = $minPrice !== null && $minPrice !== '' 
+            ? (float)str_replace(',', '', $minPrice) 
+            : null;
+        $maxPrice = $maxPrice !== null && $maxPrice !== '' 
+            ? (float)str_replace(',', '', $maxPrice) 
+            : null;
+
+        // Apply price filtering
+        if ($minPrice !== null) {
+            $query->where('price', '>=', $minPrice);
         }
-        if ($request->max_price) {
-            $query->where('price', '<=', $request->max_price);
+        if ($maxPrice !== null) {
+            $query->where('price', '<=', $maxPrice);
         }
 
-        // Sort
-        switch ($request->sort) {
+        // Detailed price filtering logging
+        \Log::info('Price Filtering Debug', [
+            'min_price_raw' => $request->input('min_price'),
+            'max_price_raw' => $request->input('max_price'),
+            'min_price_parsed' => $minPrice,
+            'max_price_parsed' => $maxPrice
+        ]);
+
+        // Sorting
+        switch ($request->input('sort')) {
             case 'price_asc':
                 $query->orderBy('price', 'asc');
                 break;
@@ -48,13 +106,50 @@ class ProductController extends Controller
                 $query->latest();
         }
 
-        $products = $query->paginate(12)->withQueryString();
-        $categories = Category::active()->withCount('products')->get();
+        // Extensive debugging output
+        $debugInfo = [
+            'total_products_before_filter' => Product::count(),
+            'active_products' => Product::where('is_active', true)->count(),
+            'published_products' => Product::where('status', 'published')->count(),
+            'language_products' => Product::where('language', app()->getLocale())->count(),
+            'filter_categories' => $categoryIds,
+            'min_price' => $minPrice,
+            'max_price' => $maxPrice,
+            'sql_query' => $query->toSql(),
+            'sql_bindings' => $query->getBindings(),
+        ];
 
-        // Get min and max prices for filter
+        // Execute query and get results
+        $products = $query->paginate(12)->withQueryString();
+
+        // Add more debug info
+        $debugInfo['total_filtered_products'] = $products->total();
+        $debugInfo['current_page_products'] = $products->count();
+        $debugInfo['filtered_product_prices'] = $products->pluck('price');
+
+        // Debugging categories
+        $categories = Category::active()
+            ->where('language', app()->getLocale())
+            ->withCount('products')
+            ->get();
+        
+        $debugInfo['categories'] = $categories->map(function($category) {
+            return [
+                'id' => $category->id,
+                'name' => $category->name,
+                'products_count' => $category->products_count
+            ];
+        });
+
+        // Debugging price range
         $priceRange = Product::active()
+            ->where('language', app()->getLocale())
             ->selectRaw('MIN(price) as min_price, MAX(price) as max_price')
             ->first();
+        $debugInfo['price_range'] = $priceRange;
+
+        // Log debugging information
+        \Log::info('Product Filter Debug', $debugInfo);
 
         return view('frontend.products.index', compact('products', 'categories', 'priceRange'));
     }
@@ -114,5 +209,25 @@ class ProductController extends Controller
         ]);
 
         return back()->with('success', __('review_submitted'));
+    }
+
+    public function productsByType($type)
+    {
+        // Map URL type với type trong database
+        $typeMap = [
+            'yen-to' => Product::TYPE_YEN_TO,
+            'yen-chung' => Product::TYPE_YEN_CHUNG,
+            'gift-set' => Product::TYPE_GIFT_SET
+        ];
+
+        $dbType = $typeMap[$type] ?? null;
+        
+        if (!$dbType) {
+            abort(404);
+        }
+
+        // Redirect to main products route with type parameter
+        return redirect()->route(app()->getLocale() . '.products', 
+            array_merge(request()->query(), ['type' => $type]));
     }
 }

@@ -11,9 +11,21 @@
         <div class="space-y-3 mt-4">
             <h3 class="text-xl font-bold text-[var(--color-primary-700)]">{{ $product->name }}</h3>
             <div class="flex items-center gap-2">
-                <span class="text-[var(--color-primary-600)] text-lg font-medium">{{ number_format($product->sale_price) }}đ</span>
-                @if($product->price > $product->sale_price)
-                    <span class="text-gray-400 line-through text-sm">{{ number_format($product->price) }}đ</span>
+                @if($product->price)
+                    <span class="text-[var(--color-primary-600)] text-lg font-medium">
+                        {{ number_format($product->price) }}₫
+                    </span>
+                    @if($product->sale_price && $product->sale_price < $product->price)
+                        <span class="text-gray-400 line-through text-sm">
+                            {{ number_format($product->sale_price) }}₫
+                        </span>
+                    @endif
+                @elseif($product->sale_price)
+                    <span class="text-[var(--color-primary-600)] text-lg font-medium">
+                        {{ number_format($product->sale_price) }}₫
+                    </span>
+                @else
+                    <span class="text-gray-400 italic">Liên hệ</span>
                 @endif
             </div>
         </div>

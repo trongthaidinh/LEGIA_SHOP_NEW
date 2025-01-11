@@ -24,6 +24,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\PostCategoryController;
 use App\Http\Controllers\Admin\PostController as AdminPostController;
 use App\Http\Controllers\Frontend\PaymentController;
+use App\Http\Controllers\Frontend\StaticPageController;
 use Illuminate\Support\Facades\Route;
 
 // Redirect root to Vietnamese version
@@ -61,14 +62,23 @@ Route::prefix('vi')->group(function () {
 
     // Home
     Route::get('/', [HomeController::class, 'index'])->name('vi.home');
-    Route::get('/about', [HomeController::class, 'about'])->name('vi.about');
+    Route::get('/posts', [PostController::class, 'index'])->name('vi.posts.index');
     Route::get('/contact', [HomeController::class, 'contact'])->name('vi.contact');
+    Route::post('/contact', [HomeController::class, 'submitContact'])->name('vi.contact.submit');
 
-    // Products
-    Route::get('/products', [ProductController::class, 'index'])->name('vi.products');
-    Route::get('/products/search', [ProductController::class, 'search'])->name('vi.products.search');
-    Route::get('/products/{slug}', [ProductController::class, 'show'])->name('vi.products.show');
-    Route::post('/products/{slug}/review', [ProductController::class, 'review'])->name('vi.products.review');
+    Route::prefix('products')->group(function () {
+        Route::get('/', [ProductController::class, 'index'])->name('vi.products');
+        Route::get('/search', [ProductController::class, 'search'])->name('vi.products.search');
+        
+        Route::get('/{type}', [ProductController::class, 'productsByType'])
+            ->name('vi.products.type')
+            ->where('type', 'yen-to|yen-chung|gift-set');
+        
+        Route::prefix('{slug}')->group(function () {
+            Route::get('/', [ProductController::class, 'show'])->name('vi.products.show');
+            Route::post('/review', [ProductController::class, 'review'])->name('vi.products.review');
+        });
+    });
 
     // Cart
     Route::get('/cart', [CartController::class, 'index'])->name('vi.cart');
@@ -91,6 +101,11 @@ Route::prefix('vi')->group(function () {
     Route::get('language/{lang}', [LanguageController::class, 'switchLang'])->name('vi.language.switch');
 
     Route::get('/payment/bank', [PaymentController::class, 'bank'])->name('vi.payment.bank');
+
+    // Static Pages Route
+    Route::get('/{slug}', [StaticPageController::class, 'show'])
+        ->where('slug', '^(?!admin|api).*$')
+        ->name('vi.static.page');
 });
 
 // Chinese Frontend Routes
@@ -123,14 +138,23 @@ Route::prefix('zh')->group(function () {
 
     // Home
     Route::get('/', [HomeController::class, 'index'])->name('zh.home');
-    Route::get('/about', [HomeController::class, 'about'])->name('zh.about');
+    Route::get('/posts', [PostController::class, 'index'])->name('zh.posts.index');
     Route::get('/contact', [HomeController::class, 'contact'])->name('zh.contact');
+    Route::post('/contact', [HomeController::class, 'submitContact'])->name('zh.contact.submit');
 
-    // Products
-    Route::get('/products', [ProductController::class, 'index'])->name('zh.products');
-    Route::get('/products/search', [ProductController::class, 'search'])->name('zh.products.search');
-    Route::get('/products/{slug}', [ProductController::class, 'show'])->name('zh.products.show');
-    Route::post('/products/{slug}/review', [ProductController::class, 'review'])->name('zh.products.review');
+    Route::prefix('products')->group(function () {
+        Route::get('/', [ProductController::class, 'index'])->name('zh.products');
+        Route::get('/search', [ProductController::class, 'search'])->name('zh.products.search');
+        
+        Route::get('/{type}', [ProductController::class, 'productsByType'])
+            ->name('zh.products.type')
+            ->where('type', 'yen-to|yen-chung|gift-set');
+        
+        Route::prefix('{slug}')->group(function () {
+            Route::get('/', [ProductController::class, 'show'])->name('zh.products.show');
+            Route::post('/review', [ProductController::class, 'review'])->name('zh.products.review');
+        });
+    });
 
     // Cart
     Route::get('/cart', [CartController::class, 'index'])->name('zh.cart');
@@ -153,6 +177,11 @@ Route::prefix('zh')->group(function () {
     Route::get('language/{lang}', [LanguageController::class, 'switchLang'])->name('zh.language.switch');
 
     Route::get('/payment/bank', [PaymentController::class, 'bank'])->name('zh.payment.bank');
+
+    // Static Pages Route
+    Route::get('/{slug}', [StaticPageController::class, 'show'])
+        ->where('slug', '^(?!admin|api).*$')
+        ->name('zh.static.page');
 });
 
 // Auth Routes (chung cho cả hai ngôn ngữ)

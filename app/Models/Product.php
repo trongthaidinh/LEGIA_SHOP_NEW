@@ -46,40 +46,63 @@ class Product extends Model
         'type' => 'string'
     ];
 
+    // Scope for active products
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true)
+                     ->where('status', 'published');
+    }
+
+    // Scope for language-specific products
+    public function scopeByLanguage($query, $language = null)
+    {
+        $language = $language ?? app()->getLocale();
+        return $query->where('language', $language);
+    }
+
+    // Relationship with single category (backward compatibility)
     public function category()
     {
         return $this->belongsTo(Category::class);
     }
 
+    // Many-to-Many relationship with categories
     public function categories()
     {
-        return $this->belongsToMany(Category::class);
+        return $this->belongsToMany(Category::class, 'category_product', 'product_id', 'category_id');
     }
 
-    public function reviews()
+    // Mutator for gallery to ensure JSON
+    public function setGalleryAttribute($value)
     {
-        return $this->hasMany(ProductReview::class);
+        $this->attributes['gallery'] = is_array($value) 
+            ? json_encode($value) 
+            : $value;
     }
 
-    public function scopeActive($query)
+    // Accessor for gallery to ensure array
+    public function getGalleryAttribute($value)
     {
-        return $query->where('is_active', true);
+        return is_string($value) 
+            ? json_decode($value, true) 
+            : $value;
     }
 
+    // Scope for featured products
     public function scopeFeatured($query)
     {
         return $query->where('is_featured', true);
     }
 
+    // Scope for published products
     public function scopePublished($query)
     {
         return $query->where('status', 'published');
     }
 
-    public function scopeByLanguage($query, $language = null)
+    public function reviews()
     {
-        $lang = $language ?? App::getLocale();
-        return $query->where('language', $lang);
+        return $this->hasMany(ProductReview::class);
     }
 
     public static function getTypes(): array
@@ -94,5 +117,11 @@ class Product extends Model
     public function getTypeLabel(): string
     {
         return self::getTypes()[$this->type] ?? 'Unknown';
+    }
+
+    // Helper method to attach categories
+    public function attachCategories(array $categoryIds)
+    {
+        $this->categories()->sync($categoryIds);
     }
 }
