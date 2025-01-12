@@ -50,4 +50,10 @@ class Category extends Model
     {
         return $query->where('is_active', true);
     }
+
+    public function scopeByLanguage($query, $language = null)
+    {
+        $language = $language ?? app()->getLocale();
+        return $query->where('language', $language);
+    }
 }

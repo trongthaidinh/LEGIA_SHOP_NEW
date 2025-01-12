@@ -11,21 +11,29 @@
         <div class="space-y-3 mt-4">
             <h3 class="text-xl font-bold text-[var(--color-primary-700)]">{{ $product->name }}</h3>
             <div class="flex items-center gap-2">
-                @if($product->price)
+                @php
+                    $locale = app()->getLocale();
+                    $currencySymbol = $locale === 'zh' ? '¥' : '₫';
+                    $price = $product->price ?? $product->sale_price;
+                    $salePrice = $product->sale_price && $product->sale_price < $product->price ? $product->sale_price : null;
+                @endphp
+
+                @if($price)
                     <span class="text-[var(--color-primary-600)] text-lg font-medium">
-                        {{ number_format($product->price) }}₫
+                        {{ number_format($price, 0, ',', '.') }}{{ $currencySymbol }}
                     </span>
-                    @if($product->sale_price && $product->sale_price < $product->price)
+                    @if($salePrice)
                         <span class="text-gray-400 line-through text-sm">
-                            {{ number_format($product->sale_price) }}₫
+                            {{ number_format($product->price, 0, ',', '.') }}{{ $currencySymbol }}
+                        </span>
+                        <span class="bg-red-500 text-white text-xs px-2 py-1 rounded-full ml-2">
+                            -{{ round(($product->price - $salePrice) / $product->price * 100) }}%
                         </span>
                     @endif
-                @elseif($product->sale_price)
-                    <span class="text-[var(--color-primary-600)] text-lg font-medium">
-                        {{ number_format($product->sale_price) }}₫
-                    </span>
                 @else
-                    <span class="text-gray-400 italic">Liên hệ</span>
+                    <span class="text-gray-400 italic">
+                        {{ $locale === 'vi' ? 'Liên hệ' : '联系我们' }}
+                    </span>
                 @endif
             </div>
         </div>
@@ -39,7 +47,7 @@
                       transform translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 
                       transition-all duration-500 hover:bg-[var(--color-primary-600)]
                       shadow-lg hover:shadow-xl">
-                Xem chi tiết
+                {{ $locale === 'vi' ? 'Xem chi tiết' : '查看详情' }}
             </a>
         </div>
     </div>

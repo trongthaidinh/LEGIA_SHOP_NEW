@@ -39,7 +39,7 @@
                                     value="{{ request('min_price') }}"
                                     min="{{ $priceRange->min_price }}"
                                     max="{{ $priceRange->max_price }}"
-                                    placeholder="{{ number_format($priceRange->min_price) }} VNĐ"
+                                    placeholder="{{ number_format($priceRange->min_price) }} {{ app()->getLocale() === 'zh' ? '¥' : '₫' }}"
                                     class="w-full rounded-md border-gray-300 shadow-sm focus:border-[var(--color-primary-600)] focus:ring-[var(--color-primary-600)]">
                             </div>
                             <div>
@@ -50,7 +50,7 @@
                                     value="{{ request('max_price') }}"
                                     min="{{ $priceRange->min_price }}"
                                     max="{{ $priceRange->max_price }}"
-                                    placeholder="{{ number_format($priceRange->max_price) }} VNĐ"
+                                    placeholder="{{ number_format($priceRange->max_price) }} {{ app()->getLocale() === 'zh' ? '¥' : '₫' }}"
                                     class="w-full rounded-md border-gray-300 shadow-sm focus:border-[var(--color-primary-600)] focus:ring-[var(--color-primary-600)]">
                             </div>
                         </div>

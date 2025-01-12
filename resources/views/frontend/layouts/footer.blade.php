@@ -60,11 +60,17 @@
             <!-- Customer Support -->
             <div class="text-center md:text-left">
                 <h3 class="text-[var(--color-secondary-500)] text-lg font-semibold mb-6">{{ __('customer_support') }}</h3>
-                <ul class="space-y-3">
-                    <li><a href="#" class="text-white hover:text-[var(--color-secondary-300)] transition-colors">{{ __('order_payment_policy') }}</a></li>
-                    <li><a href="#" class="text-white hover:text-[var(--color-secondary-300)] transition-colors">{{ __('shipping_policy') }}</a></li>
-                    <li><a href="#" class="text-white hover:text-[var(--color-secondary-300)] transition-colors">{{ __('faq') }}</a></li>
-                </ul>
+                <div class="space-y-3">
+                    <a href="{{ route(app()->getLocale() . '.static.page', 'chinh-sach-dat-hang-thanh-toan') }}" class="block text-sm hover:text-[var(--color-secondary-500)] transition-colors">
+                        {{ __('order_payment_policy') }}
+                    </a>
+                    <a href="{{ route(app()->getLocale() . '.static.page', 'chinh-sach-van-chuyen') }}" class="block text-sm hover:text-[var(--color-secondary-500)] transition-colors">
+                        {{ __('shipping_policy') }}
+                    </a>
+                    <a href="{{ route(app()->getLocale() . '.static.page', 'cau-hoi-thuong-gap') }}" class="block text-sm hover:text-[var(--color-secondary-500)] transition-colors">
+                        {{ __('faq') }}
+                    </a>
+                </div>
             </div>
 
             <!-- Visitor Stats -->
