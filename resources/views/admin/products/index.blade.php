@@ -1,91 +1,175 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="container mx-auto px-4">
-    <div class="flex justify-between items-center mb-6">
-        <h1 class="text-2xl font-semibold text-gray-900">{{ __('Products') }}</h1>
-        <a href="{{ route(request()->segment(1) . '.admin.products.create') }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-md">
-            <i class="fas fa-plus mr-2"></i> {{ __('Create') }}
-        </a>
-    </div>
-
-    @if(session('success'))
-        <div class="mb-6 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
-            <span class="block sm:inline">{{ session('success') }}</span>
+<div class="container-fluid px-4">
+    <div class="bg-white rounded-lg shadow-sm">
+        <!-- Header -->
+        <div class="bg-blue-600 px-6 py-4">
+            <div class="flex justify-between items-center">
+                <h3 class="text-xl font-semibold text-white flex items-center">
+                    <i class="fas fa-box mr-2"></i> Quản lý sản phẩm
+                </h3>
+                <div>
+                    <a href="{{ route(app()->getLocale() . '.admin.products.create') }}" 
+                       class="inline-flex items-center px-3 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-md">
+                        <i class="fas fa-plus mr-2"></i> Thêm sản phẩm mới
+                    </a>
+                </div>
+            </div>
         </div>
-    @endif
 
-    <div class="bg-white rounded-lg shadow overflow-hidden">
+        <!-- Filters -->
+        <div class="p-6 border-b">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <!-- Category Filter -->
+                <div>
+                    <label for="category" class="block text-sm font-medium text-gray-700 mb-2">Danh mục</label>
+                    <select id="category" class="w-full rounded-md shadow-sm border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                        <option value="">Tất cả danh mục</option>
+                        @foreach($categories as $category)
+                        <option value="{{ $category->id }}">{{ $category->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <!-- Status Filter -->
+                <div>
+                    <label for="status" class="block text-sm font-medium text-gray-700 mb-2">Trạng thái</label>
+                    <select id="status" class="w-full rounded-md shadow-sm border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                        <option value="">Tất cả trạng thái</option>
+                        <option value="1">Đang bán</option>
+                        <option value="0">Ngừng bán</option>
+                    </select>
+                </div>
+
+                <!-- Search -->
+                <div class="md:col-span-2">
+                    <label for="search" class="block text-sm font-medium text-gray-700 mb-2">Tìm kiếm</label>
+                    <div class="relative">
+                        <input type="text" 
+                               id="search" 
+                               placeholder="Tìm theo tên, mã sản phẩm..."
+                               class="w-full rounded-md shadow-sm border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 pl-10">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-search text-gray-400"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Products Table -->
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Image') }}</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Name') }}</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Category') }}</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Price') }}</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Stock') }}</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Status') }}</th>
-                        <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Actions') }}</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sản phẩm</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Danh mục</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Giá</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trạng thái</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Thao tác</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
                     @foreach($products as $product)
-                        <tr class="hover:bg-gray-50">
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $product->id }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                @if($product->featured_image)
-                                    <img src="{{ asset('storage/' . $product->featured_image) }}" alt="{{ $product->name }}" class="h-10 w-10 rounded-lg object-cover">
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4">
+                            <div class="flex items-center">
+                                @if($product->thumbnail)
+                                <img src="{{ asset('storage/' . $product->thumbnail) }}" 
+                                     alt="{{ $product->name }}" 
+                                     class="h-12 w-12 object-cover rounded-md">
                                 @else
-                                    <span class="text-sm text-gray-500">{{ __('No image') }}</span>
-                                @endif
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $product->name }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {{ $product->category ? $product->category->name : '-' }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                {{ number_format($product->price) }}đ
-                                @if($product->sale_price)
-                                    <span class="text-red-600 line-through ml-2">{{ number_format($product->sale_price) }}đ</span>
-                                @endif
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $product->stock }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="flex items-center space-x-2">
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $product->is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
-                                        {{ $product->is_active ? __('Active') : __('Inactive') }}
-                                    </span>
-                                    @if($product->is_featured)
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-indigo-100 text-indigo-800">
-                                            {{ __('Featured') }}
-                                        </span>
-                                    @endif
+                                <div class="h-12 w-12 rounded-md bg-gray-200 flex items-center justify-center">
+                                    <i class="fas fa-image text-gray-400"></i>
                                 </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
-                                <a href="{{ route(request()->segment(1) . '.admin.products.edit', $product) }}" class="text-indigo-600 hover:text-indigo-900">
-                                    <i class="fas fa-edit"></i> {{ __('Edit') }}
-                                </a>
-                                <form action="{{ route(request()->segment(1) . '.admin.products.destroy', $product) }}" method="POST" class="inline-block">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('{{ __('Are you sure?') }}')">
-                                        <i class="fas fa-trash"></i> {{ __('Delete') }}
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
+                                @endif
+                                <div class="ml-4">
+                                    <div class="text-sm font-medium text-gray-900">{{ $product->name }}</div>
+                                    <div class="text-sm text-gray-500">SKU: {{ $product->sku }}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="text-sm text-gray-900">
+                                {{ optional($product->category)->name ?? 'Không có danh mục' }}
+                            </div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="text-sm text-gray-900">{{ number_format($product->price) }}đ</div>
+                            @if($product->compare_price > 0)
+                            <div class="text-sm text-gray-500 line-through">{{ number_format($product->compare_price) }}đ</div>
+                            @endif
+                        </td>
+                        <td class="px-6 py-4">
+                            @if($product->is_active)
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                Đang bán
+                            </span>
+                            @else
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                                Ngừng bán
+                            </span>
+                            @endif
+                        </td>
+                        <td class="px-6 py-4 text-sm font-medium">
+                            <a href="{{ route(app()->getLocale() . '.admin.products.edit', $product) }}" 
+                               class="text-blue-600 hover:text-blue-900 mr-3">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <form action="{{ route(app()->getLocale() . '.admin.products.destroy', $product) }}" 
+                                  method="POST" 
+                                  class="inline-block"
+                                  onsubmit="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="text-red-600 hover:text-red-900">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
                     @endforeach
                 </tbody>
             </table>
         </div>
-        @if($products->hasPages())
-            <div class="px-6 py-4 border-t border-gray-200">
-                {{ $products->links() }}
-            </div>
-        @endif
+
+        <!-- Pagination -->
+        <div class="px-6 py-4 border-t">
+            {{ $products->links() }}
+        </div>
     </div>
 </div>
+
+@push('scripts')
+<script>
+$(document).ready(function() {
+    // Handle category filter
+    $('#category').change(function() {
+        filterProducts();
+    });
+
+    // Handle status filter
+    $('#status').change(function() {
+        filterProducts();
+    });
+
+    // Handle search with debounce
+    let searchTimeout;
+    $('#search').on('input', function() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(filterProducts, 500);
+    });
+
+    function filterProducts() {
+        const category = $('#category').val();
+        const status = $('#status').val();
+        const search = $('#search').val();
+
+        window.location.href = `{{ route(app()->getLocale() . '.admin.products.index') }}?` + 
+            `category=${category}&status=${status}&search=${search}`;
+    }
+});
+</script>
+@endpush
 @endsection 

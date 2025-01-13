@@ -1,118 +1,163 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="container mx-auto px-4">
-    <div class="flex justify-between items-center mb-6">
-        <h1 class="text-2xl font-semibold text-gray-900">{{ __('Edit Category') }}</h1>
-        <a href="{{ route(request()->segment(1) . '.admin.categories.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white font-medium rounded-md">
-            <i class="fas fa-arrow-left mr-2"></i> {{ __('Back') }}
-        </a>
-    </div>
+<div class="container-fluid px-4">
+    <div class="bg-white rounded-lg shadow-sm">
+        <!-- Header -->
+        <div class="bg-blue-600 px-6 py-4">
+            <div class="flex justify-between items-center">
+                <h3 class="text-xl font-semibold text-white flex items-center">
+                    <i class="fas fa-edit mr-2"></i> Chỉnh sửa danh mục sản phẩm
+                </h3>
+                <div>
+                    <a href="{{ route(app()->getLocale() . '.admin.categories.index') }}" 
+                       class="inline-flex items-center px-3 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-md">
+                        <i class="fas fa-arrow-left mr-2"></i> Quay lại danh sách
+                    </a>
+                </div>
+            </div>
+        </div>
 
-    <div class="bg-white rounded-lg shadow overflow-hidden">
-        <form action="{{ route(request()->segment(1) . '.admin.categories.update', $category) }}" method="POST" enctype="multipart/form-data" class="p-6 space-y-6">
+        <form action="{{ route(app()->getLocale() . '.admin.categories.update', $category) }}" 
+              method="POST" 
+              enctype="multipart/form-data"
+              class="p-6 space-y-6">
             @csrf
             @method('PUT')
-            <input type="hidden" name="language" value="{{ request()->segment(1) }}">
 
-            <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-                <div>
-                    <label for="name" class="block text-sm font-medium text-gray-700">
-                        {{ __('Name') }} <span class="text-red-500">*</span>
-                    </label>
-                    <input type="text" 
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('name') border-red-300 @enderror" 
-                        id="name" 
-                        name="name" 
-                        value="{{ old('name', $category->name) }}" 
-                        required>
-                    @error('name')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
-                </div>
-
-                <div>
-                    <label for="parent_id" class="block text-sm font-medium text-gray-700">{{ __('Parent Category') }}</label>
-                    <select class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('parent_id') border-red-300 @enderror" 
-                        id="parent_id" 
-                        name="parent_id">
-                        <option value="">{{ __('Select Parent Category') }}</option>
-                        @foreach($categories as $parent)
-                            <option value="{{ $parent->id }}" {{ old('parent_id', $category->parent_id) == $parent->id ? 'selected' : '' }}>
-                                {{ $parent->name }}
-                            </option>
-                        @endforeach
-                    </select>
-                    @error('parent_id')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
-                </div>
-            </div>
-
+            <!-- Name -->
             <div>
-                <label for="description" class="block text-sm font-medium text-gray-700">{{ __('Description') }}</label>
-                <textarea class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('description') border-red-300 @enderror" 
-                    id="description" 
-                    name="description" 
-                    rows="4">{{ old('description', $category->description) }}</textarea>
-                @error('description')
-                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
+                    Tên danh mục <span class="text-red-600">*</span>
+                </label>
+                <input type="text" 
+                       name="name" 
+                       id="name" 
+                       value="{{ old('name', $category->name) }}" 
+                       required
+                       class="w-full rounded-md shadow-sm border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 @error('name') border-red-300 @enderror">
+                @error('name')
+                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
             </div>
 
+            <!-- Parent Category -->
             <div>
-                <label for="featured_image" class="block text-sm font-medium text-gray-700">{{ __('Featured Image') }}</label>
-                @if($category->featured_image)
-                    <div class="mt-2">
-                        <img src="{{ Storage::url($category->featured_image) }}" alt="{{ $category->name }}" class="w-32 h-32 object-cover rounded-md">
-                    </div>
-                @endif
-                <input type="file" 
-                    class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 @error('featured_image') border-red-300 @enderror" 
-                    id="featured_image" 
-                    name="featured_image"
-                    accept="image/*">
-                @error('featured_image')
-                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                @enderror
-            </div>
-
-            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <div>
-                    <div class="flex items-center">
-                        <input type="checkbox" 
-                            class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 @error('is_featured') border-red-300 @enderror" 
-                            id="is_featured" 
-                            name="is_featured" 
-                            value="1" 
-                            {{ old('is_featured', $category->is_featured) ? 'checked' : '' }}>
-                        <label for="is_featured" class="ml-2 block text-sm text-gray-700">{{ __('Featured') }}</label>
-                    </div>
-                    @error('is_featured')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
-                </div>
-            </div>
-
-            <div>
-                <label for="status" class="block text-sm font-medium text-gray-700">{{ __('Status') }}</label>
-                <select class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('status') border-red-300 @enderror" 
-                    id="status" 
-                    name="status">
-                    <option value="draft" {{ old('status', $category->status) == 'draft' ? 'selected' : '' }}>{{ __('Draft') }}</option>
-                    <option value="published" {{ old('status', $category->status) == 'published' ? 'selected' : '' }}>{{ __('Published') }}</option>
+                <label for="parent_id" class="block text-sm font-medium text-gray-700 mb-2">
+                    Danh mục cha
+                </label>
+                <select name="parent_id" 
+                        id="parent_id"
+                        class="w-full rounded-md shadow-sm border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 @error('parent_id') border-red-300 @enderror">
+                    <option value="">Không có</option>
+                    @foreach($categories as $parent)
+                        @if($parent->id !== $category->id)
+                        <option value="{{ $parent->id }}" {{ old('parent_id', $category->parent_id) == $parent->id ? 'selected' : '' }}>
+                            {{ $parent->name }}
+                        </option>
+                        @endif
+                    @endforeach
                 </select>
-                @error('status')
-                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @error('parent_id')
+                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
             </div>
 
-            <div class="flex justify-end">
-                <button type="submit" class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-md">
-                    <i class="fas fa-save mr-2"></i> {{ __('Save') }}
+            <!-- Description -->
+            <div>
+                <label for="description" class="block text-sm font-medium text-gray-700 mb-2">
+                    Mô tả
+                </label>
+                <textarea name="description" 
+                          id="description" 
+                          rows="3"
+                          class="w-full rounded-md shadow-sm border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 @error('description') border-red-300 @enderror">{{ old('description', $category->description) }}</textarea>
+                @error('description')
+                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <!-- Image -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    Ảnh danh mục
+                </label>
+                <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+                    <div class="space-y-1 text-center">
+                        @if($category->image)
+                        <div id="current-image" class="mb-4">
+                            <img src="{{ asset('storage/' . $category->image) }}" 
+                                 alt="{{ $category->name }}" 
+                                 class="mx-auto h-32 w-auto">
+                            <p class="mt-2 text-sm text-gray-500">Ảnh hiện tại</p>
+                        </div>
+                        @endif
+                        <div class="flex flex-col items-center">
+                            <i class="fas fa-image text-gray-400 text-3xl mb-3"></i>
+                            <div class="flex text-sm text-gray-600">
+                                <label for="image" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
+                                    <span>Tải ảnh mới</span>
+                                    <input id="image" 
+                                           name="image" 
+                                           type="file" 
+                                           accept="image/*"
+                                           class="sr-only">
+                                </label>
+                                <p class="pl-1">hoặc kéo thả vào đây</p>
+                            </div>
+                            <p class="text-xs text-gray-500">PNG, JPG, GIF tối đa 2MB</p>
+                        </div>
+                        <div id="image-preview" class="hidden mt-4">
+                            <img src="#" alt="Preview" class="mx-auto h-32 w-auto">
+                            <p class="mt-2 text-sm text-gray-500">Ảnh mới</p>
+                        </div>
+                    </div>
+                </div>
+                @error('image')
+                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <!-- Status -->
+            <div>
+                <label for="is_active" class="flex items-center">
+                    <input type="checkbox" 
+                           name="is_active" 
+                           id="is_active" 
+                           value="1"
+                           {{ old('is_active', $category->is_active) ? 'checked' : '' }}
+                           class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                    <span class="ml-2 text-sm text-gray-600">Kích hoạt</span>
+                </label>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="flex justify-end pt-6">
+                <button type="submit" 
+                        class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-900 focus:outline-none focus:border-blue-900 focus:ring ring-blue-300 disabled:opacity-25 transition">
+                    <i class="fas fa-save mr-2"></i> Cập nhật danh mục
                 </button>
             </div>
         </form>
     </div>
 </div>
+
+@push('scripts')
+<script>
+$(document).ready(function() {
+    // Handle image preview
+    $('#image').change(function() {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                $('#current-image').addClass('hidden');
+                $('#image-preview').removeClass('hidden').find('img').attr('src', e.target.result);
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+});
+</script>
+@endpush
 @endsection 

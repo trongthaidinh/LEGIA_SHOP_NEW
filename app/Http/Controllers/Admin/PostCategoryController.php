@@ -19,7 +19,11 @@ class PostCategoryController extends Controller
 
     public function create()
     {
-        return view('admin.post-categories.create');
+        $categories = PostCategory::where('parent_id', null)
+            ->orWhere('parent_id', 0)
+            ->get();
+
+        return view('admin.post-categories.create', compact('categories'));
     }
 
     public function store(Request $request)

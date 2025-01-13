@@ -1,155 +1,244 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="container mx-auto px-6 py-8">
-    <div class="flex justify-between items-center mb-6">
-        <h3 class="text-gray-700 text-3xl font-medium">{{ __('Edit Product') }}</h3>
-        <a href="{{ route(request()->segment(1) . '.admin.products.index') }}" class="px-6 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:bg-gray-700">
-            <i class="fas fa-arrow-left mr-2"></i>{{ __('Back') }}
-        </a>
-    </div>
+<div class="container-fluid px-4">
+    <div class="bg-white rounded-lg shadow-sm">
+        <!-- Header -->
+        <div class="bg-blue-600 px-6 py-4">
+            <div class="flex justify-between items-center">
+                <h3 class="text-xl font-semibold text-white flex items-center">
+                    <i class="fas fa-edit mr-2"></i> Chỉnh sửa sản phẩm
+                </h3>
+                <div>
+                    <a href="{{ route(app()->getLocale() . '.admin.products.index') }}" 
+                       class="inline-flex items-center px-3 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-md">
+                        <i class="fas fa-arrow-left mr-2"></i> Quay lại danh sách
+                    </a>
+                </div>
+            </div>
+        </div>
 
-    <div class="bg-white rounded-lg shadow-md overflow-hidden">
-        <form action="{{ route(request()->segment(1) . '.admin.products.update', $product) }}" method="POST" enctype="multipart/form-data" class="p-6 space-y-6">
+        <form action="{{ route(app()->getLocale() . '.admin.products.update', $product) }}" 
+              method="POST" 
+              enctype="multipart/form-data"
+              class="p-6 space-y-6">
             @csrf
             @method('PUT')
-            <input type="hidden" name="language" value="{{ request()->segment(1) }}">
 
-            <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+            <!-- Basic Information -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Name -->
                 <div>
-                    <label for="name" class="block text-sm font-medium text-gray-700">{{ __('Name') }} <span class="text-red-500">*</span></label>
-                    <input type="text" name="name" id="name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('name') border-red-300 @enderror" value="{{ old('name', $product->name) }}" required>
+                    <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
+                        Tên sản phẩm <span class="text-red-600">*</span>
+                    </label>
+                    <input type="text" 
+                           name="name" 
+                           id="name" 
+                           value="{{ old('name', $product->name) }}" 
+                           required
+                           class="w-full rounded-md shadow-sm border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 @error('name') border-red-300 @enderror">
                     @error('name')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
 
+                <!-- SKU -->
                 <div>
-                    <label for="category_id" class="block text-sm font-medium text-gray-700">{{ __('Category') }}</label>
-                    <select name="category_id" id="category_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('category_id') border-red-300 @enderror">
-                        <option value="">{{ __('Select Category') }}</option>
-                        @foreach($categories as $category)
-                            <option value="{{ $category->id }}" {{ old('category_id', $product->category_id) == $category->id ? 'selected' : '' }}>
-                                {{ $category->name }}
-                            </option>
-                        @endforeach
-                    </select>
-                    @error('category_id')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
-                </div>
-
-                <div>
-                    <label for="type" class="block text-sm font-medium text-gray-700">{{ __('Type') }}</label>
-                    <select name="type" id="type" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('type') border-red-300 @enderror">
-                        @foreach($types as $key => $label)
-                            <option value="{{ $key }}" {{ old('type', $product->type) == $key ? 'selected' : '' }}>
-                                {{ $label }}
-                            </option>
-                        @endforeach
-                    </select>
-                    @error('type')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
-                </div>
-
-                <div>
-                    <label for="sku" class="block text-sm font-medium text-gray-700">{{ __('SKU') }}</label>
-                    <input type="text" name="sku" id="sku" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('sku') border-red-300 @enderror" value="{{ old('sku', $product->sku) }}" required>
+                    <label for="sku" class="block text-sm font-medium text-gray-700 mb-2">
+                        Mã sản phẩm (SKU) <span class="text-red-600">*</span>
+                    </label>
+                    <input type="text" 
+                           name="sku" 
+                           id="sku" 
+                           value="{{ old('sku', $product->sku) }}" 
+                           required
+                           class="w-full rounded-md shadow-sm border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 @error('sku') border-red-300 @enderror">
                     @error('sku')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
-                </div>
-
-                <div>
-                    <label for="price" class="block text-sm font-medium text-gray-700">{{ __('Price') }} <span class="text-red-500">*</span></label>
-                    <input type="number" name="price" id="price" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('price') border-red-300 @enderror" value="{{ old('price', $product->price) }}" min="0" step="0.01" required>
-                    @error('price')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
-                </div>
-
-                <div>
-                    <label for="sale_price" class="block text-sm font-medium text-gray-700">{{ __('Sale Price') }}</label>
-                    <input type="number" name="sale_price" id="sale_price" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('sale_price') border-red-300 @enderror" value="{{ old('sale_price', $product->sale_price) }}" min="0" step="0.01">
-                    @error('sale_price')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
-                </div>
-
-                <div>
-                    <label for="stock" class="block text-sm font-medium text-gray-700">{{ __('Stock') }} <span class="text-red-500">*</span></label>
-                    <input type="number" name="stock" id="stock" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('stock') border-red-300 @enderror" value="{{ old('stock', $product->stock) }}" min="0" required>
-                    @error('stock')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
-                </div>
-            </div>
-
-            <div>
-                <label for="description" class="block text-sm font-medium text-gray-700">{{ __('Description') }}</label>
-                <textarea name="description" id="description" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('description') border-red-300 @enderror">{{ old('description', $product->description) }}</textarea>
-                @error('description')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                @enderror
-            </div>
-
-            <div>
-                <label for="content" class="block text-sm font-medium text-gray-700">{{ __('Content') }}</label>
-                <textarea name="content" id="content" rows="5" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('content') border-red-300 @enderror">{{ old('content', $product->content) }}</textarea>
-                @error('content')
-                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                @enderror
-            </div>
-
-            <div>
-                <label for="featured_image" class="block text-sm font-medium text-gray-700">{{ __('Featured Image') }}</label>
-                @if($product->featured_image)
-                    <div class="mt-2 mb-4">
-                        <img src="{{ Storage::url($product->featured_image) }}" alt="{{ $product->name }}" class="w-32 h-32 object-cover rounded-lg">
-                    </div>
-                @endif
-                <input type="file" name="featured_image" id="featured_image" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
-                @error('featured_image')
-                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                @enderror
-            </div>
-
-            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <div class="flex items-center">
-                    <input type="checkbox" name="is_active" id="is_active" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" value="1" {{ old('is_active', $product->is_active) ? 'checked' : '' }}>
-                    <label for="is_active" class="ml-2 block text-sm text-gray-700">{{ __('Active') }}</label>
-                    @error('is_active')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
-                </div>
-
-                <div class="flex items-center">
-                    <input type="checkbox" name="is_featured" id="is_featured" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" value="1" {{ old('is_featured', $product->is_featured) ? 'checked' : '' }}>
-                    <label for="is_featured" class="ml-2 block text-sm text-gray-700">{{ __('Featured') }}</label>
-                    @error('is_featured')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
             </div>
 
+            <!-- Category -->
             <div>
-                <label for="status" class="block text-sm font-medium text-gray-700">{{ __('Status') }}</label>
-                <select name="status" id="status" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('status') border-red-300 @enderror">
-                    <option value="draft" {{ old('status', $product->status) == 'draft' ? 'selected' : '' }}>{{ __('Draft') }}</option>
-                    <option value="published" {{ old('status', $product->status) == 'published' ? 'selected' : '' }}>{{ __('Published') }}</option>
+                <label for="category_id" class="block text-sm font-medium text-gray-700 mb-2">
+                    Danh mục <span class="text-red-600">*</span>
+                </label>
+                <select name="category_id" 
+                        id="category_id"
+                        required
+                        class="w-full rounded-md shadow-sm border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 @error('category_id') border-red-300 @enderror">
+                    <option value="">Chọn danh mục</option>
+                    @foreach($categories as $category)
+                    <option value="{{ $category->id }}" {{ old('category_id', $product->category_id) == $category->id ? 'selected' : '' }}>
+                        {{ $category->name }}
+                    </option>
+                    @endforeach
                 </select>
-                @error('status')
-                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @error('category_id')
+                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
             </div>
 
+            <!-- Description -->
+            <div>
+                <label for="description" class="block text-sm font-medium text-gray-700 mb-2">
+                    Mô tả sản phẩm
+                </label>
+                <textarea name="description" 
+                          id="description" 
+                          rows="5"
+                          class="w-full rounded-md shadow-sm border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 @error('description') border-red-300 @enderror">{{ old('description', $product->description) }}</textarea>
+                @error('description')
+                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <!-- Pricing -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Regular Price -->
+                <div>
+                    <label for="price" class="block text-sm font-medium text-gray-700 mb-2">
+                        Giá bán <span class="text-red-600">*</span>
+                    </label>
+                    <div class="relative">
+                        <input type="number" 
+                               name="price" 
+                               id="price" 
+                               value="{{ old('price', $product->price) }}" 
+                               required
+                               min="0"
+                               step="1000"
+                               class="w-full rounded-md shadow-sm border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 @error('price') border-red-300 @enderror">
+                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                            <span class="text-gray-500">đ</span>
+                        </div>
+                    </div>
+                    @error('price')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Compare Price -->
+                <div>
+                    <label for="compare_price" class="block text-sm font-medium text-gray-700 mb-2">
+                        Giá gốc
+                    </label>
+                    <div class="relative">
+                        <input type="number" 
+                               name="compare_price" 
+                               id="compare_price" 
+                               value="{{ old('compare_price', $product->compare_price) }}"
+                               min="0"
+                               step="1000"
+                               class="w-full rounded-md shadow-sm border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 @error('compare_price') border-red-300 @enderror">
+                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                            <span class="text-gray-500">đ</span>
+                        </div>
+                    </div>
+                    @error('compare_price')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+            </div>
+
+            <!-- Thumbnail -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    Ảnh đại diện
+                </label>
+                <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+                    <div class="space-y-1 text-center">
+                        @if($product->thumbnail)
+                        <div id="current-thumbnail" class="mb-4">
+                            <img src="{{ asset('storage/' . $product->thumbnail) }}" 
+                                 alt="{{ $product->name }}" 
+                                 class="mx-auto h-32 w-auto">
+                            <p class="mt-2 text-sm text-gray-500">Ảnh hiện tại</p>
+                        </div>
+                        @endif
+                        <div class="flex flex-col items-center">
+                            <i class="fas fa-image text-gray-400 text-3xl mb-3"></i>
+                            <div class="flex text-sm text-gray-600">
+                                <label for="thumbnail" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
+                                    <span>Tải ảnh mới</span>
+                                    <input id="thumbnail" 
+                                           name="thumbnail" 
+                                           type="file" 
+                                           accept="image/*"
+                                           class="sr-only">
+                                </label>
+                                <p class="pl-1">hoặc kéo thả vào đây</p>
+                            </div>
+                            <p class="text-xs text-gray-500">PNG, JPG, GIF tối đa 2MB</p>
+                        </div>
+                        <div id="thumbnail-preview" class="hidden mt-4">
+                            <img src="#" alt="Preview" class="mx-auto h-32 w-auto">
+                            <p class="mt-2 text-sm text-gray-500">Ảnh mới</p>
+                        </div>
+                    </div>
+                </div>
+                @error('thumbnail')
+                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <!-- Status -->
+            <div class="flex items-center space-x-4">
+                <label for="is_active" class="flex items-center">
+                    <input type="checkbox" 
+                           name="is_active" 
+                           id="is_active" 
+                           value="1"
+                           {{ old('is_active', $product->is_active) ? 'checked' : '' }}
+                           class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                    <span class="ml-2 text-sm text-gray-600">Đang bán</span>
+                </label>
+
+                <label for="is_featured" class="flex items-center">
+                    <input type="checkbox" 
+                           name="is_featured" 
+                           id="is_featured" 
+                           value="1"
+                           {{ old('is_featured', $product->is_featured) ? 'checked' : '' }}
+                           class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                    <span class="ml-2 text-sm text-gray-600">Sản phẩm nổi bật</span>
+                </label>
+            </div>
+
+            <!-- Submit Button -->
             <div class="flex justify-end pt-6">
-                <button type="submit" class="px-6 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                    <i class="fas fa-save mr-2"></i>{{ __('Update Product') }}
+                <button type="submit" 
+                        class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-900 focus:outline-none focus:border-blue-900 focus:ring ring-blue-300 disabled:opacity-25 transition">
+                    <i class="fas fa-save mr-2"></i> Cập nhật sản phẩm
                 </button>
             </div>
         </form>
     </div>
 </div>
+
+@push('scripts')
+<script>
+$(document).ready(function() {
+    // Initialize CKEditor
+    if (typeof CKEDITOR !== 'undefined') {
+        CKEDITOR.replace('description');
+    }
+
+    // Handle thumbnail preview
+    $('#thumbnail').change(function() {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                $('#current-thumbnail').addClass('hidden');
+                $('#thumbnail-preview').removeClass('hidden').find('img').attr('src', e.target.result);
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+});
+</script>
+@endpush
 @endsection 

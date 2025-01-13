@@ -1,45 +1,98 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="container mx-auto px-6 py-8">
-    <div class="flex justify-between items-center mb-6">
-        <h3 class="text-gray-700 text-3xl font-medium">{{ __('Create Category') }}</h3>
-        <a href="{{ route(request()->segment(1) . '.admin.post-categories.index') }}" class="px-6 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:bg-gray-700">
-            <i class="fas fa-arrow-left mr-2"></i>{{ __('Back') }}
-        </a>
-    </div>
+<div class="container-fluid px-4">
+    <div class="bg-white rounded-lg shadow-sm">
+        <!-- Header -->
+        <div class="bg-blue-600 px-6 py-4">
+            <div class="flex justify-between items-center">
+                <h3 class="text-xl font-semibold text-white flex items-center">
+                    <i class="fas fa-folder-plus mr-2"></i> Thêm danh mục bài viết
+                </h3>
+                <div>
+                    <a href="{{ route(app()->getLocale() . '.admin.post-categories.index') }}" 
+                       class="inline-flex items-center px-3 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-md">
+                        <i class="fas fa-arrow-left mr-2"></i> Quay lại danh sách
+                    </a>
+                </div>
+            </div>
+        </div>
 
-    <div class="bg-white rounded-lg shadow-md overflow-hidden">
-        <form action="{{ route(request()->segment(1) . '.admin.post-categories.store') }}" method="POST" class="p-6 space-y-6">
+        <form action="{{ route(app()->getLocale() . '.admin.post-categories.store') }}" method="POST" class="p-6">
             @csrf
 
-            <div>
-                <label for="name" class="block text-sm font-medium text-gray-700">{{ __('Name') }} <span class="text-red-500">*</span></label>
-                <input type="text" name="name" id="name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('name') border-red-300 @enderror" value="{{ old('name') }}" required>
+            <!-- Name -->
+            <div class="mb-6">
+                <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
+                    Tên danh mục <span class="text-red-600">*</span>
+                </label>
+                <input type="text" 
+                       name="name" 
+                       id="name" 
+                       value="{{ old('name') }}" 
+                       required
+                       class="w-full rounded-md shadow-sm border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 @error('name') border-red-300 @enderror">
                 @error('name')
-                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
             </div>
 
-            <div>
-                <label for="description" class="block text-sm font-medium text-gray-700">{{ __('Description') }}</label>
-                <textarea name="description" id="description" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('description') border-red-300 @enderror">{{ old('description') }}</textarea>
+            <!-- Parent Category -->
+            <div class="mb-6">
+                <label for="parent_id" class="block text-sm font-medium text-gray-700 mb-2">
+                    Danh mục cha
+                </label>
+                <select name="parent_id" 
+                        id="parent_id"
+                        class="w-full rounded-md shadow-sm border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                    <option value="">Không có</option>
+                    @if($categories->count() > 0)
+                        @foreach($categories as $category)
+                        <option value="{{ $category->id }}" {{ old('parent_id') == $category->id ? 'selected' : '' }}>
+                            {{ $category->name }}
+                        </option>
+                        @endforeach
+                    @else
+                        <option value="" disabled>Chưa có danh mục nào</option>
+                    @endif
+                </select>
+                @error('parent_id')
+                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <!-- Description -->
+            <div class="mb-6">
+                <label for="description" class="block text-sm font-medium text-gray-700 mb-2">
+                    Mô tả
+                </label>
+                <textarea name="description" 
+                          id="description" 
+                          rows="3"
+                          class="w-full rounded-md shadow-sm border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">{{ old('description') }}</textarea>
                 @error('description')
-                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
             </div>
 
-            <div class="flex items-center">
-                <input type="checkbox" name="is_active" id="is_active" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 @error('is_active') border-red-300 @enderror" value="1" {{ old('is_active', true) ? 'checked' : '' }}>
-                <label for="is_active" class="ml-2 block text-sm text-gray-700">{{ __('Active') }}</label>
-                @error('is_active')
-                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                @enderror
+            <!-- Status -->
+            <div class="mb-6">
+                <label for="is_active" class="flex items-center">
+                    <input type="checkbox" 
+                           name="is_active" 
+                           id="is_active" 
+                           value="1"
+                           {{ old('is_active', true) ? 'checked' : '' }}
+                           class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                    <span class="ml-2 text-sm text-gray-600">Kích hoạt</span>
+                </label>
             </div>
 
-            <div class="flex justify-end pt-6">
-                <button type="submit" class="px-6 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                    <i class="fas fa-save mr-2"></i>{{ __('Save Category') }}
+            <!-- Submit Button -->
+            <div class="flex justify-end">
+                <button type="submit" 
+                        class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-900 focus:outline-none focus:border-blue-900 focus:ring ring-blue-300 disabled:opacity-25 transition">
+                    <i class="fas fa-save mr-2"></i> Lưu danh mục
                 </button>
             </div>
         </form>

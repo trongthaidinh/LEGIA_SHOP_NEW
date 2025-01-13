@@ -19,7 +19,8 @@ class PostController extends Controller
                 ->where('language', request()->segment(1))
                 ->latest()
                 ->paginate(10);
-            return view('admin.posts.index', compact('posts'));
+            $categories = PostCategory::where('is_active', true)->get();
+            return view('admin.posts.index', compact('posts', 'categories'));
         } catch (Exception $e) {
             return redirect()->back()
                 ->with('error', __('Error loading posts: ') . $e->getMessage());
