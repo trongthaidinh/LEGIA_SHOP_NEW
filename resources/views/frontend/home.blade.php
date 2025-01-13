@@ -6,7 +6,7 @@
     <!-- Hero Slider -->
     <div class="relative bg-gray-900">
         <!-- Slider -->
-        <div class="swiper hero-slider h-[506px]">
+        <div class="swiper hero-slider h-[130px] md:h-[260px] lg:h-[506px]">
             <div class="swiper-wrapper">
                 @foreach($sliders as $slider)
                     <div class="swiper-slide">
@@ -27,7 +27,7 @@
     </div>
 
         <!-- Introduction Section -->
-        <section class="py-16 bg-white">
+        <section class="py-8 lg:py-16 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                 <div class="prose lg:prose-lg">
@@ -54,17 +54,17 @@
     </section>
 
     <!-- Yến Chưng Products Section -->
-    <section class="py-16">
+    <section class="py-8 lg:py-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between mb-8">
-                <h2 class="text-3xl font-bold text-[var(--color-primary-600)]">{{ __('premium_birds_nest') }}</h2>
+                <h2 class="text-3xl font-bold text-[var(--color-primary-600)]">{{ __('premium_birds_nest1') }}</h2>
                 <a href="{{ route(app()->getLocale() . '.products', ['type' => 'yen_chung']) }}" class="text-[var(--color-primary-600)] hover:text-[var(--color-primary-700)] font-medium flex items-center gap-2">
                     {{ __('view_more') }}
                     <i class="fas fa-chevron-right text-sm"></i>
                 </a>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-2 lg:gap-8">
                 @foreach($yenChungProducts as $product)
                     @include('frontend.partials.product-card', ['product' => $product])
                 @endforeach
@@ -73,7 +73,7 @@
     </section>
 
     <!-- Yến Tổ Products Section -->
-    <section class="py-16 bg-gray-50">
+    <section class="py-8 lg:py-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between mb-8">
                 <h2 class="text-3xl font-bold text-[var(--color-primary-600)]">{{ __('premium_birds_nest') }}</h2>
@@ -83,7 +83,7 @@
                 </a>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-2 lg:gap-8">
                 @foreach($yenToProducts as $product)
                     @include('frontend.partials.product-card', ['product' => $product])
                 @endforeach
@@ -92,7 +92,7 @@
     </section>
 
     <!-- Gift Set Products Section -->
-    <section class="py-16">
+    <section class="py-8 lg:py-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between mb-8">
                 <h2 class="text-3xl font-bold text-[var(--color-primary-600)]">{{ __('premium_gift_set') }}</h2>
@@ -102,7 +102,7 @@
                 </a>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-2 lg:gap-8">
                 @foreach($giftSetProducts as $product)
                     @include('frontend.partials.product-card', ['product' => $product])
                 @endforeach
@@ -111,7 +111,7 @@
     </section>
 
     <!-- Why Choose Us -->
-    <section class="py-16 bg-[var(--color-primary-50)]">
+    <section class="py-8 lg:py-16 bg-[var(--color-primary-50)]">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 class="text-3xl text-center font-bold text-[var(--color-primary-600)] mb-12">{{ __('why_choose_us') }}</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -148,24 +148,24 @@
     </section>
 
     <!-- Latest Posts -->
-    <section class="py-16">
+    <section class="py-8 lg:py-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 class="text-3xl font-bold text-[var(--color-primary-600)] mb-12">{{ __('latest_news') }}</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-8">
                 @foreach($latestPosts as $post)
                     <article class="group">
-                        <div class="relative rounded-lg overflow-hidden mb-4">
+                        <div class="relative rounded-lg overflow-hidden mb-2 sm:mb-4">
                             <img src="{{ Storage::url($post->featured_image) }}" 
                                  alt="{{ $post->title }}"
-                                 class="w-full h-48 object-cover transform group-hover:scale-110 transition-transform duration-500">
-                            <div class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black to-transparent">
-                                <span class="text-sm text-white">{{ $post->published_at->format('d/m/Y') }}</span>
+                                 class="w-full h-32 sm:h-48 object-cover transform group-hover:scale-110 transition-transform duration-500">
+                            <div class="absolute bottom-0 left-0 right-0 p-2 sm:p-4 bg-gradient-to-t from-black to-transparent">
+                                <span class="text-xs sm:text-sm text-white">{{ $post->published_at->format('d/m/Y') }}</span>
                             </div>
                         </div>
-                        <h3 class="text-xl font-semibold text-gray-900 mb-2 group-hover:text-primary-600">
+                        <h3 class="text-sm sm:text-xl font-semibold text-gray-900 mb-1 sm:mb-2 line-clamp-2 group-hover:text-primary-600">
                             <a href="{{ route(app()->getLocale() . '.posts.show', $post->slug) }}">{{ $post->title }}</a>
                         </h3>
-                        <p class="text-gray-600 line-clamp-2">{{ $post->excerpt }}</p>
+                        <p class="text-xs sm:text-base text-gray-600 line-clamp-2">{{ $post->excerpt }}</p>
                     </article>
                 @endforeach
             </div>
@@ -179,29 +179,31 @@
     </section>
 
     <!-- Testimonials -->
-    <section class="py-16 bg-gray-50">
+    <section class="py-8 lg:py-16 bg-gray-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 class="text-3xl font-bold text-[var(--color-primary-600)] mb-12">{{ __('customer_reviews') }}</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-8">
                 @foreach($testimonials as $testimonial)
-                    <div class="bg-white p-6 rounded-lg shadow-lg">
-                        <div class="flex flex-col items-center justify-center gap-4 mb-4">
-                            <img src="{{ Storage::url($testimonial->customer_avatar) }}" 
-                                 alt="{{ $testimonial->customer_name }}"
-                                 class="w-[240px] h-[240px] rounded-full object-cover">
-                            <div class="ml-4">
-                                <h4 class="text-xl font-semibold text-gray-900">{{ $testimonial->customer_name }}</h4>
-                                @if($testimonial->position)
-                                    <p class="text-md text-gray-600">{{ $testimonial->position }}</p>
-                                @endif
+                    <div class="bg-white p-4 sm:p-6 rounded-lg shadow-md">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 sm:w-16 sm:h-16 mr-3 sm:mr-4">
+                                <img src="{{ Storage::url($testimonial->customer_avatar) }}" 
+                                     alt="{{ $testimonial->name }}" 
+                                     class="w-full h-full object-cover rounded-full">
+                            </div>
+                            <div>
+                                <h4 class="text-sm sm:text-lg font-semibold text-gray-900">{{ $testimonial->name }}</h4>
+                                <p class="text-xs sm:text-sm text-gray-500">{{ $testimonial->position }}</p>
                             </div>
                         </div>
-                        <div class="flex justify-center text-yellow-400 mb-4"> 
+                        <p class="text-xs sm:text-base text-gray-700 italic">
+                            "{{ $testimonial->content }}"
+                        </p>
+                        <div class="flex items-center mt-3 sm:mt-4">
                             @for($i = 1; $i <= 5; $i++)
-                                <i class="fas fa-star{{ $i <= $testimonial->rating ? '' : '-o' }}"></i>
+                                <i class="fas fa-star text-xs sm:text-sm {{ $i <= $testimonial->rating ? 'text-yellow-400' : 'text-gray-300' }}"></i>
                             @endfor
                         </div>
-                        <p class="text-gray-600 text-justify">{{ $testimonial->content }}</p>
                     </div>
                 @endforeach
             </div>
@@ -209,16 +211,16 @@
     </section>
 
     <!-- Certificates -->
-    <section class="py-16">
+    <section class="py-8 lg:py-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 class="text-3xl font-bold text-[var(--color-primary-600)] text-left mb-12">{{ __('certificates') }}</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-8">
                 @foreach($certificates as $certificate)
-                    <div class="group relative h-[540px] bg-white rounded-lg shadow-lg overflow-hidden cursor-pointer">
+                    <div class="group relative bg-white rounded-lg shadow-md overflow-hidden cursor-pointer">
                         <a href="{{ Storage::url($certificate->image) }}" 
                            data-fancybox="certificates-gallery"
                            data-caption="{{ $certificate->name }}"
-                           class="absolute inset-0 flex items-center justify-center">
+                           class="block h-[340px] md:h-[400px] lg:h-[540px]">
                             <img src="{{ Storage::url($certificate->image) }}" 
                                  alt="{{ $certificate->name }}"
                                  class="w-full h-full object-contain transform group-hover:scale-105 transition-transform duration-500">
@@ -258,12 +260,12 @@
         }
 
         .custom-pagination {
-            bottom: 20px !important;
+            bottom: 12px !important;
         }
 
         .custom-pagination .swiper-pagination-bullet {
-            width: 10px;
-            height: 10px;
+            width: 6px;
+            height: 6px;
             background-color: rgba(255, 255, 255, 0.5);
             opacity: 1;
             transition: all 0.3s ease;
@@ -271,7 +273,7 @@
 
         .custom-pagination .swiper-pagination-bullet-active {
             background-color: #279149;
-            width: 30px;
+            width: 16px;
             border-radius: 5px;
         }
     </style>
