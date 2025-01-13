@@ -25,6 +25,7 @@ use App\Http\Controllers\Admin\PostCategoryController;
 use App\Http\Controllers\Admin\PostController as AdminPostController;
 use App\Http\Controllers\Frontend\PaymentController;
 use App\Http\Controllers\Frontend\StaticPageController;
+use App\Http\Controllers\Admin\ProductReviewController;
 use Illuminate\Support\Facades\Route;
 
 // Redirect root to Vietnamese version
@@ -201,7 +202,14 @@ Route::prefix('vi/admin')->middleware(['auth'])->group(function () {
     Route::patch('orders/{order}/status', [OrderController::class, 'updateStatus'])->name('vi.admin.orders.update-status');
     Route::resource('post-categories', PostCategoryController::class)->names('vi.admin.post-categories');
     Route::resource('posts', AdminPostController::class)->names('vi.admin.posts');
+    Route::get('product-reviews', [ProductReviewController::class, 'index'])->name('vi.admin.product-reviews.index');
+    Route::get('product-reviews/{productReview}', [ProductReviewController::class, 'show'])->name('vi.admin.product-reviews.show');
+    Route::patch('product-reviews/{productReview}/approve', [ProductReviewController::class, 'approve'])->name('vi.admin.product-reviews.approve');
+    Route::patch('product-reviews/{productReview}/reject', [ProductReviewController::class, 'reject'])->name('vi.admin.product-reviews.reject');
+    Route::delete('product-reviews/{productReview}', [ProductReviewController::class, 'destroy'])->name('vi.admin.product-reviews.destroy');
 });
+
+
 
 // Chinese Admin Routes  
 Route::prefix('zh/admin')->middleware(['auth'])->group(function () {
@@ -213,6 +221,11 @@ Route::prefix('zh/admin')->middleware(['auth'])->group(function () {
     Route::patch('orders/{order}/status', [OrderController::class, 'updateStatus'])->name('zh.admin.orders.update-status');
     Route::resource('post-categories', PostCategoryController::class)->names('zh.admin.post-categories');
     Route::resource('posts', AdminPostController::class)->names('zh.admin.posts');
+    Route::get('product-reviews', [ProductReviewController::class, 'index'])->name('zh.admin.product-reviews.index');
+    Route::get('product-reviews/{productReview}', [ProductReviewController::class, 'show'])->name('zh.admin.product-reviews.show');
+    Route::patch('product-reviews/{productReview}/approve', [ProductReviewController::class, 'approve'])->name('zh.admin.product-reviews.approve');
+    Route::patch('product-reviews/{productReview}/reject', [ProductReviewController::class, 'reject'])->name('zh.admin.product-reviews.reject');
+    Route::delete('product-reviews/{productReview}', [ProductReviewController::class, 'destroy'])->name('zh.admin.product-reviews.destroy');
 });
 
 require __DIR__ . '/auth.php';

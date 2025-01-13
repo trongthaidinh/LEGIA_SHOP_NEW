@@ -13,6 +13,7 @@ use Database\Seeders\TestimonialSeeder;
 use Database\Seeders\CertificateSeeder;
 use Database\Seeders\MenuSeeder;
 use Database\Seeders\StaticPagesSeeder;
+use Database\Seeders\ProductReviewSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -31,6 +32,7 @@ class DatabaseSeeder extends Seeder
             CertificateSeeder::class,
             MenuSeeder::class,
             StaticPagesSeeder::class,
+            ProductReviewSeeder::class,
         ]);
     }
 }

@@ -51,6 +51,10 @@
                     <i class="fas fa-newspaper w-5"></i>
                     <span class="ml-3">{{ __('Posts') }}</span>
                 </a>
+                <a href="{{ route(request()->segment(1) . '.admin.product-reviews.index') }}" class="flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+                    <i class="fas fa-star w-5"></i>
+                    <span class="ml-3">{{ __('Product Reviews') }}</span>
+                </a>
                 <a href="#" class="flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
                     <i class="fas fa-cog w-5"></i>
                     <span class="ml-3">{{ __('Settings') }}</span>

@@ -15,7 +15,8 @@ class SliderSeeder extends Seeder
                 'title' => 'Yến sào cao cấp',
                 'description' => 'Sản phẩm yến sào chất lượng cao, nguồn gốc tự nhiên',
                 'image' => 'sliders/slider-1.jpg',
-                'url' => '/vi/products',
+                'button_text' => 'Xem sản phẩm',
+                'button_url' => '/vi/products',
                 'order' => 1,
                 'is_active' => true,
                 'language' => 'vi'
@@ -24,7 +25,8 @@ class SliderSeeder extends Seeder
                 'title' => 'Yến chưng sẵn',
                 'description' => 'Yến chưng sẵn tiện lợi, bổ dưỡng',
                 'image' => 'sliders/slider-2.jpg',
-                'url' => '/vi/products/yen-chung',
+                'button_text' => 'Xem chi tiết',
+                'button_url' => '/vi/products/yen-chung',
                 'order' => 2,
                 'is_active' => true,
                 'language' => 'vi'
@@ -37,7 +39,8 @@ class SliderSeeder extends Seeder
                 'title' => '高级燕窝',
                 'description' => '优质天然燕窝产品',
                 'image' => 'sliders/slider-1.jpg',
-                'url' => '/zh/products',
+                'button_text' => '查看产品',
+                'button_url' => '/zh/products',
                 'order' => 1,
                 'is_active' => true,
                 'language' => 'zh'
@@ -46,7 +49,8 @@ class SliderSeeder extends Seeder
                 'title' => '即食燕窝',
                 'description' => '便利营养的即食燕窝',
                 'image' => 'sliders/slider-2.jpg',
-                'url' => '/zh/products/birds-nest',
+                'button_text' => '了解更多',
+                'button_url' => '/zh/products/birds-nest',
                 'order' => 2,
                 'is_active' => true,
                 'language' => 'zh'
