@@ -111,55 +111,69 @@
     </div>
 
     <!-- Tabs -->
-    <div class="mt-12 bg-gray-100 rounded-lg p-6">
-        <div class="flex gap-4 mb-6">
+    <div class="mt-12 bg-gray-100 rounded-lg p-8">
+        <div class="flex gap-2 sm:gap-4 mb-6">
             <button onclick="openTab('description')"
-                class="tab-btn active px-8 py-3 text-md font-medium rounded-lg bg-transparent text-[var(--color-primary-600)] border border-[var(--color-primary-600)]">
+                class="tab-btn active px-4 sm:px-8 py-2 sm:py-3 text-sm sm:text-md font-medium rounded-lg bg-transparent text-[var(--color-primary-600)] border border-[var(--color-primary-600)]">
                 {{ __('product_information') }}
             </button>
             <button onclick="openTab('reviews')"
-                class="tab-btn px-8 py-3 text-md font-medium rounded-lg bg-transparent text-[var(--color-primary-600)] border border-[var(--color-primary-600)]">
+                class="tab-btn px-4 sm:px-8 py-2 sm:py-3 text-sm sm:text-md font-medium rounded-lg bg-transparent text-[var(--color-primary-600)] border border-[var(--color-primary-600)]">
                 {{ __('customer_reviews') }}
             </button>
         </div>
 
         <!-- Product Information Tab -->
-        <div id="description" class="tab-content p-8 rounded-lg">
+        <div id="description" class="tab-content rounded-lg">
             <div class="prose prose-sm max-w-none">
                 {!! $product->content !!}
             </div>
         </div>
 
         <!-- Reviews Tab -->
-        <div id="reviews" class="tab-content hidden p-8 rounded-lg">
+        <div id="reviews" class="tab-content hidden rounded-lg">
             <div class="mx-auto">
                 <!-- Review Form -->
                 <div class="mb-8">
                     <h3 class="text-lg font-medium text-gray-900 mb-4">{{ __('write_review') }}</h3>
-                    <form action="{{ route(app()->getLocale() . '.products.review', $product->id) }}" method="POST" class="space-y-4">
+                    <form action="{{ route(app()->getLocale() . '.products.review', $product->slug) }}" method="POST" class="space-y-4">
                         @csrf
-                        <div class="grid grid-cols-2 gap-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
-                                <label for="reviewer_name" class="block text-sm font-medium text-gray-700">{{ __('your_name') }}</label>
+                                <label for="reviewer_name" class="block text-sm sm:text-sm font-medium text-gray-700 mb-1">{{ __('your_name') }}</label>
                                 <input type="text" name="reviewer_name" id="reviewer_name" required
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[var(--color-primary-500)] focus:ring-[var(--color-primary-500)]">
+                                    class="block w-full rounded-md border-gray-300 text-sm py-2 px-3 shadow-sm focus:border-[var(--color-primary-500)] focus:ring-[var(--color-primary-500)]">
                             </div>
                             <div>
-                                <label for="reviewer_email" class="block text-sm font-medium text-gray-700">{{ __('your_email') }}</label>
+                                <label for="reviewer_email" class="block text-sm sm:text-sm font-medium text-gray-700 mb-1">{{ __('your_email') }}</label>
                                 <input type="email" name="reviewer_email" id="reviewer_email" required
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[var(--color-primary-500)] focus:ring-[var(--color-primary-500)]">
+                                    class="block w-full rounded-md border-gray-300 text-sm py-2 px-3 shadow-sm focus:border-[var(--color-primary-500)] focus:ring-[var(--color-primary-500)]">
                             </div>
                         </div>
 
                         <div>
-                            <label for="comment" class="block text-sm font-medium text-gray-700">{{ __('your_review') }}</label>
+                            <label for="rating" class="block text-sm sm:text-sm font-medium text-gray-700 mb-1">{{ __('rating') }}</label>
+                            <div class="flex items-center">
+                                @for($i = 1; $i <= 5; $i++)
+                                    <label class="mr-2 star-rating-label" data-rating="{{ $i }}">
+                                        <input type="radio" name="rating" value="{{ $i }}" required class="sr-only">
+                                        <span class="text-2xl cursor-pointer text-gray-300 hover:text-yellow-400 star-icon">
+                                            <i class="fas fa-star"></i>
+                                        </span>
+                                    </label>
+                                @endfor
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="comment" class="block text-sm sm:text-sm font-medium text-gray-700 mb-1">{{ __('your_review') }}</label>
                             <textarea name="comment" id="comment" rows="4" required
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[var(--color-primary-500)] focus:ring-[var(--color-primary-500)]"></textarea>
+                                class="block w-full rounded-md border-gray-300 text-sm py-2 px-3 shadow-sm focus:border-[var(--color-primary-500)] focus:ring-[var(--color-primary-500)]"></textarea>
                         </div>
 
                         <div class="flex justify-end">
                             <button type="submit"
-                                class="px-6 py-2 text-sm font-medium bg-[var(--color-primary-600)] text-white rounded-lg hover:bg-[var(--color-primary-700)]">
+                                class="px-4 sm:px-6 py-2 text-xs sm:text-sm font-medium bg-[var(--color-primary-600)] text-white rounded-lg hover:bg-[var(--color-primary-700)]">
                                 {{ __('submit_review') }}
                             </button>
                         </div>
@@ -169,23 +183,33 @@
                 <!-- Reviews List -->
                 <div>
                     <h3 class="text-lg font-medium text-gray-900 mb-4">{{ __('customer_reviews') }}</h3>
-                    @forelse($product->reviews()->approved()->latest()->get() as $review)
-                    <div class="border-b border-gray-200 pb-4 mb-4">
-                        <div class="flex items-start">
-                            <div class="flex-1">
-                                <h4 class="text-sm font-medium text-gray-900">{{ $review->reviewer_name }}</h4>
-                                <div class="mt-1 text-xs text-gray-500">
-                                    {{ $review->created_at->diffForHumans() }}
+                    @php
+                        $reviews = $product->reviews()->approved()->latest()->get();
+                    @endphp
+                    @if($reviews->count() > 0)
+                        <div class="space-y-4">
+                            @foreach($reviews as $review)
+                                <div class="bg-white shadow-sm rounded-lg p-4">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <div class="flex items-center">
+                                            <h4 class="text-sm font-medium text-gray-900 mr-2">{{ $review->reviewer_name }}</h4>
+                                            <div class="flex items-center">
+                                                @for($i = 1; $i <= 5; $i++)
+                                                    <span class="text-{{ $i <= $review->rating ? 'yellow-400' : 'gray-300' }} text-sm">
+                                                        <i class="fas fa-star"></i>
+                                                    </span>
+                                                @endfor
+                                            </div>
+                                        </div>
+                                        <span class="text-xs text-gray-500">{{ $review->created_at->diffForHumans() }}</span>
+                                    </div>
+                                    <p class="text-sm text-gray-600">{{ $review->comment }}</p>
                                 </div>
-                                <div class="mt-2 text-sm text-gray-600">
-                                    {{ $review->comment }}
-                                </div>
-                            </div>
+                            @endforeach
                         </div>
-                    </div>
-                    @empty
-                    <p class="text-gray-500 text-center py-4">{{ __('no_reviews_yet') }}</p>
-                    @endforelse
+                    @else
+                        <p class="text-gray-500 text-center py-4">{{ __('no_reviews_yet') }}</p>
+                    @endif
                 </div>
             </div>
         </div>
@@ -316,5 +340,53 @@
             button.dataset.image
         );
     }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const starLabels = document.querySelectorAll('.star-rating-label');
+        
+        starLabels.forEach(label => {
+            label.addEventListener('mouseover', function() {
+                const rating = this.getAttribute('data-rating');
+                highlightStars(rating);
+            });
+            
+            label.addEventListener('mouseout', function() {
+                const selectedRating = document.querySelector('input[name="rating"]:checked');
+                if (selectedRating) {
+                    highlightStars(selectedRating.value);
+                } else {
+                    resetStars();
+                }
+            });
+            
+            label.addEventListener('click', function() {
+                const rating = this.getAttribute('data-rating');
+                highlightStars(rating);
+            });
+        });
+        
+        function highlightStars(rating) {
+            starLabels.forEach(label => {
+                const labelRating = label.getAttribute('data-rating');
+                const starIcon = label.querySelector('.star-icon');
+                
+                if (labelRating <= rating) {
+                    starIcon.classList.remove('text-gray-300');
+                    starIcon.classList.add('text-yellow-400');
+                } else {
+                    starIcon.classList.remove('text-yellow-400');
+                    starIcon.classList.add('text-gray-300');
+                }
+            });
+        }
+        
+        function resetStars() {
+            starLabels.forEach(label => {
+                const starIcon = label.querySelector('.star-icon');
+                starIcon.classList.remove('text-yellow-400');
+                starIcon.classList.add('text-gray-300');
+            });
+        }
+    });
 </script>
 @endpush

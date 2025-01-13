@@ -170,7 +170,12 @@ class ProductController extends Controller
             ->take(4)
             ->get();
 
-        return view('frontend.products.show', compact('product', 'relatedProducts'));
+        $reviews = ProductReview::where('product_id', $product->id)
+            ->where('is_approved', true)
+            ->latest()
+            ->get();
+
+        return view('frontend.products.show', compact('product', 'relatedProducts', 'reviews'));
     }
 
     public function search(Request $request)
