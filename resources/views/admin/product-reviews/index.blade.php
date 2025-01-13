@@ -72,10 +72,7 @@
                                                 <img src="{{ asset($review->product->featured_image) }}" 
                                                      alt="{{ $review->product->name }}" 
                                                      class="h-12 w-12 rounded-md object-cover mr-3">
-                                            @else
-                                                <div class="h-12 w-12 bg-gray-200 rounded-md flex items-center justify-center mr-3">
-                                                    <i class="fas fa-image text-gray-400 text-2xl"></i>
-                                                </div>
+                                            
                                             @endif
                                             <div class="text-sm">
                                                 <div class="font-medium text-gray-900">{{ $review->product->name }}</div>

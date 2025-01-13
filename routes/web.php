@@ -26,6 +26,8 @@ use App\Http\Controllers\Admin\PostController as AdminPostController;
 use App\Http\Controllers\Frontend\PaymentController;
 use App\Http\Controllers\Frontend\StaticPageController;
 use App\Http\Controllers\Admin\ProductReviewController;
+use App\Http\Controllers\Admin\ImageController;
+use App\Http\Controllers\Admin\VideoController;
 use Illuminate\Support\Facades\Route;
 
 // Redirect root to Vietnamese version
@@ -207,9 +209,17 @@ Route::prefix('vi/admin')->middleware(['auth'])->group(function () {
     Route::patch('product-reviews/{productReview}/approve', [ProductReviewController::class, 'approve'])->name('vi.admin.product-reviews.approve');
     Route::patch('product-reviews/{productReview}/reject', [ProductReviewController::class, 'reject'])->name('vi.admin.product-reviews.reject');
     Route::delete('product-reviews/{productReview}', [ProductReviewController::class, 'destroy'])->name('vi.admin.product-reviews.destroy');
+
+    // Images Management
+    Route::resource('images', ImageController::class)->names('vi.admin.images');
+    Route::post('images/order', [ImageController::class, 'updateOrder'])->name('vi.admin.images.order');
+    Route::patch('images/{image}/toggle', [ImageController::class, 'toggleStatus'])->name('vi.admin.images.toggle');
+
+    // Videos Management
+    Route::resource('videos', VideoController::class)->names('vi.admin.videos');
+    Route::post('videos/order', [VideoController::class, 'updateOrder'])->name('vi.admin.videos.order');
+    Route::patch('videos/{video}/toggle', [VideoController::class, 'toggleStatus'])->name('vi.admin.videos.toggle');
 });
-
-
 
 // Chinese Admin Routes  
 Route::prefix('zh/admin')->middleware(['auth'])->group(function () {
@@ -226,6 +236,16 @@ Route::prefix('zh/admin')->middleware(['auth'])->group(function () {
     Route::patch('product-reviews/{productReview}/approve', [ProductReviewController::class, 'approve'])->name('zh.admin.product-reviews.approve');
     Route::patch('product-reviews/{productReview}/reject', [ProductReviewController::class, 'reject'])->name('zh.admin.product-reviews.reject');
     Route::delete('product-reviews/{productReview}', [ProductReviewController::class, 'destroy'])->name('zh.admin.product-reviews.destroy');
+
+    // Images Management
+    Route::resource('images', ImageController::class)->names('zh.admin.images');
+    Route::post('images/order', [ImageController::class, 'updateOrder'])->name('zh.admin.images.order');
+    Route::patch('images/{image}/toggle', [ImageController::class, 'toggleStatus'])->name('zh.admin.images.toggle');
+
+    // Videos Management
+    Route::resource('videos', VideoController::class)->names('zh.admin.videos');
+    Route::post('videos/order', [VideoController::class, 'updateOrder'])->name('zh.admin.videos.order');
+    Route::patch('videos/{video}/toggle', [VideoController::class, 'toggleStatus'])->name('zh.admin.videos.toggle');
 });
 
 require __DIR__ . '/auth.php';

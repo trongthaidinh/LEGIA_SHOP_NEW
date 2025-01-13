@@ -2,17 +2,23 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Video extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'youtube_url',
-        'order',
-        'is_active'
+        'is_active',
+        'order'
+    ];
+
+    protected $casts = [
+        'is_active' => 'boolean',
+        'order' => 'integer'
     ];
 
     // Scopes
@@ -23,25 +29,29 @@ class Video extends Model
 
     public function scopeOrdered($query)
     {
-        return $query->orderBy('order');
+        return $query->orderBy('order', 'asc');
     }
 
-    // Helper method để lấy YouTube video ID
+    // Relationships
+    public function videoables()
+    {
+        return $this->morphMany(Videoable::class, 'videoable');
+    }
+
+    // Helpers
     public function getYoutubeIdAttribute()
     {
         preg_match("/^(?:http(?:s)?:\/\/)?(?:www\.)?(?:m\.)?(?:youtu\.be\/|youtube\.com\/(?:(?:watch)?\?(?:.*&)?v(?:i)?=|(?:embed|v|vi|user|shorts)\/))([^\?&\"'>]+)/", $this->youtube_url, $matches);
         return $matches[1] ?? null;
     }
 
-    // Helper method để lấy YouTube thumbnail URL
-    public function getThumbnailUrlAttribute()
-    {
-        return 'https://img.youtube.com/vi/' . $this->youtube_id . '/maxresdefault.jpg';
-    }
-
-    // Helper method để lấy YouTube embed URL
     public function getEmbedUrlAttribute()
     {
         return 'https://www.youtube.com/embed/' . $this->youtube_id;
+    }
+
+    public function getThumbnailUrlAttribute()
+    {
+        return 'https://img.youtube.com/vi/' . $this->youtube_id . '/maxresdefault.jpg';
     }
 }

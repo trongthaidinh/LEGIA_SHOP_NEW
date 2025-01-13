@@ -55,6 +55,14 @@
                     <i class="fas fa-star w-5"></i>
                     <span class="ml-3">{{ __('Product Reviews') }}</span>
                 </a>
+                <a href="{{ route(request()->segment(1) . '.admin.images.index') }}" class="flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+                    <i class="fas fa-images w-5"></i>
+                    <span class="ml-3">{{ __('Images') }}</span>
+                </a>
+                <a href="{{ route(request()->segment(1) . '.admin.videos.index') }}" class="flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+                    <i class="fas fa-video w-5"></i>
+                    <span class="ml-3">{{ __('Videos') }}</span>
+                </a>
                 <a href="#" class="flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
                     <i class="fas fa-cog w-5"></i>
                     <span class="ml-3">{{ __('Settings') }}</span>

@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Image extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'file_name',
@@ -19,16 +20,11 @@ class Image extends Model
         'order'
     ];
 
-    // Relationships
-    public function products()
-    {
-        return $this->morphedByMany(Product::class, 'imageable');
-    }
-
-    public function posts()
-    {
-        return $this->morphedByMany(Post::class, 'imageable');
-    }
+    protected $casts = [
+        'is_active' => 'boolean',
+        'file_size' => 'integer',
+        'order' => 'integer'
+    ];
 
     // Scopes
     public function scopeActive($query)
@@ -41,26 +37,44 @@ class Image extends Model
         return $query->where('visibility', 'public');
     }
 
-    public function scopeOrdered($query)
+    public function scopePrivate($query)
     {
-        return $query->orderBy('order');
+        return $query->where('visibility', 'private');
     }
 
-    // Accessors
-    public function getFileSizeFormattedAttribute()
+    public function scopeOrdered($query)
+    {
+        return $query->orderBy('order', 'asc');
+    }
+
+    // Relationships
+    public function imageables()
+    {
+        return $this->morphMany(Imageable::class, 'imageable');
+    }
+
+    // Helpers
+    public function getFullUrlAttribute()
+    {
+        return asset($this->file_path);
+    }
+
+    public function getHumanFileSizeAttribute()
     {
         $bytes = $this->file_size;
         $units = ['B', 'KB', 'MB', 'GB', 'TB'];
-        
-        for ($i = 0; $bytes > 1024; $i++) {
+        $index = 0;
+
+        while ($bytes >= 1024 && $index < count($units) - 1) {
             $bytes /= 1024;
+            $index++;
         }
-        
-        return round($bytes, 2) . ' ' . $units[$i];
+
+        return round($bytes, 2) . ' ' . $units[$index];
     }
 
-    public function getFullUrlAttribute()
+    public function getIsImageAttribute()
     {
-        return asset('storage/' . $this->file_path);
+        return str_starts_with($this->mime_type, 'image/');
     }
 }
