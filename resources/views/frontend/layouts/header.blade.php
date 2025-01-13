@@ -1,6 +1,6 @@
 <header class="bg-[var(--color-primary-600)] relative">
     <!-- Desktop Header -->
-    <div class="hidden md:flex gap-4 items-center max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="hidden lg:flex gap-4 items-center max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Logo -->
         <div class="flex items-center justify-center">
             <a href="{{ route(app()->getLocale() . '.home') }}" class="block">
@@ -102,7 +102,7 @@
     </div>
 
     <!-- Mobile Header -->
-    <div class="md:hidden">
+    <div class="lg:hidden">
         <div class="flex justify-between items-center p-4">
             <!-- Mobile Logo -->
             <a href="{{ route(app()->getLocale() . '.home') }}" class="block">
