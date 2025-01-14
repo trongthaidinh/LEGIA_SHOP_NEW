@@ -4,32 +4,47 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Video;
+use App\Traits\HandleUploadImage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class VideoController extends Controller
 {
+    use HandleUploadImage;
+
+    /**
+     * Folder path for storing video thumbnails
+     */
+    const IMAGE_FOLDER = 'video-thumbnails';
+
     public function index(Request $request)
     {
-        $query = Video::query();
+        try {
+            $query = Video::query();
 
-        // Filter by status
-        if ($request->has('status')) {
-            $query->where('is_active', $request->status === 'active');
+            // Filter by status
+            if ($request->has('status')) {
+                $query->where('is_active', $request->status === 'active');
+            }
+
+            // Search by URL
+            if ($request->has('search')) {
+                $query->where('youtube_url', 'like', '%' . $request->search . '%');
+            }
+
+            // Sort
+            $sort = $request->sort ?? 'created_at';
+            $direction = $request->direction ?? 'desc';
+            $query->orderBy($sort, $direction);
+
+            $videos = $query->paginate(20);
+
+            return view('admin.videos.index', compact('videos'));
+        } catch (\Exception $e) {
+            Log::error('Error in VideoController@index: ' . $e->getMessage());
+            return back()->with('error', __('Error loading videos.'));
         }
-
-        // Search by URL
-        if ($request->has('search')) {
-            $query->where('youtube_url', 'like', '%' . $request->search . '%');
-        }
-
-        // Sort
-        $sort = $request->sort ?? 'created_at';
-        $direction = $request->direction ?? 'desc';
-        $query->orderBy($sort, $direction);
-
-        $videos = $query->paginate(20)->withQueryString();
-
-        return view('admin.videos.index', compact('videos'));
     }
 
     public function create()
@@ -39,19 +54,40 @@ class VideoController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'youtube_url' => 'required|url',
-            'is_active' => 'boolean'
-        ]);
+        try {
+            DB::beginTransaction();
 
-        $video = Video::create([
-            'youtube_url' => $request->youtube_url,
-            'is_active' => $request->is_active ?? true,
-            'order' => Video::max('order') + 1
-        ]);
+            $request->validate([
+                'youtube_url' => 'required|url',
+                'thumbnail' => 'nullable|image|max:2048',
+                'is_active' => 'boolean'
+            ]);
 
-        return redirect()->route(app()->getLocale() . '.admin.videos.index')
-            ->with('success', 'Đã thêm video thành công');
+            $data = [
+                'youtube_url' => $request->youtube_url,
+                'is_active' => $request->is_active ?? true,
+                'order' => Video::max('order') + 1
+            ];
+
+            // Handle thumbnail upload
+            if ($request->hasFile('thumbnail')) {
+                $data['thumbnail'] = $this->handleUploadImage(
+                    $request->file('thumbnail'),
+                    self::IMAGE_FOLDER
+                );
+            }
+
+            Video::create($data);
+
+            DB::commit();
+            return redirect()->route(app()->getLocale() . '.admin.videos.index')
+                ->with('success', 'Đã thêm video thành công');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error in VideoController@store: ' . $e->getMessage());
+            return back()->withInput()
+                ->with('error', __('Error creating video: ') . $e->getMessage());
+        }
     }
 
     public function show(Video $video)
@@ -66,45 +102,99 @@ class VideoController extends Controller
 
     public function update(Request $request, Video $video)
     {
-        $request->validate([
-            'youtube_url' => 'required|url',
-            'is_active' => 'boolean',
-            'order' => 'integer|min:0'
-        ]);
+        try {
+            DB::beginTransaction();
 
-        $video->update($request->only(['youtube_url', 'is_active', 'order']));
+            $request->validate([
+                'youtube_url' => 'required|url',
+                'thumbnail' => 'nullable|image|max:2048',
+                'is_active' => 'boolean',
+                'order' => 'integer|min:0'
+            ]);
 
-        return redirect()->route(app()->getLocale() . '.admin.videos.index')
-            ->with('success', 'Đã cập nhật video thành công');
+            $data = $request->only(['youtube_url', 'is_active', 'order']);
+
+            // Handle thumbnail upload
+            if ($request->hasFile('thumbnail')) {
+                $data['thumbnail'] = $this->handleUploadImage(
+                    $request->file('thumbnail'),
+                    self::IMAGE_FOLDER,
+                    $video->thumbnail
+                );
+            }
+
+            $video->update($data);
+
+            DB::commit();
+            return redirect()->route(app()->getLocale() . '.admin.videos.index')
+                ->with('success', 'Đã cập nhật video thành công');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error in VideoController@update: ' . $e->getMessage());
+            return back()->withInput()
+                ->with('error', __('Error updating video: ') . $e->getMessage());
+        }
     }
 
     public function destroy(Video $video)
     {
-        $video->delete();
+        try {
+            DB::beginTransaction();
 
-        return redirect()->route(app()->getLocale() . '.admin.videos.index')
-            ->with('success', 'Đã xóa video thành công');
+            // Delete thumbnail if exists
+            if ($video->thumbnail) {
+                $this->deleteImage($video->thumbnail);
+            }
+
+            $video->delete();
+
+            DB::commit();
+            return redirect()->route(app()->getLocale() . '.admin.videos.index')
+                ->with('success', 'Đã xóa video thành công');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error in VideoController@destroy: ' . $e->getMessage());
+            return back()->with('error', __('Error deleting video: ') . $e->getMessage());
+        }
     }
 
     public function updateOrder(Request $request)
     {
-        $request->validate([
-            'orders.*.id' => 'required|exists:videos,id',
-            'orders.*.order' => 'required|integer|min:0'
-        ]);
+        try {
+            DB::beginTransaction();
 
-        foreach ($request->orders as $item) {
-            Video::where('id', $item['id'])->update(['order' => $item['order']]);
+            $request->validate([
+                'orders.*.id' => 'required|exists:videos,id',
+                'orders.*.order' => 'required|integer|min:0'
+            ]);
+
+            foreach ($request->orders as $item) {
+                Video::where('id', $item['id'])->update(['order' => $item['order']]);
+            }
+
+            DB::commit();
+            return response()->json(['message' => 'Đã cập nhật thứ tự thành công']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error in VideoController@updateOrder: ' . $e->getMessage());
+            return response()->json(['error' => __('Error updating order: ') . $e->getMessage()], 500);
         }
-
-        return response()->json(['message' => 'Đã cập nhật thứ tự thành công']);
     }
 
     public function toggleStatus(Video $video)
     {
-        $video->update(['is_active' => !$video->is_active]);
+        try {
+            DB::beginTransaction();
 
-        return redirect()->back()
-            ->with('success', 'Đã ' . ($video->is_active ? 'kích hoạt' : 'vô hiệu hóa') . ' video thành công');
+            $video->update(['is_active' => !$video->is_active]);
+
+            DB::commit();
+            return redirect()->back()
+                ->with('success', 'Đã ' . ($video->is_active ? 'kích hoạt' : 'vô hiệu hóa') . ' video thành công');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error in VideoController@toggleStatus: ' . $e->getMessage());
+            return back()->with('error', __('Error toggling status: ') . $e->getMessage());
+        }
     }
 } 

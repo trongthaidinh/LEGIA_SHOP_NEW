@@ -28,7 +28,6 @@ class CategoryRequest extends FormRequest
             'description' => 'nullable|string|max:1000',
             'featured_image' => 'nullable|image|max:2048|mimes:jpeg,png,jpg,gif',
             'status' => 'required|in:draft,published',
-            'language' => 'required|in:vi,zh',
             'is_featured' => 'boolean',
             'is_active' => 'boolean'
         ];
@@ -58,5 +57,21 @@ class CategoryRequest extends FormRequest
             'is_featured' => __('Featured'),
             'is_active' => __('Active')
         ];
+    }
+
+    /**
+     * Handle a failed validation attempt.
+     *
+     * @param \Illuminate\Validation\Validator $validator
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    protected function failedValidation(\Illuminate\Contracts\Validation\Validator $validator)
+    {
+        \Illuminate\Support\Facades\Log::error('Category validation failed', [
+            'errors' => $validator->errors()->toArray(),
+            'input' => $this->all()
+        ]);
+        
+        parent::failedValidation($validator);
     }
 } 

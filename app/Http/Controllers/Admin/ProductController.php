@@ -6,18 +6,19 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\ProductRequest;
 use App\Models\Category;
 use App\Models\Product;
+use App\Traits\HandleUploadImage;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class ProductController extends Controller
 {
+    use HandleUploadImage;
+
     /**
-     * Path for storing product images
+     * Folder path for storing product images
      */
-    const IMAGE_PATH = 'image/product';
+    const IMAGE_FOLDER = 'products';
 
     /**
      * Display a listing of products.
@@ -48,10 +49,11 @@ class ProductController extends Controller
             if ($status = $request->input('status')) {
                 $query->where('status', $status);
             }
+            $categories = Category::where('language', $language)->get();
 
             $products = $query->paginate(10);
 
-            return view('admin.products.index', compact('products'));
+            return view('admin.products.index', compact('products', 'categories'));
         } catch (\Exception $e) {
             Log::error('Error in ProductController@index: ' . $e->getMessage());
             return back()->with('error', 'An error occurred while fetching products.');
@@ -95,17 +97,18 @@ class ProductController extends Controller
             
             // Handle boolean fields
             $validated = array_merge($validated, [
-                'slug' => $this->generateUniqueSlug($request->name),
+                'slug' => $this->generateUniqueSlug($request->name, Product::class),
                 'is_featured' => $request->boolean('is_featured'),
                 'is_active' => true,
-                'language' => request()->segment(1) // Get language from URL
+                'language' => request()->segment(1),
+                'gallery' => $request->gallery ?? null
             ]);
 
             // Handle image upload
             if ($request->hasFile('featured_image')) {
-                $validated['featured_image'] = $this->handleImageUpload(
+                $validated['featured_image'] = $this->handleUploadImage(
                     $request->file('featured_image'),
-                    $validated['slug']
+                    self::IMAGE_FOLDER
                 );
             }
 
@@ -119,7 +122,7 @@ class ProductController extends Controller
             DB::rollBack();
             Log::error('Error in ProductController@store: ' . $e->getMessage());
             return back()->withInput()
-                ->with('error', 'An error occurred while creating the product: ' . $e->getMessage());
+                ->with('error', 'Error creating product: ' . $e->getMessage());
         }
     }
 
@@ -162,20 +165,18 @@ class ProductController extends Controller
             
             // Handle boolean fields
             $validated = array_merge($validated, [
-                'slug' => $this->generateUniqueSlug($request->name, $product->id),
+                'slug' => $this->generateUniqueSlug($request->name, Product::class, $product->id),
                 'is_featured' => $request->boolean('is_featured'),
-                'language' => request()->segment(1) // Get language from URL
+                'language' => request()->segment(1),
+                'gallery' => $request->gallery ?? $product->gallery
             ]);
 
             // Handle image upload
             if ($request->hasFile('featured_image')) {
-                // Delete old image
-                $this->deleteImage($product->featured_image);
-                
-                // Upload new image
-                $validated['featured_image'] = $this->handleImageUpload(
+                $validated['featured_image'] = $this->handleUploadImage(
                     $request->file('featured_image'),
-                    $validated['slug']
+                    self::IMAGE_FOLDER,
+                    $product->featured_image
                 );
             }
 
@@ -189,7 +190,7 @@ class ProductController extends Controller
             DB::rollBack();
             Log::error('Error in ProductController@update: ' . $e->getMessage());
             return back()->withInput()
-                ->with('error', 'An error occurred while updating the product: ' . $e->getMessage());
+                ->with('error', 'Error updating product: ' . $e->getMessage());
         }
     }
 
@@ -220,65 +221,6 @@ class ProductController extends Controller
             DB::rollBack();
             Log::error('Error in ProductController@destroy: ' . $e->getMessage());
             return back()->with('error', 'An error occurred while deleting the product.');
-        }
-    }
-
-    /**
-     * Generate unique slug for product.
-     *
-     * @param string $name
-     * @param int|null $excludeId
-     * @return string
-     */
-    private function generateUniqueSlug(string $name, ?int $excludeId = null): string
-    {
-        $slug = Str::slug($name);
-        $count = 1;
-
-        $query = Product::where('slug', $slug);
-        if ($excludeId) {
-            $query->where('id', '!=', $excludeId);
-        }
-
-        while ($query->exists()) {
-            $slug = Str::slug($name) . '-' . $count++;
-            $query = Product::where('slug', $slug);
-            if ($excludeId) {
-                $query->where('id', '!=', $excludeId);
-            }
-        }
-
-        return $slug;
-    }
-
-    /**
-     * Handle image upload.
-     *
-     * @param \Illuminate\Http\UploadedFile $image
-     * @param string $slug
-     * @return string
-     */
-    private function handleImageUpload($image, string $slug): string
-    {
-        // Create a unique filename using the slug and timestamp
-        $filename = $slug . '-' . time() . '.' . $image->getClientOriginalExtension();
-        
-        // Store the image in the specified path
-        $path = $image->storeAs(self::IMAGE_PATH, $filename, 'public');
-        
-        return $path;
-    }
-
-    /**
-     * Delete image from storage.
-     *
-     * @param string|null $path
-     * @return void
-     */
-    private function deleteImage(?string $path): void
-    {
-        if ($path && Storage::disk('public')->exists($path)) {
-            Storage::disk('public')->delete($path);
         }
     }
 }

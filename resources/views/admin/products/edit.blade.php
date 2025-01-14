@@ -143,44 +143,105 @@
                 </div>
             </div>
 
-            <!-- Thumbnail -->
+            <!-- Featured Image -->
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">
                     Ảnh đại diện
                 </label>
-                <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
-                    <div class="space-y-1 text-center">
-                        @if($product->thumbnail)
-                        <div id="current-thumbnail" class="mb-4">
-                            <img src="{{ asset('storage/' . $product->thumbnail) }}" 
+                <div class="mt-1 flex items-center space-x-4">
+                    <div class="flex-shrink-0 h-32 w-32 border-2 border-gray-300 border-dashed rounded-lg flex items-center justify-center">
+                        @if($product->featured_image)
+                            <img id="featured-preview" 
+                                 src="{{ asset('storage/' . $product->featured_image) }}" 
                                  alt="{{ $product->name }}" 
-                                 class="mx-auto h-32 w-auto">
-                            <p class="mt-2 text-sm text-gray-500">Ảnh hiện tại</p>
-                        </div>
-                        @endif
-                        <div class="flex flex-col items-center">
-                            <i class="fas fa-image text-gray-400 text-3xl mb-3"></i>
-                            <div class="flex text-sm text-gray-600">
-                                <label for="thumbnail" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
-                                    <span>Tải ảnh mới</span>
-                                    <input id="thumbnail" 
-                                           name="thumbnail" 
-                                           type="file" 
-                                           accept="image/*"
-                                           class="sr-only">
-                                </label>
-                                <p class="pl-1">hoặc kéo thả vào đây</p>
+                                 class="h-full w-full object-cover rounded-lg">
+                            <div id="featured-placeholder" class="text-gray-400 hidden">
+                                <i class="fas fa-image fa-2x"></i>
                             </div>
-                            <p class="text-xs text-gray-500">PNG, JPG, GIF tối đa 2MB</p>
-                        </div>
-                        <div id="thumbnail-preview" class="hidden mt-4">
-                            <img src="#" alt="Preview" class="mx-auto h-32 w-auto">
-                            <p class="mt-2 text-sm text-gray-500">Ảnh mới</p>
-                        </div>
+                        @else
+                            <img id="featured-preview" src="#" alt="" class="h-full w-full object-cover rounded-lg hidden">
+                            <div id="featured-placeholder" class="text-gray-400">
+                                <i class="fas fa-image fa-2x"></i>
+                            </div>
+                        @endif
+                    </div>
+                    <div class="flex-1">
+                        <input type="file" 
+                               name="featured_image" 
+                               id="featured_image"
+                               accept="image/*"
+                               class="sr-only"
+                               onchange="previewFeaturedImage(this)">
+                        <label for="featured_image" 
+                               class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 cursor-pointer">
+                            <i class="fas fa-upload mr-2"></i>
+                            {{ $product->featured_image ? 'Thay đổi ảnh' : 'Chọn ảnh đại diện' }}
+                        </label>
+                        @if($product->featured_image)
+                            <button type="button" 
+                                    onclick="removeFeaturedImage()"
+                                    class="ml-2 inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-lg text-red-700 bg-white hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                                <i class="fas fa-trash-alt mr-2"></i>
+                                Xóa ảnh
+                            </button>
+                        @endif
+                        <p class="mt-2 text-sm text-gray-500">PNG, JPG, GIF tối đa 2MB</p>
                     </div>
                 </div>
-                @error('thumbnail')
-                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @error('featured_image')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <!-- Gallery Images -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    Thư viện ảnh
+                </label>
+                <div class="mt-1">
+                    <div class="flex items-center space-x-4 mb-4">
+                        <input type="file" 
+                               name="gallery[]" 
+                               id="gallery"
+                               accept="image/*"
+                               multiple
+                               class="sr-only"
+                               onchange="previewGalleryImages(this)">
+                        <label for="gallery" 
+                               class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 cursor-pointer">
+                            <i class="fas fa-images mr-2"></i>
+                            Thêm ảnh mới
+                        </label>
+                        <p class="text-sm text-gray-500">PNG, JPG, GIF tối đa 2MB mỗi ảnh</p>
+                    </div>
+                    
+                    <div id="gallery-preview" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                        @if($product->gallery)
+                            @foreach(json_decode($product->gallery) as $index => $image)
+                            <div class="relative aspect-w-1 aspect-h-1">
+                                <div class="group relative h-32 w-full border-2 border-gray-300 rounded-lg overflow-hidden">
+                                    <img src="{{ asset('storage/' . $image) }}" 
+                                         alt="Gallery image {{ $index + 1 }}" 
+                                         class="h-full w-full object-cover">
+                                    <div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                        <button type="button" 
+                                                onclick="removeGalleryImage(this)" 
+                                                class="text-white hover:text-red-500 transition-colors">
+                                            <i class="fas fa-trash-alt fa-lg"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <input type="hidden" name="existing_gallery[]" value="{{ $image }}">
+                            </div>
+                            @endforeach
+                        @endif
+                    </div>
+                </div>
+                @error('gallery')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+                @error('gallery.*')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
             </div>
 
@@ -220,25 +281,86 @@
 
 @push('scripts')
 <script>
-$(document).ready(function() {
-    // Initialize CKEditor
-    if (typeof CKEDITOR !== 'undefined') {
-        CKEDITOR.replace('description');
-    }
-
-    // Handle thumbnail preview
-    $('#thumbnail').change(function() {
-        const file = this.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                $('#current-thumbnail').addClass('hidden');
-                $('#thumbnail-preview').removeClass('hidden').find('img').attr('src', e.target.result);
-            }
-            reader.readAsDataURL(file);
+function previewFeaturedImage(input) {
+    const preview = document.getElementById('featured-preview');
+    const placeholder = document.getElementById('featured-placeholder');
+    
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+            preview.classList.remove('hidden');
+            placeholder.classList.add('hidden');
         }
-    });
-});
+        
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+function removeFeaturedImage() {
+    const preview = document.getElementById('featured-preview');
+    const placeholder = document.getElementById('featured-placeholder');
+    const input = document.getElementById('featured_image');
+    
+    preview.src = '#';
+    preview.classList.add('hidden');
+    placeholder.classList.remove('hidden');
+    input.value = '';
+    
+    // Add a hidden input to mark the image for deletion
+    const deleteInput = document.createElement('input');
+    deleteInput.type = 'hidden';
+    deleteInput.name = 'delete_featured_image';
+    deleteInput.value = '1';
+    input.parentNode.appendChild(deleteInput);
+}
+
+function previewGalleryImages(input) {
+    const galleryPreview = document.getElementById('gallery-preview');
+    
+    if (input.files) {
+        Array.from(input.files).forEach((file, index) => {
+            if (file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const previewContainer = document.createElement('div');
+                    previewContainer.className = 'relative aspect-w-1 aspect-h-1';
+                    previewContainer.innerHTML = `
+                        <div class="group relative h-32 w-full border-2 border-gray-300 rounded-lg overflow-hidden">
+                            <img src="${e.target.result}" alt="Gallery preview ${index + 1}" class="h-full w-full object-cover">
+                            <div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                <button type="button" 
+                                        onclick="removeGalleryImage(this)" 
+                                        class="text-white hover:text-red-500 transition-colors">
+                                    <i class="fas fa-trash-alt fa-lg"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    galleryPreview.appendChild(previewContainer);
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+}
+
+function removeGalleryImage(button) {
+    const container = button.closest('.relative');
+    const hiddenInput = container.querySelector('input[type="hidden"]');
+    
+    if (hiddenInput && hiddenInput.name === 'existing_gallery[]') {
+        // If this is an existing image, mark it for deletion
+        const deleteInput = document.createElement('input');
+        deleteInput.type = 'hidden';
+        deleteInput.name = 'delete_gallery[]';
+        deleteInput.value = hiddenInput.value;
+        container.parentNode.appendChild(deleteInput);
+    }
+    
+    container.remove();
+}
 </script>
 @endpush
 @endsection 

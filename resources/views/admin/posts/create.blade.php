@@ -42,21 +42,21 @@
 
             <!-- Category -->
             <div>
-                <label for="category_id" class="block text-sm font-medium text-gray-700 mb-2">
+                <label for="post_category_id" class="block text-sm font-medium text-gray-700 mb-2">
                     Danh mục <span class="text-red-600">*</span>
                 </label>
-                <select name="category_id" 
-                        id="category_id" 
+                <select name="post_category_id" 
+                        id="post_category_id" 
                         required
-                        class="w-full rounded-md shadow-sm border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 @error('category_id') border-red-300 @enderror">
+                        class="w-full rounded-md shadow-sm border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 @error('post_category_id') border-red-300 @enderror">
                     <option value="">Chọn danh mục</option>
                     @foreach($categories as $category)
-                    <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                    <option value="{{ $category->id }}" {{ old('post_category_id') == $category->id ? 'selected' : '' }}>
                         {{ $category->name }}
                     </option>
                     @endforeach
                 </select>
-                @error('category_id')
+                @error('post_category_id')
                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
             </div>
@@ -124,12 +124,12 @@
 
             <!-- Status -->
             <div class="flex items-center space-x-4">
-                <label for="is_published" class="flex items-center">
+                <label for="status" class="flex items-center">
                     <input type="checkbox" 
-                           name="is_published" 
-                           id="is_published" 
-                           value="1"
-                           {{ old('is_published') ? 'checked' : '' }}
+                           name="status" 
+                           id="status" 
+                           value="published"
+                           {{ old('status') ? 'checked' : '' }}
                            class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
                     <span class="ml-2 text-sm text-gray-600">Xuất bản ngay</span>
                 </label>

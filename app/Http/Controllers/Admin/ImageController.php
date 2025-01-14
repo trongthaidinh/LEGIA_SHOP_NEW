@@ -4,39 +4,52 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Image;
+use App\Traits\HandleUploadImage;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ImageController extends Controller
 {
+    use HandleUploadImage;
+
+    /**
+     * Folder path for storing gallery images
+     */
+    const IMAGE_FOLDER = 'gallery';
+
     public function index(Request $request)
     {
-        $query = Image::query();
+        try {
+            $query = Image::query();
 
-        // Filter by visibility
-        if ($request->has('visibility')) {
-            $query->where('visibility', $request->visibility);
+            // Filter by visibility
+            if ($request->has('visibility')) {
+                $query->where('visibility', $request->visibility);
+            }
+
+            // Filter by status
+            if ($request->has('status')) {
+                $query->where('is_active', $request->status === 'active');
+            }
+
+            // Search by filename
+            if ($request->has('search')) {
+                $query->where('file_name', 'like', '%' . $request->search . '%');
+            }
+
+            // Sort
+            $sort = $request->sort ?? 'created_at';
+            $direction = $request->direction ?? 'desc';
+            $query->orderBy($sort, $direction);
+
+            $images = $query->paginate(20);
+
+            return view('admin.images.index', compact('images'));
+        } catch (\Exception $e) {
+            Log::error('Error in ImageController@index: ' . $e->getMessage());
+            return back()->with('error', __('Error loading images.'));
         }
-
-        // Filter by status
-        if ($request->has('status')) {
-            $query->where('is_active', $request->status === 'active');
-        }
-
-        // Search by filename
-        if ($request->has('search')) {
-            $query->where('file_name', 'like', '%' . $request->search . '%');
-        }
-
-        // Sort
-        $sort = $request->sort ?? 'created_at';
-        $direction = $request->direction ?? 'desc';
-        $query->orderBy($sort, $direction);
-
-        $images = $query->paginate(20)->withQueryString();
-
-        return view('admin.images.index', compact('images'));
     }
 
     public function create()
@@ -46,34 +59,43 @@ class ImageController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'images.*' => 'required|image|max:2048', // Max 2MB per image
-            'visibility' => 'required|in:public,private',
-        ]);
+        try {
+            DB::beginTransaction();
 
-        $uploadedImages = [];
-        dd($request->file('images'));
-        if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $imageFile) {
-                $fileName = Str::uuid() . '.' . $imageFile->getClientOriginalExtension();
-                $filePath = $imageFile->storeAs('images', $fileName, 'public');
+            $request->validate([
+                'images.*' => 'required|image|max:2048', // Max 2MB per image
+                'visibility' => 'required|in:public,private',
+            ]);
 
-                $image = Image::create([
-                    'file_name' => $imageFile->getClientOriginalName(),
-                    'file_path' => $filePath,
-                    'mime_type' => $imageFile->getMimeType(),
-                    'file_size' => $imageFile->getSize(),
-                    'visibility' => $request->visibility,
-                    'is_active' => true,
-                    'order' => Image::max('order') + 1
-                ]);
+            $uploadedImages = [];
 
-                $uploadedImages[] = $image;
+            if ($request->hasFile('images')) {
+                foreach ($request->file('images') as $imageFile) {
+                    $filePath = $this->handleUploadImage($imageFile, self::IMAGE_FOLDER);
+
+                    $image = Image::create([
+                        'file_name' => $imageFile->getClientOriginalName(),
+                        'file_path' => $filePath,
+                        'mime_type' => $imageFile->getMimeType(),
+                        'file_size' => $imageFile->getSize(),
+                        'visibility' => $request->visibility,
+                        'is_active' => true,
+                        'order' => Image::max('order') + 1
+                    ]);
+
+                    $uploadedImages[] = $image;
+                }
             }
-        }
 
-        return redirect()->route(app()->getLocale() . '.admin.images.index')
-            ->with('success', 'Đã tải lên ' . count($uploadedImages) . ' hình ảnh thành công');
+            DB::commit();
+            return redirect()->route(app()->getLocale() . '.admin.images.index')
+                ->with('success', 'Đã tải lên ' . count($uploadedImages) . ' hình ảnh thành công');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error in ImageController@store: ' . $e->getMessage());
+            return back()->withInput()
+                ->with('error', __('Error uploading images: ') . $e->getMessage());
+        }
     }
 
     public function show(Image $image)
@@ -88,49 +110,86 @@ class ImageController extends Controller
 
     public function update(Request $request, Image $image)
     {
-        $request->validate([
-            'visibility' => 'required|in:public,private',
-            'is_active' => 'boolean',
-            'order' => 'integer|min:0'
-        ]);
+        try {
+            DB::beginTransaction();
 
-        $image->update($request->only(['visibility', 'is_active', 'order']));
+            $request->validate([
+                'visibility' => 'required|in:public,private',
+                'is_active' => 'boolean',
+                'order' => 'integer|min:0'
+            ]);
 
-        return redirect()->route(app()->getLocale() . '.admin.images.index')
-            ->with('success', 'Đã cập nhật hình ảnh thành công');
+            $image->update($request->only(['visibility', 'is_active', 'order']));
+
+            DB::commit();
+            return redirect()->route(app()->getLocale() . '.admin.images.index')
+                ->with('success', 'Đã cập nhật hình ảnh thành công');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error in ImageController@update: ' . $e->getMessage());
+            return back()->withInput()
+                ->with('error', __('Error updating image: ') . $e->getMessage());
+        }
     }
 
     public function destroy(Image $image)
     {
-        // Delete the physical file
-        Storage::disk('public')->delete($image->file_path);
-        
-        // Delete the database record
-        $image->delete();
+        try {
+            DB::beginTransaction();
 
-        return redirect()->route(app()->getLocale() . '.admin.images.index')
-            ->with('success', 'Đã xóa hình ảnh thành công');
+            // Delete the physical file
+            $this->deleteImage($image->file_path);
+            
+            // Delete the database record
+            $image->delete();
+
+            DB::commit();
+            return redirect()->route(app()->getLocale() . '.admin.images.index')
+                ->with('success', 'Đã xóa hình ảnh thành công');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error in ImageController@destroy: ' . $e->getMessage());
+            return back()->with('error', __('Error deleting image: ') . $e->getMessage());
+        }
     }
 
     public function updateOrder(Request $request)
     {
-        $request->validate([
-            'orders.*.id' => 'required|exists:images,id',
-            'orders.*.order' => 'required|integer|min:0'
-        ]);
+        try {
+            DB::beginTransaction();
 
-        foreach ($request->orders as $item) {
-            Image::where('id', $item['id'])->update(['order' => $item['order']]);
+            $request->validate([
+                'orders.*.id' => 'required|exists:images,id',
+                'orders.*.order' => 'required|integer|min:0'
+            ]);
+
+            foreach ($request->orders as $item) {
+                Image::where('id', $item['id'])->update(['order' => $item['order']]);
+            }
+
+            DB::commit();
+            return response()->json(['message' => 'Đã cập nhật thứ tự thành công']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error in ImageController@updateOrder: ' . $e->getMessage());
+            return response()->json(['error' => __('Error updating order: ') . $e->getMessage()], 500);
         }
-
-        return response()->json(['message' => 'Đã cập nhật thứ tự thành công']);
     }
 
     public function toggleStatus(Image $image)
     {
-        $image->update(['is_active' => !$image->is_active]);
+        try {
+            DB::beginTransaction();
 
-        return redirect()->back()
-            ->with('success', 'Đã ' . ($image->is_active ? 'kích hoạt' : 'vô hiệu hóa') . ' hình ảnh thành công');
+            $image->update(['is_active' => !$image->is_active]);
+
+            DB::commit();
+            return redirect()->back()
+                ->with('success', 'Đã ' . ($image->is_active ? 'kích hoạt' : 'vô hiệu hóa') . ' hình ảnh thành công');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error in ImageController@toggleStatus: ' . $e->getMessage());
+            return back()->with('error', __('Error toggling status: ') . $e->getMessage());
+        }
     }
 } 
