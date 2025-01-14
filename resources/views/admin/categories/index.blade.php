@@ -1,29 +1,29 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="container-fluid px-4">
-    <div class="bg-white rounded-lg shadow-sm">
+<div class="container-fluid">
+    <div class="bg-white rounded-lg shadow-sm overflow-hidden">
         <!-- Header -->
-        <div class="bg-blue-600 px-6 py-4">
+        <div class="bg-[var(--color-primary-500)] px-6 py-4">
             <div class="flex justify-between items-center">
                 <h3 class="text-xl font-semibold text-white flex items-center">
                     <i class="fas fa-folder mr-2"></i> Quản lý danh mục sản phẩm
                 </h3>
                 <div>
                     <a href="{{ route(app()->getLocale() . '.admin.categories.create') }}" 
-                       class="inline-flex items-center px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-md">
-                        <i class="fas fa-plus mr-2"></i> Thêm danh mục
+                       class="inline-flex items-center px-4 py-2 bg-white text-sm font-medium text-[var(--color-primary-700)] hover:bg-[var(--color-primary-50)] rounded-md transition-colors duration-200">
+                        <i class="fas fa-plus mr-2 text-[var(--color-primary-500)]"></i> Thêm danh mục
                     </a>
                 </div>
             </div>
         </div>
 
         <!-- Filters -->
-        <div class="p-6 border-b border-gray-200">
+        <div class="p-6 border-b border-[var(--color-primary-100)]">
             <div class="flex flex-wrap gap-4">
                 <!-- Parent Category Filter -->
                 <div class="flex-1 min-w-[200px]">
-                    <select id="parent-filter" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+                    <select id="parent-filter" class="w-full rounded-lg border-[var(--color-primary-300)] focus:border-[var(--color-primary-500)] focus:ring-[var(--color-primary-500)]">
                         <option value="">Tất cả danh mục</option>
                         @foreach($categories->where('parent_id', null) as $category)
                         <option value="{{ $category->id }}">{{ $category->name }}</option>
@@ -33,7 +33,7 @@
 
                 <!-- Status Filter -->
                 <div class="flex-1 min-w-[200px]">
-                    <select id="status-filter" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+                    <select id="status-filter" class="w-full rounded-lg border-[var(--color-primary-300)] focus:border-[var(--color-primary-500)] focus:ring-[var(--color-primary-500)]">
                         <option value="">Tất cả trạng thái</option>
                         <option value="1">Đang hoạt động</option>
                         <option value="0">Đã ẩn</option>
@@ -46,9 +46,9 @@
                         <input type="text" 
                                id="search" 
                                placeholder="Tìm kiếm danh mục..." 
-                               class="w-full pl-10 pr-4 py-2 rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+                               class="w-full pl-10 pr-4 py-2 rounded-lg border-[var(--color-primary-300)] focus:border-[var(--color-primary-500)] focus:ring-[var(--color-primary-500)]">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <i class="fas fa-search text-gray-400"></i>
+                            <i class="fas fa-search text-[var(--color-primary-400)]"></i>
                         </div>
                     </div>
                 </div>
@@ -57,13 +57,13 @@
 
         @if(session('success'))
         <div class="p-4">
-            <div class="bg-green-50 border border-green-200 rounded-md p-4">
+            <div class="bg-[var(--color-primary-50)] border border-[var(--color-primary-200)] rounded-md p-4">
                 <div class="flex">
                     <div class="flex-shrink-0">
-                        <i class="fas fa-check-circle text-green-400"></i>
+                        <i class="fas fa-check-circle text-[var(--color-primary-500)]"></i>
                     </div>
                     <div class="ml-3">
-                        <p class="text-sm text-green-700">{{ session('success') }}</p>
+                        <p class="text-sm text-[var(--color-primary-700)]">{{ session('success') }}</p>
                     </div>
                 </div>
             </div>
@@ -72,42 +72,42 @@
 
         <!-- Categories Table -->
         <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
+            <table class="min-w-full divide-y divide-[var(--color-primary-100)]">
+                <thead class="bg-[var(--color-primary-50)]">
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tên danh mục</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Danh mục cha</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Số sản phẩm</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trạng thái</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ngày tạo</th>
-                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Thao tác</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-[var(--color-primary-600)] uppercase tracking-wider">Tên danh mục</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-[var(--color-primary-600)] uppercase tracking-wider">Danh mục cha</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-[var(--color-primary-600)] uppercase tracking-wider">Số sản phẩm</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-[var(--color-primary-600)] uppercase tracking-wider">Trạng thái</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-[var(--color-primary-600)] uppercase tracking-wider">Ngày tạo</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-[var(--color-primary-600)] uppercase tracking-wider">Thao tác</th>
                     </tr>
                 </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
+                <tbody class="bg-white divide-y divide-[var(--color-primary-100)]">
                     @foreach($categories as $category)
-                    <tr class="hover:bg-gray-50">
+                    <tr class="hover:bg-[var(--color-primary-50)] transition-colors duration-200">
                         <td class="px-6 py-4">
                             <div class="flex items-center">
-                                <div class="text-sm font-medium text-gray-900">{{ $category->name }}</div>
+                                <div class="text-sm font-medium text-[var(--color-primary-900)]">{{ $category->name }}</div>
                             </div>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-[var(--color-primary-600)]">
                             {{ $category->parent ? $category->parent->name : 'Không có' }}
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-[var(--color-primary-600)]">
                             {{ $category->products_count }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $category->is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $category->is_active ? 'bg-[var(--color-primary-100)] text-[var(--color-primary-700)]' : 'bg-[var(--color-secondary-100)] text-[var(--color-secondary-700)]' }}">
                                 {{ $category->is_active ? 'Đang hoạt động' : 'Đã ẩn' }}
                             </span>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-[var(--color-primary-600)]">
                             {{ $category->created_at->format('d/m/Y H:i') }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                             <a href="{{ route(app()->getLocale() . '.admin.categories.edit', $category) }}" 
-                               class="text-blue-600 hover:text-blue-900 mr-3">
+                               class="text-[var(--color-primary-600)] hover:text-[var(--color-primary-800)] mr-3 transition-colors duration-200">
                                 <i class="fas fa-edit"></i>
                             </a>
                             <form action="{{ route(app()->getLocale() . '.admin.categories.destroy', $category) }}" 
@@ -116,7 +116,7 @@
                                   onsubmit="return confirm('Bạn có chắc chắn muốn xóa danh mục này?')">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="text-red-600 hover:text-red-900">
+                                <button type="submit" class="text-[var(--color-secondary-600)] hover:text-[var(--color-secondary-800)] transition-colors duration-200">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </form>
@@ -129,7 +129,7 @@
 
         <!-- Pagination -->
         @if($categories->hasPages())
-        <div class="px-6 py-4 border-t border-gray-200">
+        <div class="px-6 py-4 border-t border-[var(--color-primary-100)]">
             {{ $categories->links() }}
         </div>
         @endif
@@ -163,4 +163,4 @@ $(document).ready(function() {
 });
 </script>
 @endpush
-@endsection 
+@endsection

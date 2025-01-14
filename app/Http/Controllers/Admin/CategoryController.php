@@ -30,6 +30,7 @@ class CategoryController extends Controller
             
             $language = request()->segment(1);
             $query = Category::with('parent')
+                ->withCount('products')  // Thêm dòng này để đếm số sản phẩm
                 ->where('language', $language)
                 ->latest();
 

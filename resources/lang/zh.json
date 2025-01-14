@@ -218,5 +218,8 @@
     "off": "折扣",
     "no_products_found": "未找到任何产品",
     "try_different_search": "请尝试其他搜索关键词",
-    "back_to_products": "返回产品列表"
+    "back_to_products": "返回产品列表",
+    "Order Placed Successfully!": "订单已成功下单！",
+    "Thank you for your order.": "感谢您的订单。",
+    "We will contact you shortly to confirm your order.": "我们将尽快与您联系以确认订单。"
 }
