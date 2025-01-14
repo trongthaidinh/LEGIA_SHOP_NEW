@@ -205,5 +205,8 @@
     "showing_results": "Hiển thị :start - :end trên tổng số :total sản phẩm",
     "off": "giảm",
     "try_different_search": "Vui lòng thử từ khóa tìm kiếm khác",
-    "back_to_products": "Quay lại danh sách sản phẩm"
+    "back_to_products": "Quay lại danh sách sản phẩm",
+    "Order Placed Successfully!": "Đặt hàng thành công!",
+    "Thank you for your order.": "Cảm ơn bạn đã đặt hàng.",
+    "We will contact you shortly to confirm your order.": "Chúng tôi sẽ liên hệ với bạn ngay để xác nhận đơn hàng."
 }
