@@ -202,6 +202,7 @@ Route::prefix('vi/admin')->middleware(['auth'])->group(function () {
     Route::resource('products', AdminProductController::class)->names('vi.admin.products');
     Route::resource('orders', OrderController::class)->except(['edit', 'update'])->names('vi.admin.orders');
     Route::patch('orders/{order}/status', [OrderController::class, 'updateStatus'])->name('vi.admin.orders.update-status');
+    Route::post('orders/{order}/process', [OrderController::class, 'process'])->name('vi.admin.orders.process');
     Route::resource('post-categories', PostCategoryController::class)->names('vi.admin.post-categories');
     Route::resource('posts', AdminPostController::class)->names('vi.admin.posts');
     Route::get('product-reviews', [ProductReviewController::class, 'index'])->name('vi.admin.product-reviews.index');
@@ -229,6 +230,7 @@ Route::prefix('zh/admin')->middleware(['auth'])->group(function () {
     Route::resource('products', AdminProductController::class)->names('zh.admin.products');
     Route::resource('orders', OrderController::class)->except(['edit', 'update'])->names('zh.admin.orders');
     Route::patch('orders/{order}/status', [OrderController::class, 'updateStatus'])->name('zh.admin.orders.update-status');
+    Route::post('orders/{order}/process', [OrderController::class, 'process'])->name('zh.admin.orders.process');
     Route::resource('post-categories', PostCategoryController::class)->names('zh.admin.post-categories');
     Route::resource('posts', AdminPostController::class)->names('zh.admin.posts');
     Route::get('product-reviews', [ProductReviewController::class, 'index'])->name('zh.admin.product-reviews.index');

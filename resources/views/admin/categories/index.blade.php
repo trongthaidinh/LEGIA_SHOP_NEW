@@ -20,23 +20,34 @@
 
         <!-- Filters -->
         <div class="p-6 border-b border-[var(--color-primary-100)]">
-            <div class="flex flex-wrap gap-4">
+            <form action="{{ route(app()->getLocale() . '.admin.categories.index') }}" method="GET" class="flex flex-wrap gap-4">
                 <!-- Parent Category Filter -->
                 <div class="flex-1 min-w-[200px]">
-                    <select id="parent-filter" class="w-full rounded-lg border-[var(--color-primary-300)] focus:border-[var(--color-primary-500)] focus:ring-[var(--color-primary-500)]">
+                    <select name="parent_id" id="parent-filter" class="w-full rounded-lg border-[var(--color-primary-300)] focus:border-[var(--color-primary-500)] focus:ring-[var(--color-primary-500)]">
                         <option value="">Tất cả danh mục</option>
                         @foreach($categories->where('parent_id', null) as $category)
-                        <option value="{{ $category->id }}">{{ $category->name }}</option>
+                        <option value="{{ $category->id }}" {{ request('parent_id') == $category->id ? 'selected' : '' }}>
+                            {{ $category->name }}
+                        </option>
                         @endforeach
                     </select>
                 </div>
 
                 <!-- Status Filter -->
                 <div class="flex-1 min-w-[200px]">
-                    <select id="status-filter" class="w-full rounded-lg border-[var(--color-primary-300)] focus:border-[var(--color-primary-500)] focus:ring-[var(--color-primary-500)]">
+                    <select name="status" id="status-filter" class="w-full rounded-lg border-[var(--color-primary-300)] focus:border-[var(--color-primary-500)] focus:ring-[var(--color-primary-500)]">
                         <option value="">Tất cả trạng thái</option>
-                        <option value="1">Đang hoạt động</option>
-                        <option value="0">Đã ẩn</option>
+                        <option value="published" {{ request('status') == 'published' ? 'selected' : '' }}>Đã xuất bản</option>
+                        <option value="draft" {{ request('status') == 'draft' ? 'selected' : '' }}>Bản nháp</option>
+                    </select>
+                </div>
+
+                <!-- Featured Filter -->
+                <div class="flex-1 min-w-[200px]">
+                    <select name="is_featured" id="featured-filter" class="w-full rounded-lg border-[var(--color-primary-300)] focus:border-[var(--color-primary-500)] focus:ring-[var(--color-primary-500)]">
+                        <option value="">Tất cả</option>
+                        <option value="1" {{ request('is_featured') == '1' ? 'selected' : '' }}>Nổi bật</option>
+                        <option value="0" {{ request('is_featured') == '0' ? 'selected' : '' }}>Không nổi bật</option>
                     </select>
                 </div>
 
@@ -44,7 +55,8 @@
                 <div class="flex-1 min-w-[300px]">
                     <div class="relative">
                         <input type="text" 
-                               id="search" 
+                               name="search"
+                               value="{{ request('search') }}"
                                placeholder="Tìm kiếm danh mục..." 
                                class="w-full pl-10 pr-4 py-2 rounded-lg border-[var(--color-primary-300)] focus:border-[var(--color-primary-500)] focus:ring-[var(--color-primary-500)]">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -52,7 +64,17 @@
                         </div>
                     </div>
                 </div>
-            </div>
+
+                <!-- Submit and Reset -->
+                <div class="flex gap-2">
+                    <button type="submit" class="px-4 py-2 bg-[var(--color-primary-500)] text-white rounded-lg hover:bg-[var(--color-primary-600)]">
+                        <i class="fas fa-filter mr-1"></i> Lọc
+                    </button>
+                    <a href="{{ route(app()->getLocale() . '.admin.categories.index') }}" class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600">
+                        <i class="fas fa-redo mr-1"></i> Đặt lại
+                    </a>
+                </div>
+            </form>
         </div>
 
         @if(session('success'))
@@ -79,16 +101,25 @@
                         <th class="px-6 py-3 text-left text-xs font-medium text-[var(--color-primary-600)] uppercase tracking-wider">Danh mục cha</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-[var(--color-primary-600)] uppercase tracking-wider">Số sản phẩm</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-[var(--color-primary-600)] uppercase tracking-wider">Trạng thái</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-[var(--color-primary-600)] uppercase tracking-wider">Nổi bật</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-[var(--color-primary-600)] uppercase tracking-wider">Ngày tạo</th>
                         <th class="px-6 py-3 text-right text-xs font-medium text-[var(--color-primary-600)] uppercase tracking-wider">Thao tác</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-[var(--color-primary-100)]">
-                    @foreach($categories as $category)
+                    @forelse($categories as $category)
                     <tr class="hover:bg-[var(--color-primary-50)] transition-colors duration-200">
                         <td class="px-6 py-4">
                             <div class="flex items-center">
-                                <div class="text-sm font-medium text-[var(--color-primary-900)]">{{ $category->name }}</div>
+                                @if($category->featured_image)
+                                <img src="{{ Storage::url($category->featured_image) }}" 
+                                     alt="{{ $category->name }}" 
+                                     class="h-10 w-10 rounded-full object-cover mr-3">
+                                @endif
+                                <div>
+                                    <div class="text-sm font-medium text-[var(--color-primary-900)]">{{ $category->name }}</div>
+                                    <div class="text-sm text-[var(--color-primary-500)]">{{ $category->slug }}</div>
+                                </div>
                             </div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-[var(--color-primary-600)]">
@@ -98,8 +129,13 @@
                             {{ $category->products_count }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $category->is_active ? 'bg-[var(--color-primary-100)] text-[var(--color-primary-700)]' : 'bg-[var(--color-secondary-100)] text-[var(--color-secondary-700)]' }}">
-                                {{ $category->is_active ? 'Đang hoạt động' : 'Đã ẩn' }}
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $category->status === 'published' ? 'bg-[var(--color-primary-100)] text-[var(--color-primary-700)]' : 'bg-[var(--color-secondary-100)] text-[var(--color-secondary-700)]' }}">
+                                {{ $category->status === 'published' ? 'Đã xuất bản' : 'Bản nháp' }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $category->is_featured ? 'bg-yellow-100 text-yellow-700' : 'bg-gray-100 text-gray-700' }}">
+                                {{ $category->is_featured ? 'Nổi bật' : 'Không' }}
                             </span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-[var(--color-primary-600)]">
@@ -107,7 +143,8 @@
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                             <a href="{{ route(app()->getLocale() . '.admin.categories.edit', $category) }}" 
-                               class="text-[var(--color-primary-600)] hover:text-[var(--color-primary-800)] mr-3 transition-colors duration-200">
+                               class="text-[var(--color-primary-600)] hover:text-[var(--color-primary-800)] mr-3 transition-colors duration-200"
+                               title="Chỉnh sửa">
                                 <i class="fas fa-edit"></i>
                             </a>
                             <form action="{{ route(app()->getLocale() . '.admin.categories.destroy', $category) }}" 
@@ -116,13 +153,21 @@
                                   onsubmit="return confirm('Bạn có chắc chắn muốn xóa danh mục này?')">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="text-[var(--color-secondary-600)] hover:text-[var(--color-secondary-800)] transition-colors duration-200">
+                                <button type="submit" 
+                                        class="text-[var(--color-secondary-600)] hover:text-[var(--color-secondary-800)] transition-colors duration-200"
+                                        title="Xóa">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </form>
                         </td>
                     </tr>
-                    @endforeach
+                    @empty
+                    <tr>
+                        <td colspan="7" class="px-6 py-4 text-center text-sm text-[var(--color-primary-500)]">
+                            Không có danh mục nào
+                        </td>
+                    </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
@@ -130,7 +175,7 @@
         <!-- Pagination -->
         @if($categories->hasPages())
         <div class="px-6 py-4 border-t border-[var(--color-primary-100)]">
-            {{ $categories->links() }}
+            {{ $categories->appends(request()->query())->links() }}
         </div>
         @endif
     </div>
@@ -139,25 +184,17 @@
 @push('scripts')
 <script>
 $(document).ready(function() {
-    // Handle parent category filter change
-    $('#parent-filter').change(function() {
-        const parent = $(this).val();
-        // Add your filter logic here
+    // Auto-submit form when filters change
+    $('#parent-filter, #status-filter, #featured-filter').change(function() {
+        $(this).closest('form').submit();
     });
 
-    // Handle status filter change
-    $('#status-filter').change(function() {
-        const status = $(this).val();
-        // Add your filter logic here
-    });
-
-    // Handle search input
+    // Handle search with debounce
     let searchTimeout;
     $('#search').on('input', function() {
         clearTimeout(searchTimeout);
         searchTimeout = setTimeout(() => {
-            const search = $(this).val();
-            // Add your search logic here
+            $(this).closest('form').submit();
         }, 500);
     });
 });

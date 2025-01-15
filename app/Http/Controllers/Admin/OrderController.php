@@ -203,6 +203,33 @@ class OrderController extends Controller
     }
 
     /**
+     * Process the order.
+     *
+     * @param Order $order
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function process(Order $order)
+    {
+        try {
+            DB::beginTransaction();
+
+            if ($order->status !== Order::STATUS_PENDING) {
+                throw new \Exception('Only pending orders can be processed.');
+            }
+
+            $order->update(['status' => 'processing']);
+
+            DB::commit();
+            return back()->with('success', 'Order has been moved to processing.');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error in OrderController@process: ' . $e->getMessage());
+            return back()->with('error', 'An error occurred while processing the order: ' . $e->getMessage());
+        }
+    }
+
+    /**
      * Remove the specified order from storage.
      *
      * @param Order $order

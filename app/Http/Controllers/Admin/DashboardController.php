@@ -36,13 +36,26 @@ class DashboardController extends Controller
             ->get();
 
         // Top sản phẩm bán chạy
-        $topProducts = Product::select('products.*')
-            ->leftJoin('order_items', 'products.id', '=', 'order_items.product_id')
-            ->select('products.*', DB::raw('COUNT(order_items.id) as sales_count'))
-            ->groupBy('products.id')
-            ->orderBy('sales_count', 'desc')
-            ->limit(5)
-            ->get();
+        $topProducts = Product::select(
+            'products.id', 
+            'products.name', 
+            'products.language', 
+            'products.featured_image', 
+            'products.category_id', 
+            DB::raw('COUNT(order_items.id) as sales_count')
+        )
+        ->leftJoin('order_items', 'products.id', '=', 'order_items.product_id')
+        ->where('products.language', 'vi')  
+        ->groupBy(
+            'products.id', 
+            'products.name', 
+            'products.featured_image',
+            'products.language', 
+            'products.category_id'
+        )  
+        ->orderBy('sales_count', 'desc')
+        ->limit(5)
+        ->get();
 
         // Trạng thái đơn hàng
         $orderStatus = Order::select('status', DB::raw('COUNT(*) as count'))

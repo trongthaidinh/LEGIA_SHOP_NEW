@@ -11,6 +11,85 @@
     h1, h2, h3, h4, h5, h6 {
         @apply font-semibold text-gray-900;
     }
+
+    /* Global Typography for Prose Content */
+    .prose h1 {
+        @apply text-4xl font-bold text-gray-900 mb-6 leading-tight;
+    }
+    .prose h2 {
+        @apply text-3xl font-semibold text-gray-800 mt-8 mb-4 border-b pb-2 border-gray-200;
+    }
+    .prose h3 {
+        @apply text-2xl font-semibold text-gray-700 mt-6 mb-3;
+    }
+    .prose h4 {
+        @apply text-xl font-medium text-gray-600 mt-4 mb-2;
+    }
+    .prose p {
+        @apply text-gray-700 leading-relaxed mb-4;
+    }
+
+    /* Lists */
+    .prose ul {
+        @apply list-disc list-outside pl-5 space-y-2 text-gray-700;
+    }
+    .prose ol {
+        @apply list-decimal list-outside pl-5 space-y-2 text-gray-700;
+    }
+    .prose li {
+        @apply pl-2;
+    }
+
+    /* Links */
+    .prose a {
+        @apply text-blue-600 hover:text-blue-800 transition-colors underline;
+    }
+
+    /* Strong and Emphasis */
+    .prose strong {
+        @apply font-bold text-gray-900;
+    }
+    .prose em {
+        @apply italic text-gray-800;
+    }
+
+    /* Tables */
+    .prose table {
+        @apply w-full border-collapse border border-gray-300 mb-6;
+    }
+    .prose thead {
+        @apply bg-gray-100;
+    }
+    .prose th {
+        @apply border border-gray-300 px-4 py-2 text-left font-semibold text-gray-800;
+    }
+    .prose td {
+        @apply border border-gray-300 px-4 py-2 text-gray-700;
+    }
+    .prose tr:nth-child(even) {
+        @apply bg-gray-50;
+    }
+
+    /* Blockquotes */
+    .prose blockquote {
+        @apply border-l-4 border-gray-300 pl-4 py-2 italic text-gray-600 my-4;
+    }
+
+    /* Code */
+    .prose code {
+        @apply bg-gray-100 rounded px-1 py-0.5 text-sm font-mono text-red-600;
+    }
+    .prose pre {
+        @apply bg-gray-100 rounded-lg p-4 overflow-x-auto mb-4;
+    }
+    .prose pre code {
+        @apply bg-transparent p-0;
+    }
+
+    /* Images */
+    .prose img {
+        @apply max-w-full h-auto rounded-lg shadow-md my-6 mx-auto block;
+    }
 }
 
 @layer components {
@@ -52,5 +131,14 @@
 
     .badge-secondary {
         @apply bg-secondary-100 text-secondary-800;
+    }
+
+    @media (max-width: 1024px) {
+        .fixed.bottom-0.left-0 {
+            width: 100%;
+            padding: 1rem;
+            background-color: white;
+            box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
+        }
     }
 }

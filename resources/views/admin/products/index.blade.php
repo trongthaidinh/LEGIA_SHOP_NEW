@@ -75,8 +75,8 @@
                     <tr class="hover:bg-gray-50">
                         <td class="px-6 py-4">
                             <div class="flex items-center">
-                                @if($product->thumbnail)
-                                <img src="{{ asset('storage/' . $product->thumbnail) }}" 
+                                @if($product->featured_image)
+                                <img src="{{ asset('storage/' . $product->featured_image) }}" 
                                      alt="{{ $product->name }}" 
                                      class="h-12 w-12 object-cover rounded-md">
                                 @else

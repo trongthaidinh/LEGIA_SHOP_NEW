@@ -49,13 +49,13 @@ class HomeController extends Controller
         $latestPosts = Post::published()
             ->byLanguage($currentLocale)
             ->latest()
-            ->take(3)
+            ->take(4)
             ->get();
             
         $testimonials = Testimonial::active()
             ->byLanguage($currentLocale)
             ->ordered()
-            ->take(6)
+            ->take(4)
             ->get();
             
         $certificates = Certificate::active()

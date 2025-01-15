@@ -30,7 +30,7 @@
         <section class="py-8 lg:py-16 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                <div class="prose lg:prose-lg">
+                <div class="container mx-auto">
                     <div class="flex flex-col items-center text-center mb-4">
                         <img src="{{ asset('images/title.png') }}" alt="{{ __('company_name') }}" class="mb-2 w-[200px]">
                         <h1 class="text-3xl font-bold text-[var(--color-primary-600)]">{{ __('company_name') }}</h2>
@@ -57,8 +57,8 @@
     <section class="py-8 lg:py-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between mb-8">
-                <h2 class="text-3xl font-bold text-[var(--color-primary-600)]">{{ __('premium_birds_nest1') }}</h2>
-                <a href="{{ route(app()->getLocale() . '.products', ['type' => 'yen_chung']) }}" class="text-[var(--color-primary-600)] hover:text-[var(--color-primary-700)] font-medium flex items-center gap-2">
+                <h2 class="text-xl lg:text-3xl font-bold text-[var(--color-primary-600)]">{{ __('premium_birds_nest1') }}</h2>
+                <a href="{{ route(app()->getLocale() . '.products', ['type' => 'yen_chung']) }}" class="text-sm lg:text-base text-[var(--color-primary-600)] hover:text-[var(--color-primary-700)] font-medium flex items-center gap-2">
                     {{ __('view_more') }}
                     <i class="fas fa-chevron-right text-sm"></i>
                 </a>
@@ -76,8 +76,8 @@
     <section class="py-8 lg:py-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between mb-8">
-                <h2 class="text-3xl font-bold text-[var(--color-primary-600)]">{{ __('premium_birds_nest') }}</h2>
-                <a href="{{ route(app()->getLocale() . '.products', ['type' => 'yen_to']) }}" class="text-[var(--color-primary-600)] hover:text-[var(--color-primary-700)] font-medium flex items-center gap-2">
+                <h2 class="text-xl lg:text-3xl font-bold text-[var(--color-primary-600)]">{{ __('premium_birds_nest') }}</h2>
+                <a href="{{ route(app()->getLocale() . '.products', ['type' => 'yen_to']) }}" class=" text-sm lg:text-base text-[var(--color-primary-600)] hover:text-[var(--color-primary-700)] font-medium flex items-center gap-2">
                     {{ __('view_more') }}
                     <i class="fas fa-chevron-right text-sm"></i>
                 </a>
@@ -95,8 +95,8 @@
     <section class="py-8 lg:py-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between mb-8">
-                <h2 class="text-3xl font-bold text-[var(--color-primary-600)]">{{ __('premium_gift_set') }}</h2>
-                <a href="{{ route(app()->getLocale() . '.products', ['type' => 'gift_set']) }}" class="text-[var(--color-primary-600)] hover:text-[var(--color-primary-700)] font-medium flex items-center gap-2">
+                <h2 class="text-xl lg:text-3xl font-bold text-[var(--color-primary-600)]">{{ __('premium_gift_set') }}</h2>
+                <a href="{{ route(app()->getLocale() . '.products', ['type' => 'gift_set']) }}" class="text-sm lg:text-base text-[var(--color-primary-600)] hover:text-[var(--color-primary-700)] font-medium flex items-center gap-2">
                     {{ __('view_more') }}
                     <i class="fas fa-chevron-right text-sm"></i>
                 </a>
@@ -113,7 +113,7 @@
     <!-- Why Choose Us -->
     <section class="py-8 lg:py-16 bg-[var(--color-primary-50)]">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 class="text-3xl text-center font-bold text-[var(--color-primary-600)] mb-12">{{ __('why_choose_us') }}</h2>
+            <h2 class="text-2xl lg:text-3xl text-center font-bold text-[var(--color-primary-600)] mb-12">{{ __('why_choose_us') }}</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                 <div class="text-center">
                     <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary-100 text-primary-600 mb-6">
@@ -150,8 +150,8 @@
     <!-- Latest Posts -->
     <section class="py-8 lg:py-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 class="text-3xl font-bold text-[var(--color-primary-600)] mb-12">{{ __('latest_news') }}</h2>
-            <div class="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-8">
+            <h2 class="text-xl lg:text-3xl font-bold text-[var(--color-primary-600)] mb-12">{{ __('latest_news') }}</h2>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-8">
                 @foreach($latestPosts as $post)
                     <article class="group">
                         <div class="relative rounded-lg overflow-hidden mb-2 sm:mb-4">
@@ -181,8 +181,8 @@
     <!-- Testimonials -->
     <section class="py-8 lg:py-16 bg-gray-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 class="text-3xl font-bold text-[var(--color-primary-600)] mb-12">{{ __('customer_reviews') }}</h2>
-            <div class="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-8">
+            <h2 class="text-xl lg:text-3xl font-bold text-[var(--color-primary-600)] mb-12">{{ __('customer_reviews') }}</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-8">
                 @foreach($testimonials as $testimonial)
                     <div class="bg-white p-4 sm:p-6 rounded-lg shadow-md">
                         <div class="flex items-center mb-4">
@@ -213,14 +213,14 @@
     <!-- Certificates -->
     <section class="py-8 lg:py-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 class="text-3xl font-bold text-[var(--color-primary-600)] text-left mb-12">{{ __('certificates') }}</h2>
-            <div class="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-8">
+            <h2 class="text-xl lg:text-3xl font-bold text-[var(--color-primary-600)] text-left mb-12">{{ __('certificates') }}</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-4 sm:gap-8">
                 @foreach($certificates as $certificate)
                     <div class="group relative bg-white rounded-lg shadow-md overflow-hidden cursor-pointer">
                         <a href="{{ Storage::url($certificate->image) }}" 
                            data-fancybox="certificates-gallery"
                            data-caption="{{ $certificate->name }}"
-                           class="block h-[340px] md:h-[400px] lg:h-[540px]">
+                           class="block h-[400px] lg:h-[540px]">
                             <img src="{{ Storage::url($certificate->image) }}" 
                                  alt="{{ $certificate->name }}"
                                  class="w-full h-full object-contain transform group-hover:scale-105 transition-transform duration-500">
@@ -321,5 +321,28 @@
                 },
             },
         });
+
+        function updateCartCount() {
+            const currentLang = '{{ app()->getLocale() }}';
+            const carts = JSON.parse(localStorage.getItem('carts')) || {};
+            const currentCart = carts[currentLang] || {};
+            
+            const itemCount = Object.values(currentCart).reduce((total, item) => total + (item.quantity || 1), 0);
+            
+            // Update desktop cart count
+            const desktopCartCount = document.querySelector('.cart-count');
+            if (desktopCartCount) {
+                desktopCartCount.textContent = `${itemCount} {{ __('items') }}`;
+            }
+            
+            // Update mobile cart count
+            const mobileCartCount = document.querySelector('.mobile-menu-sidebar .cart-count, .mobile-header .cart-count');
+            if (mobileCartCount) {
+                mobileCartCount.textContent = itemCount;
+            }
+        }
+
+        // Initialize cart count on page load
+        document.addEventListener('DOMContentLoaded', updateCartCount);
     </script>
 @endpush

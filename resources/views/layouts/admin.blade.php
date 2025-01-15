@@ -39,15 +39,15 @@
                     @php
                         $menuItems = [
                             ['route' => 'dashboard', 'icon' => 'tachometer-alt', 'label' => 'Dashboard'],
-                            ['route' => 'categories.index', 'icon' => 'list', 'label' => 'Categories'],
-                            ['route' => 'products.index', 'icon' => 'box', 'label' => 'Products'],
-                            ['route' => 'orders.index', 'icon' => 'shopping-cart', 'label' => 'Orders'],
-                            ['route' => 'post-categories.index', 'icon' => 'folder', 'label' => 'Post Categories'],
-                            ['route' => 'posts.index', 'icon' => 'newspaper', 'label' => 'Posts'],
-                            ['route' => 'product-reviews.index', 'icon' => 'star', 'label' => 'Product Reviews'],
-                            ['route' => 'images.index', 'icon' => 'images', 'label' => 'Images'],
-                            ['route' => 'videos.index', 'icon' => 'video', 'label' => 'Videos'],
-                            ['route' => '#', 'icon' => 'cog', 'label' => 'Settings']
+                            ['route' => 'categories.index', 'icon' => 'list', 'label' => 'Danh mục'],
+                            ['route' => 'products.index', 'icon' => 'box', 'label' => 'Sản phẩm'],
+                            ['route' => 'orders.index', 'icon' => 'shopping-cart', 'label' => 'Đơn hàng'],
+                            ['route' => 'post-categories.index', 'icon' => 'folder', 'label' => 'Danh mục bài viết'],
+                            ['route' => 'posts.index', 'icon' => 'newspaper', 'label' => 'Bài viết'],
+                            ['route' => 'product-reviews.index', 'icon' => 'star', 'label' => 'Đánh giá sản phẩm'],
+                            ['route' => 'images.index', 'icon' => 'images', 'label' => 'Hình ảnh'],
+                            ['route' => 'videos.index', 'icon' => 'video', 'label' => 'Video'],
+                            ['route' => '#', 'icon' => 'cog', 'label' => 'Cài đặt']
                         ];
                     @endphp
                     @foreach($menuItems as $item)
@@ -123,8 +123,40 @@
             </nav>
 
             <!-- Main Content -->
-            <main class="flex-grow overflow-y-auto p-6 bg-gray-50">
-                    @yield('content')
+            <main class="p-6">
+                @if(session('error'))
+                    <div class="mb-4">
+                        <div class="bg-red-50 border border-red-200 rounded-md p-4">
+                            <div class="flex">
+                                <div class="flex-shrink-0">
+                                    <i class="fas fa-exclamation-circle text-red-400"></i>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-sm text-red-700">{{ session('error') }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+                @if ($errors->any())
+                    <div class="mb-4">
+                        <div class="bg-red-50 border border-red-200 rounded-md p-4">
+                            <div class="flex">
+                                <div class="flex-shrink-0">
+                                    <i class="fas fa-exclamation-circle text-red-400"></i>
+                                </div>
+                                <div class="ml-3">
+                                    <ul class="list-disc list-inside text-sm text-red-700">
+                                        @foreach ($errors->all() as $error)
+                                            <li>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+                @yield('content')
             </main>
         </div>
 

@@ -43,35 +43,35 @@
 
             <!-- Category -->
             <div>
-                <label for="category_id" class="block text-sm font-medium text-gray-700 mb-2">
+                <label for="post_category_id" class="block text-sm font-medium text-gray-700 mb-2">
                     Danh mục <span class="text-red-600">*</span>
                 </label>
-                <select name="category_id" 
-                        id="category_id" 
+                <select name="post_category_id" 
+                        id="post_category_id" 
                         required
-                        class="w-full rounded-md shadow-sm border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 @error('category_id') border-red-300 @enderror">
+                        class="w-full rounded-md shadow-sm border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 @error('post_category_id') border-red-300 @enderror">
                     <option value="">Chọn danh mục</option>
                     @foreach($categories as $category)
-                    <option value="{{ $category->id }}" {{ old('category_id', $post->category_id) == $category->id ? 'selected' : '' }}>
+                    <option value="{{ $category->id }}" {{ old('post_category_id', $post->post_category_id) == $category->id ? 'selected' : '' }}>
                         {{ $category->name }}
                     </option>
                     @endforeach
                 </select>
-                @error('category_id')
+                @error('post_category_id')
                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
             </div>
 
-            <!-- Thumbnail -->
+            <!-- Featured Image -->
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">
                     Ảnh đại diện
                 </label>
                 <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
                     <div class="space-y-1 text-center">
-                        @if($post->thumbnail)
+                        @if($post->featured_image)
                         <div id="current-thumbnail" class="mb-4">
-                            <img src="{{ asset('storage/' . $post->thumbnail) }}" 
+                            <img src="{{ asset('storage/' . $post->featured_image) }}" 
                                  alt="{{ $post->title }}" 
                                  class="mx-auto h-32 w-auto">
                             <p class="mt-2 text-sm text-gray-500">Ảnh hiện tại</p>
@@ -80,10 +80,10 @@
                         <div class="flex flex-col items-center">
                             <i class="fas fa-image text-gray-400 text-3xl mb-3"></i>
                             <div class="flex text-sm text-gray-600">
-                                <label for="thumbnail" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
+                                <label for="featured_image" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
                                     <span>Tải ảnh mới</span>
-                                    <input id="thumbnail" 
-                                           name="thumbnail" 
+                                    <input id="featured_image" 
+                                           name="featured_image" 
                                            type="file" 
                                            accept="image/*"
                                            class="sr-only">
@@ -98,7 +98,7 @@
                         </div>
                     </div>
                 </div>
-                @error('thumbnail')
+                @error('featured_image')
                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
             </div>
@@ -134,14 +134,14 @@
 
             <!-- Status -->
             <div class="flex items-center space-x-4">
-                <label for="is_published" class="flex items-center">
+                <label for="status" class="flex items-center">
                     <input type="checkbox" 
-                           name="is_published" 
-                           id="is_published" 
-                           value="1"
-                           {{ old('is_published', $post->is_published) ? 'checked' : '' }}
+                           name="status" 
+                           id="status" 
+                           value="published"
+                           {{ old('status', $post->status === 'published') ? 'checked' : '' }}
                            class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
-                    <span class="ml-2 text-sm text-gray-600">Xuất bản</span>
+                    <span class="ml-2 text-sm text-gray-600">Xuất bản ngay</span>
                 </label>
 
                 <label for="is_featured" class="flex items-center">
@@ -177,7 +177,7 @@ $(document).ready(function() {
         });
 
     // Handle thumbnail preview
-    $('#thumbnail').change(function() {
+    $('#featured_image').change(function() {
         const file = this.files[0];
         if (file) {
             const reader = new FileReader();

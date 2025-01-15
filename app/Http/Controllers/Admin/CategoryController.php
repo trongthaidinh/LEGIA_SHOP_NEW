@@ -5,18 +5,19 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\CategoryRequest;
 use App\Models\Category;
+use App\Traits\HandleUploadImage;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class CategoryController extends Controller
 {
+    use HandleUploadImage;
+
     /**
-     * Path for storing category images
+     * Folder path for storing category images
      */
-    const IMAGE_PATH = 'image/category';
+    const IMAGE_FOLDER = 'categories';
 
     /**
      * Display a listing of categories.
@@ -27,10 +28,9 @@ class CategoryController extends Controller
     public function index(Request $request)
     {
         try {
-            
             $language = request()->segment(1);
             $query = Category::with('parent')
-                ->withCount('products')  // Thêm dòng này để đếm số sản phẩm
+                ->withCount('products')
                 ->where('language', $language)
                 ->latest();
 
@@ -83,31 +83,27 @@ class CategoryController extends Controller
     public function store(CategoryRequest $request)
     {
         try {
-            DB::enableQueryLog();
-            
             DB::beginTransaction();
 
             $validated = $request->validated();
             
             // Handle boolean fields
             $validated = array_merge($validated, [
-                'slug' => $this->generateUniqueSlug($request->name),
+                'slug' => $this->generateUniqueSlug($request->name, Category::class),
                 'is_featured' => $request->boolean('is_featured'),
                 'is_active' => true,
-                'language' => request()->segment(1) // Get language from URL
+                'language' => request()->segment(1)
             ]);
 
             // Handle image upload
             if ($request->hasFile('featured_image')) {
-                $validated['featured_image'] = $this->handleImageUpload(
+                $validated['featured_image'] = $this->handleUploadImage(
                     $request->file('featured_image'),
-                    $validated['slug']
+                    self::IMAGE_FOLDER
                 );
             }
 
             Category::create($validated);
-            
-            Log::info('Query Log:', DB::getQueryLog());
             
             DB::commit();
             return redirect()->route($validated['language'] . '.admin.categories.index')
@@ -116,7 +112,6 @@ class CategoryController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Error in CategoryController@store: ' . $e->getMessage());
-            Log::error('Failed Queries:', DB::getQueryLog());
             return back()->withInput()
                 ->with('error', 'An error occurred while creating the category: ' . $e->getMessage());
         }
@@ -161,20 +156,17 @@ class CategoryController extends Controller
             
             // Handle boolean fields
             $validated = array_merge($validated, [
-                'slug' => $this->generateUniqueSlug($request->name, $category->id),
+                'slug' => $this->generateUniqueSlug($request->name, Category::class, $category->id),
                 'is_featured' => $request->boolean('is_featured'),
-                'language' => request()->segment(1) // Get language from URL
+                'language' => request()->segment(1)
             ]);
 
             // Handle image upload
             if ($request->hasFile('featured_image')) {
-                // Delete old image
-                $this->deleteImage($category->featured_image);
-                
-                // Upload new image
-                $validated['featured_image'] = $this->handleImageUpload(
+                $validated['featured_image'] = $this->handleUploadImage(
                     $request->file('featured_image'),
-                    $validated['slug']
+                    self::IMAGE_FOLDER,
+                    $category->featured_image
                 );
             }
 
@@ -229,65 +221,6 @@ class CategoryController extends Controller
             DB::rollBack();
             Log::error('Error in CategoryController@destroy: ' . $e->getMessage());
             return back()->with('error', 'An error occurred while deleting the category: ' . $e->getMessage());
-        }
-    }
-
-    /**
-     * Generate unique slug for category.
-     *
-     * @param string $name
-     * @param int|null $excludeId
-     * @return string
-     */
-    private function generateUniqueSlug(string $name, ?int $excludeId = null): string
-    {
-        $slug = Str::slug($name);
-        $count = 1;
-
-        $query = Category::where('slug', $slug);
-        if ($excludeId) {
-            $query->where('id', '!=', $excludeId);
-        }
-
-        while ($query->exists()) {
-            $slug = Str::slug($name) . '-' . $count++;
-            $query = Category::where('slug', $slug);
-            if ($excludeId) {
-                $query->where('id', '!=', $excludeId);
-            }
-        }
-
-        return $slug;
-    }
-
-    /**
-     * Handle image upload.
-     *
-     * @param \Illuminate\Http\UploadedFile $image
-     * @param string $slug
-     * @return string
-     */
-    private function handleImageUpload($image, string $slug): string
-    {
-        // Create a unique filename using the slug and timestamp
-        $filename = $slug . '-' . time() . '.' . $image->getClientOriginalExtension();
-        
-        // Store the image in the specified path
-        $path = $image->storeAs(self::IMAGE_PATH, $filename, 'public');
-        
-        return $path;
-    }
-
-    /**
-     * Delete image from storage.
-     *
-     * @param string|null $path
-     * @return void
-     */
-    private function deleteImage(?string $path): void
-    {
-        if ($path && Storage::disk('public')->exists($path)) {
-            Storage::disk('public')->delete($path);
         }
     }
 } 

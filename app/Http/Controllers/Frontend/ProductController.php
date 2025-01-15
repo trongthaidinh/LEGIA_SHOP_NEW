@@ -30,16 +30,23 @@ class ProductController extends Controller
             ->where('language', app()->getLocale())
             ->with('categories');
 
-        // Handle product type filtering
-        $type = $request->input('type');
-        $typeMap = [
-            'yen-to' => Product::TYPE_YEN_TO,
-            'yen-chung' => Product::TYPE_YEN_CHUNG,
-            'gift-set' => Product::TYPE_GIFT_SET
-        ];
+        // Add type filtering
+        if ($request->has('type')) {
+            $typeMap = [
+                'yen-to' => Product::TYPE_YEN_TO,
+                'yen-chung' => Product::TYPE_YEN_CHUNG,
+                'gift-set' => Product::TYPE_GIFT_SET
+            ];
+            
+            $dbType = $typeMap[$request->input('type')] ?? null;
+            
+            if ($dbType) {
+                $query->where('type', $dbType);
+            }
 
-        if ($type && isset($typeMap[$type]) && $request->route()->getName() === app()->getLocale() . '.products.type') {
-            $query->where('type', $typeMap[$type]);
+            // Add type to debug info
+            $debugInfo['selected_type'] = $request->input('type');
+            $debugInfo['mapped_db_type'] = $dbType;
         }
 
         // Detailed category filtering

@@ -3,15 +3,23 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\PostRequest;
 use App\Models\Post;
 use App\Models\PostCategory;
-use Illuminate\Http\Request;
-use Illuminate\Support\Str;
+use App\Traits\HandleUploadImage;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 use Exception;
 
 class PostController extends Controller
 {
+    use HandleUploadImage;
+
+    /**
+     * Folder path for storing post images
+     */
+    const IMAGE_FOLDER = 'posts';
+
     public function index()
     {
         try {
@@ -20,6 +28,7 @@ class PostController extends Controller
                 ->latest()
                 ->paginate(10);
             $categories = PostCategory::where('is_active', true)->get();
+
             return view('admin.posts.index', compact('posts', 'categories'));
         } catch (Exception $e) {
             return redirect()->back()
@@ -38,41 +47,35 @@ class PostController extends Controller
         }
     }
 
-    public function store(Request $request)
+    public function store(PostRequest $request)
     {
         try {
-            $validated = $request->validate([
-                'title' => 'required|max:255',
-                'post_category_id' => 'required|exists:post_categories,id',
-                'content' => 'required',
-                'excerpt' => 'nullable',
-                'featured_image' => 'nullable|image|max:2048',
-                'status' => 'required|in:draft,published',
-                'is_featured' => 'boolean',
-                'published_at' => 'nullable|date',
-            ]);
+            DB::beginTransaction();
 
+            $validated = $request->validated();
+
+            // Handle image upload
             if ($request->hasFile('featured_image')) {
-                try {
-                    $path = $request->file('featured_image')->store('images/posts', 'public');
-                    $validated['featured_image'] = $path;
-                } catch (Exception $e) {
-                    return redirect()->back()
-                        ->withInput()
-                        ->with('error', __('Error uploading image: ') . $e->getMessage());
-                }
+                $validated['featured_image'] = $this->handleUploadImage(
+                    $request->file('featured_image'),
+                    self::IMAGE_FOLDER
+                );
             }
 
-            $validated['admin_id'] = auth()->user()->id;
-            $validated['slug'] = Str::slug($validated['title']);
+            $validated['admin_id'] = auth()->id();
+            $validated['slug'] = $this->generateUniqueSlug($validated['title'], Post::class);
             $validated['language'] = request()->segment(1);
-            $validated['is_featured'] = $request->has('is_featured');
+
+            // Remove unnecessary fields
+            unset($validated['is_published']);
 
             Post::create($validated);
 
+            DB::commit();
             return redirect()->route(request()->segment(1) . '.admin.posts.index')
                 ->with('success', __('Post created successfully'));
         } catch (Exception $e) {
+            DB::rollBack();
             return redirect()->back()
                 ->withInput()
                 ->with('error', __('Error creating post: ') . $e->getMessage());
@@ -95,7 +98,7 @@ class PostController extends Controller
         }
     }
 
-    public function update(Request $request, Post $post)
+    public function update(PostRequest $request, Post $post)
     {
         try {
             if ($post->language !== request()->segment(1)) {
@@ -103,40 +106,32 @@ class PostController extends Controller
                     ->with('error', __('Post not found in this language.'));
             }
 
-            $validated = $request->validate([
-                'title' => 'required|max:255',
-                'post_category_id' => 'required|exists:post_categories,id',
-                'content' => 'required',
-                'excerpt' => 'nullable',
-                'featured_image' => 'nullable|image|max:2048',
-                'status' => 'required|in:draft,published',
-                'is_featured' => 'boolean',
-                'published_at' => 'nullable|date',
-            ]);
+            DB::beginTransaction();
 
+            $validated = $request->validated();
+
+            // Handle image upload
             if ($request->hasFile('featured_image')) {
-                try {
-                    if ($post->featured_image) {
-                        Storage::disk('public')->delete($post->featured_image);
-                    }
-                    $path = $request->file('featured_image')->store('images/posts', 'public');
-                    $validated['featured_image'] = $path;
-                } catch (Exception $e) {
-                    return redirect()->back()
-                        ->withInput()
-                        ->with('error', __('Error uploading image: ') . $e->getMessage());
-                }
+                $validated['featured_image'] = $this->handleUploadImage(
+                    $request->file('featured_image'),
+                    self::IMAGE_FOLDER,
+                    $post->featured_image
+                );
             }
 
-            $validated['slug'] = Str::slug($validated['title']);
+            $validated['slug'] = $this->generateUniqueSlug($validated['title'], Post::class, $post->id);
             $validated['language'] = request()->segment(1);
-            $validated['is_featured'] = $request->has('is_featured');
+
+            // Remove unnecessary fields
+            unset($validated['is_published']);
             
             $post->update($validated);
 
+            DB::commit();
             return redirect()->route(request()->segment(1) . '.admin.posts.index')
                 ->with('success', __('Post updated successfully'));
         } catch (Exception $e) {
+            DB::rollBack();
             return redirect()->back()
                 ->withInput()
                 ->with('error', __('Error updating post: ') . $e->getMessage());
@@ -151,20 +146,20 @@ class PostController extends Controller
                     ->with('error', __('Post not found in this language.'));
             }
 
+            DB::beginTransaction();
+
+            // Delete post image
             if ($post->featured_image) {
-                try {
-                    Storage::disk('public')->delete($post->featured_image);
-                } catch (Exception $e) {
-                    // Continue with deletion even if image deletion fails
-                    report($e);
-                }
+                $this->deleteImage($post->featured_image);
             }
             
             $post->delete();
 
+            DB::commit();
             return redirect()->route(request()->segment(1) . '.admin.posts.index')
                 ->with('success', __('Post deleted successfully'));
         } catch (Exception $e) {
+            DB::rollBack();
             return redirect()->back()
                 ->with('error', __('Error deleting post: ') . $e->getMessage());
         }

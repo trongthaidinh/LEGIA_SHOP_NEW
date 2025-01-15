@@ -26,7 +26,7 @@
                 </div>
                 
                 <div class="mt-6 flex justify-center md:justify-start space-x-4">
-                    <a href="#" class="text-white hover:text-[var(--color-secondary-300)] transition-colors">
+                    <a href="https://www.facebook.com/profile.php?id=100064173304425" class="text-white hover:text-[var(--color-secondary-300)] transition-colors">
                         <i class="fab fa-facebook-f text-xl"></i>
                     </a>
                     <a href="#" class="text-white hover:text-[var(--color-secondary-300)] transition-colors">
