@@ -99,7 +99,7 @@
                             <i class="fas fa-phone"></i>
                             077 233 2255
                         </a>
-                        <button type="button" onclick="window.open('https://zalo.me/077233225', '_blank')"
+                        <button type="button" onclick="window.open('https://zalo.me/0772332255', '_blank')"
                             class="flex items-center justify-center gap-2 bg-white border-2 border-[var(--color-primary-600)] text-[var(--color-primary-600)] px-6 py-3 rounded-lg hover:bg-[var(--color-primary-50)] transition-colors">
                             <i class="fas fa-comment-dots"></i>
                             ZALO
@@ -111,7 +111,7 @@
     </div>
 
     <!-- Tabs -->
-    <div class="mt-12 bg-gray-100 rounded-lg p-8">
+    <div class="mt-12 bg-gray-100 rounded-lg py-8 px-4 lg:px-8">
         <div class="flex gap-2 sm:gap-4 mb-6">
             <button onclick="openTab('description')"
                 class="tab-btn active px-4 sm:px-8 py-2 sm:py-3 text-sm sm:text-md font-medium rounded-lg bg-transparent text-[var(--color-primary-600)] border border-[var(--color-primary-600)]">
@@ -125,8 +125,10 @@
 
         <!-- Product Information Tab -->
         <div id="description" class="tab-content rounded-lg">
-            <div class="prose prose-sm max-w-none">
-                {!! $product->content !!}
+            <div class="container mx-auto">
+                <article class="prose prose-lg prose-zinc max-w-none">
+                    {!! $product->content !!}
+                </article>
             </div>
         </div>
 
@@ -225,7 +227,6 @@
         -webkit-appearance: none;
         margin: 0;
     }
-
     input[type=number] {
         -moz-appearance: textfield;
     }
@@ -318,13 +319,19 @@
         const currentLang = '{{ app()->getLocale() }}';
         const carts = JSON.parse(localStorage.getItem('carts')) || {};
         const currentCart = carts[currentLang] || {};
-
-        const totalItems = Object.values(currentCart).reduce((sum, item) => sum + item.quantity, 0);
-
-        // Update cart count in header
-        const cartCountElement = document.querySelector('.cart-count');
-        if (cartCountElement) {
-            cartCountElement.textContent = `${totalItems} {{ __('items') }}`;
+        
+        const itemCount = Object.values(currentCart).reduce((total, item) => total + (item.quantity || 1), 0);
+        
+        // Update desktop cart count
+        const desktopCartCount = document.querySelector('.cart-count');
+        if (desktopCartCount) {
+            desktopCartCount.textContent = `${itemCount} {{ __('items') }}`;
+        }
+        
+        // Update mobile cart count
+        const mobileCartCount = document.querySelector('.mobile-menu-sidebar .cart-count, .mobile-header .cart-count');
+        if (mobileCartCount) {
+            mobileCartCount.textContent = itemCount;
         }
     }
 

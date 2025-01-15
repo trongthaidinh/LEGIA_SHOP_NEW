@@ -83,14 +83,14 @@
         <div class="w-full lg:w-3/4">
             <!-- Grid Header -->
             <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl font-bold text-gray-900">{{ __('products') }}</h2>
-                <span class="text-sm text-gray-500">
+                <h2 class="text-xl md:text-2xl font-bold text-gray-900">{{ __('products') }}</h2>
+                <span class="text-xs md:text-sm text-gray-500">
                     {{ __('showing') }} {{ $products->firstItem() }} - {{ $products->lastItem() }} {{ __('of') }} {{ $products->total() }} {{ __('products') }}
                 </span>
             </div>
 
             <!-- Products Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 @forelse($products as $product)
                 @include('frontend.partials.product-card', ['product' => $product])
                 @empty

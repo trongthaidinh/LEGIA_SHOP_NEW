@@ -1,4 +1,4 @@
-<header class="bg-[var(--color-primary-600)] relative">
+<header class="bg-[var(--color-primary-600)] relative sticky top-0 z-50 w-full">
     <!-- Desktop Header -->
     <div class="hidden lg:flex gap-4 items-center max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Logo -->
@@ -200,6 +200,38 @@
 </header>
 
 @push('scripts')
+<script>
+    function updateCartCount() {
+        const currentLang = '{{ app()->getLocale() }}';
+        const carts = JSON.parse(localStorage.getItem('carts')) || {};
+        const currentCart = carts[currentLang] || {};
+        
+        const itemCount = Object.values(currentCart).reduce((total, item) => total + (item.quantity || 1), 0);
+        
+        // Update desktop cart count
+        const desktopCartCount = document.querySelector('.cart-count');
+        if (desktopCartCount) {
+            desktopCartCount.textContent = `${itemCount} {{ __('items') }}`;
+        }
+        
+        // Update mobile cart count
+        const mobileCartCount = document.querySelector('.mobile-menu-sidebar .cart-count, .mobile-header .cart-count');
+        if (mobileCartCount) {
+            mobileCartCount.textContent = itemCount;
+        }
+    }
+
+    // Thêm event listener để cập nhật số lượng giỏ hàng
+    document.addEventListener('DOMContentLoaded', updateCartCount);
+    
+    // Lắng nghe sự kiện thay đổi localStorage
+    window.addEventListener('storage', function(event) {
+        if (event.key === 'carts') {
+            updateCartCount();
+        }
+    });
+</script>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Mobile Search Toggle
