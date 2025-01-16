@@ -29,21 +29,21 @@ class HomeController extends Controller
             ->byLanguage($currentLocale)
             ->where('type', Product::TYPE_YEN_CHUNG)
             ->latest()
-            ->take(4)
+            ->take(6)
             ->get();
             
         $yenToProducts = Product::active()
             ->byLanguage($currentLocale)
             ->where('type', Product::TYPE_YEN_TO)
             ->latest()
-            ->take(4)
+            ->take(6)
             ->get();
             
         $giftSetProducts = Product::active()
             ->byLanguage($currentLocale)
             ->where('type', Product::TYPE_GIFT_SET)
             ->latest()
-            ->take(4)
+            ->take(6)
             ->get();
             
         $latestPosts = Post::published()

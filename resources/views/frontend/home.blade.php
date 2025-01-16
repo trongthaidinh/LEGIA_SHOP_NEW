@@ -64,7 +64,7 @@
                 </a>
             </div>
             
-            <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-2 lg:gap-8">
+            <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-2 lg:gap-8">
                 @foreach($yenChungProducts as $product)
                     @include('frontend.partials.product-card', ['product' => $product])
                 @endforeach
@@ -83,7 +83,7 @@
                 </a>
             </div>
             
-            <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-2 lg:gap-8">
+            <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-2 lg:gap-8">
                 @foreach($yenToProducts as $product)
                     @include('frontend.partials.product-card', ['product' => $product])
                 @endforeach
@@ -102,7 +102,7 @@
                 </a>
             </div>
             
-            <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-2 lg:gap-8">
+            <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-2 lg:gap-8">
                 @foreach($giftSetProducts as $product)
                     @include('frontend.partials.product-card', ['product' => $product])
                 @endforeach
@@ -182,7 +182,7 @@
     <section class="py-8 lg:py-16 bg-gray-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 class="text-xl lg:text-3xl font-bold text-[var(--color-primary-600)] mb-12">{{ __('customer_reviews') }}</h2>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-8">
+            <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-8">
                 @foreach($testimonials as $testimonial)
                     <div class="bg-white p-4 sm:p-6 rounded-lg shadow-md">
                         <div class="flex items-center mb-4">
