@@ -21,33 +21,12 @@
         <!-- Filters -->
         <div class="p-6 border-b border-[var(--color-primary-100)]">
             <form action="{{ route(app()->getLocale() . '.admin.categories.index') }}" method="GET" class="flex flex-wrap gap-4">
-                <!-- Parent Category Filter -->
-                <div class="flex-1 min-w-[200px]">
-                    <select name="parent_id" id="parent-filter" class="w-full rounded-lg border-[var(--color-primary-300)] focus:border-[var(--color-primary-500)] focus:ring-[var(--color-primary-500)]">
-                        <option value="">Tất cả danh mục</option>
-                        @foreach($categories->where('parent_id', null) as $category)
-                        <option value="{{ $category->id }}" {{ request('parent_id') == $category->id ? 'selected' : '' }}>
-                            {{ $category->name }}
-                        </option>
-                        @endforeach
-                    </select>
-                </div>
-
                 <!-- Status Filter -->
                 <div class="flex-1 min-w-[200px]">
                     <select name="status" id="status-filter" class="w-full rounded-lg border-[var(--color-primary-300)] focus:border-[var(--color-primary-500)] focus:ring-[var(--color-primary-500)]">
                         <option value="">Tất cả trạng thái</option>
-                        <option value="published" {{ request('status') == 'published' ? 'selected' : '' }}>Đã xuất bản</option>
-                        <option value="draft" {{ request('status') == 'draft' ? 'selected' : '' }}>Bản nháp</option>
-                    </select>
-                </div>
-
-                <!-- Featured Filter -->
-                <div class="flex-1 min-w-[200px]">
-                    <select name="is_featured" id="featured-filter" class="w-full rounded-lg border-[var(--color-primary-300)] focus:border-[var(--color-primary-500)] focus:ring-[var(--color-primary-500)]">
-                        <option value="">Tất cả</option>
-                        <option value="1" {{ request('is_featured') == '1' ? 'selected' : '' }}>Nổi bật</option>
-                        <option value="0" {{ request('is_featured') == '0' ? 'selected' : '' }}>Không nổi bật</option>
+                        <option value="published" {{ request('status') == 'published' ? 'selected' : '' }}>Đã kích hoạt</option>
+                        <option value="draft" {{ request('status') == 'draft' ? 'selected' : '' }}>Chưa kích hoạt</option>
                     </select>
                 </div>
 
@@ -98,10 +77,8 @@
                 <thead class="bg-[var(--color-primary-50)]">
                     <tr>
                         <th class="px-6 py-3 text-left text-xs font-medium text-[var(--color-primary-600)] uppercase tracking-wider">Tên danh mục</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-[var(--color-primary-600)] uppercase tracking-wider">Danh mục cha</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-[var(--color-primary-600)] uppercase tracking-wider">Số sản phẩm</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-[var(--color-primary-600)] uppercase tracking-wider">Trạng thái</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-[var(--color-primary-600)] uppercase tracking-wider">Nổi bật</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-[var(--color-primary-600)] uppercase tracking-wider">Ngày tạo</th>
                         <th class="px-6 py-3 text-right text-xs font-medium text-[var(--color-primary-600)] uppercase tracking-wider">Thao tác</th>
                     </tr>
@@ -123,19 +100,11 @@
                             </div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-[var(--color-primary-600)]">
-                            {{ $category->parent ? $category->parent->name : 'Không có' }}
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-[var(--color-primary-600)]">
                             {{ $category->products_count }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $category->status === 'published' ? 'bg-[var(--color-primary-100)] text-[var(--color-primary-700)]' : 'bg-[var(--color-secondary-100)] text-[var(--color-secondary-700)]' }}">
-                                {{ $category->status === 'published' ? 'Đã xuất bản' : 'Bản nháp' }}
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $category->is_featured ? 'bg-yellow-100 text-yellow-700' : 'bg-gray-100 text-gray-700' }}">
-                                {{ $category->is_featured ? 'Nổi bật' : 'Không' }}
+                                {{ $category->status === 'published' ? 'Đã kích hoạt' : 'Chưa kích hoạt' }}
                             </span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-[var(--color-primary-600)]">
@@ -143,18 +112,18 @@
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                             <a href="{{ route(app()->getLocale() . '.admin.categories.edit', $category) }}" 
-                               class="text-[var(--color-primary-600)] hover:text-[var(--color-primary-800)] mr-3 transition-colors duration-200"
+                               class="inline-block px-3 py-1 mr-2 bg-[var(--color-primary-100)] text-[var(--color-primary-700)] rounded-lg hover:bg-[var(--color-primary-200)] transition-colors duration-200"
                                title="Chỉnh sửa">
                                 <i class="fas fa-edit"></i>
                             </a>
                             <form action="{{ route(app()->getLocale() . '.admin.categories.destroy', $category) }}" 
                                   method="POST" 
-                                  class="inline-block"
-                                  onsubmit="return confirm('Bạn có chắc chắn muốn xóa danh mục này?')">
+                                  class="inline-block delete-form" 
+                                  onsubmit="return confirm('Bạn có chắc chắn muốn xóa danh mục này?');">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" 
-                                        class="text-[var(--color-secondary-600)] hover:text-[var(--color-secondary-800)] transition-colors duration-200"
+                                        class="inline-block px-3 py-1 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors duration-200"
                                         title="Xóa">
                                     <i class="fas fa-trash"></i>
                                 </button>
@@ -163,7 +132,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="7" class="px-6 py-4 text-center text-sm text-[var(--color-primary-500)]">
+                        <td colspan="5" class="px-6 py-4 text-center text-sm text-[var(--color-primary-500)]">
                             Không có danh mục nào
                         </td>
                     </tr>
@@ -185,17 +154,8 @@
 <script>
 $(document).ready(function() {
     // Auto-submit form when filters change
-    $('#parent-filter, #status-filter, #featured-filter').change(function() {
+    $('#status-filter').change(function() {
         $(this).closest('form').submit();
-    });
-
-    // Handle search with debounce
-    let searchTimeout;
-    $('#search').on('input', function() {
-        clearTimeout(searchTimeout);
-        searchTimeout = setTimeout(() => {
-            $(this).closest('form').submit();
-        }, 500);
     });
 });
 </script>
