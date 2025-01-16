@@ -94,7 +94,10 @@
     <!-- Copyright -->
     <div class="bg-[var(--color-secondary-500)] py-4">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <p class="text-sm">&copy; {{ date('Y') }} {{ __('copyright_text') }}</p>
+            <p class="text-sm">
+                &copy; {{ date('Y') }} {{ __('company_name') }}. {{ __('all_rights_reserved') }} 
+                | <a href="https://www.takatech.com.vn/" target="_blank" class="hover:underline">{{ __('design_by') }} Takatech</a>
+            </p>
         </div>
     </div>
 </footer>
