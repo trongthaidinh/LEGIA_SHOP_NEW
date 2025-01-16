@@ -83,15 +83,19 @@
 
             <!-- Description -->
             <div>
-                <label for="description" class="block text-sm font-medium text-gray-700 mb-2">
-                    Mô tả sản phẩm
-                </label>
-                <textarea name="description" 
-                          id="description" 
-                          rows="5"
-                          class="w-full rounded-md shadow-sm border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 @error('description') border-red-300 @enderror">{{ old('description', $product->description) }}</textarea>
+                <label for="description" class="block text-sm font-medium text-gray-700">{{ __('Description') }} <span class="text-red-500">*</span></label>
+                <textarea name="description" id="description" class="tinymce">{{ old('description', $product->description) }}</textarea>
                 @error('description')
-                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <!-- Content -->
+            <div>
+                <label for="content" class="block text-sm font-medium text-gray-700">{{ __('Content') }} <span class="text-red-500">*</span></label>
+                <textarea name="content" id="content" class="tinymce">{{ old('content', $product->content) }}</textarea>
+                @error('content')
+                    <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
                 @enderror
             </div>
 
@@ -361,6 +365,14 @@ function removeGalleryImage(button) {
     
     container.remove();
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize TinyMCE for both editors
+    initTinyMCE('#description');
+    initTinyMCE('#content');
+
+    // ... rest of your existing script
+});
 </script>
 @endpush
 @endsection 

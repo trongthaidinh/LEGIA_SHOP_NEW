@@ -8,6 +8,7 @@ use App\Traits\HandleUploadImage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class ImageController extends Controller
 {
@@ -191,5 +192,24 @@ class ImageController extends Controller
             Log::error('Error in ImageController@toggleStatus: ' . $e->getMessage());
             return back()->with('error', __('Error toggling status: ') . $e->getMessage());
         }
+    }
+
+    public function upload(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|image|max:2048'
+        ]);
+
+        if ($request->hasFile('file')) {
+            $path = $request->file('file')->store('editor-images', 'public');
+            
+            return response()->json([
+                'location' => Storage::url($path)
+            ]);
+        }
+
+        return response()->json([
+            'error' => 'No file uploaded'
+        ], 400);
     }
 } 

@@ -13,6 +13,7 @@ return new class extends Migration
             $table->string('name');
             $table->text('description')->nullable();
             $table->string('image');
+            $table->string('language')->default('vi');
             $table->enum('status', ['draft', 'published'])->default('published');
             $table->boolean('is_active')->default(true);
             $table->integer('order')->default(0);

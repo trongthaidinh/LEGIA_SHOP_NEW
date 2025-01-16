@@ -95,16 +95,10 @@
 
             <!-- Content -->
             <div>
-                <label for="content" class="block text-sm font-medium text-gray-700 mb-2">
-                    Nội dung <span class="text-red-600">*</span>
-                </label>
-                <textarea name="content" 
-                          id="content" 
-                          rows="10"
-                          required
-                          class="w-full rounded-md shadow-sm border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 @error('content') border-red-300 @enderror">{{ old('content') }}</textarea>
+                <label for="content" class="block text-sm font-medium text-gray-700">{{ __('Content') }} <span class="text-red-500">*</span></label>
+                <textarea name="content" id="content" class="tinymce">{{ old('content') }}</textarea>
                 @error('content')
-                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
                 @enderror
             </div>
 
@@ -158,13 +152,9 @@
 
 @push('scripts')
 <script>
-$(document).ready(function() {
-    // Initialize CKEditor
-    ClassicEditor
-        .create(document.querySelector('#content'))
-        .catch(error => {
-            console.error(error);
-        });
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize TinyMCE
+    initTinyMCE('#content');
 
     // Handle thumbnail preview
     $('#thumbnail').change(function() {

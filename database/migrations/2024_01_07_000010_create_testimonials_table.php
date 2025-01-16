@@ -15,6 +15,7 @@ return new class extends Migration
             $table->string('position')->nullable();
             $table->string('customer_position')->nullable(); // Chức danh/Nghề nghiệp của khách hàng
             $table->text('content');
+            $table->string('language')->default('vi'); // Add language field
             $table->integer('rating')->default(5); // Đánh giá sao (1-5)
             $table->string('company')->nullable(); // Công ty/Tổ chức của khách hàng (nếu có)
             $table->string('location')->nullable(); // Địa điểm của khách hàng

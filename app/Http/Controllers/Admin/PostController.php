@@ -89,7 +89,6 @@ class PostController extends Controller
                 return redirect()->route(request()->segment(1) . '.admin.posts.index')
                     ->with('error', __('Post not found in this language.'));
             }
-
             $categories = PostCategory::where('is_active', true)->get();
             return view('admin.posts.edit', compact('post', 'categories'));
         } catch (Exception $e) {

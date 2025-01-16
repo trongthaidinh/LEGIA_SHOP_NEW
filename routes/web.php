@@ -28,6 +28,10 @@ use App\Http\Controllers\Frontend\StaticPageController;
 use App\Http\Controllers\Admin\ProductReviewController;
 use App\Http\Controllers\Admin\ImageController;
 use App\Http\Controllers\Admin\VideoController;
+use App\Http\Controllers\Admin\TestimonialController;
+use App\Http\Controllers\Admin\CertificateController;
+use App\Http\Controllers\Admin\ContactSubmissionController;
+use App\Http\Controllers\Admin\StaticPageController as AdminStaticPageController;
 use Illuminate\Support\Facades\Route;
 
 // Redirect root to Vietnamese version
@@ -200,6 +204,10 @@ Route::prefix('vi/admin')->middleware(['auth'])->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('vi.admin.dashboard');
     Route::resource('categories', CategoryController::class)->names('vi.admin.categories');
     Route::resource('products', AdminProductController::class)->names('vi.admin.products');
+    Route::resource('testimonials', TestimonialController::class)->names('vi.admin.testimonials');
+    Route::resource('certificates', CertificateController::class)->names('vi.admin.certificates');
+    Route::post('certificates/order', [CertificateController::class, 'updateOrder'])->name('vi.admin.certificates.order');
+    Route::patch('certificates/{certificate}/toggle', [CertificateController::class, 'toggleStatus'])->name('vi.admin.certificates.toggle');
     Route::resource('orders', OrderController::class)->except(['edit', 'update'])->names('vi.admin.orders');
     Route::patch('orders/{order}/status', [OrderController::class, 'updateStatus'])->name('vi.admin.orders.update-status');
     Route::post('orders/{order}/process', [OrderController::class, 'process'])->name('vi.admin.orders.process');
@@ -215,11 +223,20 @@ Route::prefix('vi/admin')->middleware(['auth'])->group(function () {
     Route::resource('images', ImageController::class)->names('vi.admin.images');
     Route::post('images/order', [ImageController::class, 'updateOrder'])->name('vi.admin.images.order');
     Route::patch('images/{image}/toggle', [ImageController::class, 'toggleStatus'])->name('vi.admin.images.toggle');
+    Route::post('images/upload', [ImageController::class, 'upload'])->name('vi.admin.images.upload');
 
     // Videos Management
     Route::resource('videos', VideoController::class)->names('vi.admin.videos');
     Route::post('videos/order', [VideoController::class, 'updateOrder'])->name('vi.admin.videos.order');
     Route::patch('videos/{video}/toggle', [VideoController::class, 'toggleStatus'])->name('vi.admin.videos.toggle');
+
+    Route::get('contact-submissions', [ContactSubmissionController::class, 'index'])->name('vi.admin.contact-submissions.index');
+    Route::get('contact-submissions/{submission}', [ContactSubmissionController::class, 'show'])->name('vi.admin.contact-submissions.show');
+    Route::patch('contact-submissions/{submission}/mark-replied', [ContactSubmissionController::class, 'markAsReplied'])->name('vi.admin.contact-submissions.mark-replied');
+    Route::delete('contact-submissions/{submission}', [ContactSubmissionController::class, 'destroy'])->name('vi.admin.contact-submissions.destroy');
+
+    Route::resource('static-pages', AdminStaticPageController::class)->names('vi.admin.static-pages');
+    Route::patch('static-pages/{staticPage}/toggle', [AdminStaticPageController::class, 'toggleStatus'])->name('vi.admin.static-pages.toggle');
 });
 
 // Chinese Admin Routes  
@@ -228,6 +245,10 @@ Route::prefix('zh/admin')->middleware(['auth'])->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('zh.admin.dashboard');
     Route::resource('categories', CategoryController::class)->names('zh.admin.categories');
     Route::resource('products', AdminProductController::class)->names('zh.admin.products');
+    Route::resource('testimonials', TestimonialController::class)->names('zh.admin.testimonials');
+    Route::resource('certificates', CertificateController::class)->names('zh.admin.certificates');
+    Route::post('certificates/order', [CertificateController::class, 'updateOrder'])->name('zh.admin.certificates.order');
+    Route::patch('certificates/{certificate}/toggle', [CertificateController::class, 'toggleStatus'])->name('zh.admin.certificates.toggle');
     Route::resource('orders', OrderController::class)->except(['edit', 'update'])->names('zh.admin.orders');
     Route::patch('orders/{order}/status', [OrderController::class, 'updateStatus'])->name('zh.admin.orders.update-status');
     Route::post('orders/{order}/process', [OrderController::class, 'process'])->name('zh.admin.orders.process');
@@ -243,11 +264,20 @@ Route::prefix('zh/admin')->middleware(['auth'])->group(function () {
     Route::resource('images', ImageController::class)->names('zh.admin.images');
     Route::post('images/order', [ImageController::class, 'updateOrder'])->name('zh.admin.images.order');
     Route::patch('images/{image}/toggle', [ImageController::class, 'toggleStatus'])->name('zh.admin.images.toggle');
+    Route::post('images/upload', [ImageController::class, 'upload'])->name('zh.admin.images.upload');
 
     // Videos Management
     Route::resource('videos', VideoController::class)->names('zh.admin.videos');
     Route::post('videos/order', [VideoController::class, 'updateOrder'])->name('zh.admin.videos.order');
     Route::patch('videos/{video}/toggle', [VideoController::class, 'toggleStatus'])->name('zh.admin.videos.toggle');
+
+    Route::get('contact-submissions', [ContactSubmissionController::class, 'index'])->name('zh.admin.contact-submissions.index');
+    Route::get('contact-submissions/{submission}', [ContactSubmissionController::class, 'show'])->name('zh.admin.contact-submissions.show');
+    Route::patch('contact-submissions/{submission}/mark-replied', [ContactSubmissionController::class, 'markAsReplied'])->name('zh.admin.contact-submissions.mark-replied');
+    Route::delete('contact-submissions/{submission}', [ContactSubmissionController::class, 'destroy'])->name('zh.admin.contact-submissions.destroy');
+
+    Route::resource('static-pages', AdminStaticPageController::class)->names('zh.admin.static-pages');
+    Route::patch('static-pages/{staticPage}/toggle', [AdminStaticPageController::class, 'toggleStatus'])->name('zh.admin.static-pages.toggle');
 });
 
 require __DIR__ . '/auth.php';

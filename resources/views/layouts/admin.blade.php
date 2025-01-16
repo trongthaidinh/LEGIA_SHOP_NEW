@@ -12,6 +12,49 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     
+    <!-- TinyMCE -->
+    <script src="https://cdn.tiny.cloud/1/{{ env('TINYMCE_API_KEY') }}/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <script>
+        const initTinyMCE = (selector = '.tinymce') => {
+            tinymce.init({
+                selector: selector,
+                plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+                toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+                images_upload_url: '{{ route(app()->getLocale() . ".admin.images.upload") }}',
+                images_upload_handler: function (blobInfo, success, failure) {
+                    var xhr, formData;
+                    xhr = new XMLHttpRequest();
+                    xhr.withCredentials = false;
+                    xhr.open('POST', '{{ route(app()->getLocale() . ".admin.images.upload") }}');
+                    xhr.setRequestHeader('X-CSRF-TOKEN', document.querySelector('meta[name="csrf-token"]').content);
+                    xhr.onload = function() {
+                        var json;
+                        if (xhr.status != 200) {
+                            failure('HTTP Error: ' + xhr.status);
+                            return;
+                        }
+                        json = JSON.parse(xhr.responseText);
+                        if (!json || typeof json.location != 'string') {
+                            failure('Invalid JSON: ' + xhr.responseText);
+                            return;
+                        }
+                        success(json.location);
+                    };
+                    formData = new FormData();
+                    formData.append('file', blobInfo.blob(), blobInfo.filename());
+                    xhr.send(formData);
+                },
+                height: 500,
+                menubar: true,
+                statusbar: true,
+                language: '{{ app()->getLocale() }}',
+                relative_urls: false,
+                remove_script_host: false,
+                convert_urls: true,
+            });
+        };
+    </script>
+    
     <!-- Styles -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -45,6 +88,10 @@
                             ['route' => 'post-categories.index', 'icon' => 'folder', 'label' => 'Danh mục bài viết'],
                             ['route' => 'posts.index', 'icon' => 'newspaper', 'label' => 'Bài viết'],
                             ['route' => 'product-reviews.index', 'icon' => 'star', 'label' => 'Đánh giá sản phẩm'],
+                            ['route' => 'testimonials.index', 'icon' => 'quote-right', 'label' => 'Đánh giá khách hàng'],
+                            ['route' => 'certificates.index', 'icon' => 'certificate', 'label' => 'Chứng chỉ'],
+                            ['route' => 'contact-submissions.index', 'icon' => 'envelope', 'label' => 'Liên hệ'],
+                            ['route' => 'static-pages.index', 'icon' => 'file-alt', 'label' => 'Trang tĩnh'],
                             ['route' => 'images.index', 'icon' => 'images', 'label' => 'Hình ảnh'],
                             ['route' => 'videos.index', 'icon' => 'video', 'label' => 'Video'],
                             ['route' => '#', 'icon' => 'cog', 'label' => 'Cài đặt']
@@ -164,6 +211,11 @@
 
     <!-- Alpine.js -->
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    @stack('scripts')
+    
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const sidebarToggle = document.getElementById('sidebarToggle');
