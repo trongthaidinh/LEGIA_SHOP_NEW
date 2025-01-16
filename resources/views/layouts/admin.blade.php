@@ -58,6 +58,24 @@
     <!-- Styles -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* Custom Scrollbar for Sidebar */
+        #sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+        #sidebar::-webkit-scrollbar-track {
+            background: var(--color-primary-50);
+            border-radius: 10px;
+        }
+        #sidebar::-webkit-scrollbar-thumb {
+            background: var(--color-primary-300);
+            border-radius: 10px;
+        }
+        #sidebar::-webkit-scrollbar-thumb:hover {
+            background: var(--color-primary-400);
+        }
+    </style>
 </head>
 <body class="font-sans antialiased bg-gray-100">
     <div class="flex h-screen">

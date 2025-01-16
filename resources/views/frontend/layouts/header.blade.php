@@ -1,4 +1,4 @@
-<header class="bg-[var(--color-primary-600)] relative sticky top-0 z-50 w-full">
+<header class="bg-[var(--color-primary-600)] relative sticky top-0 z-50 w-full transition-transform duration-300 ease-in-out transform translate-y-0">
     <!-- Desktop Header -->
     <div class="hidden lg:flex gap-4 items-center max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Logo -->
@@ -15,7 +15,7 @@
                 <!-- Search Form -->
                 <div class="w-[400px]">
                     <form action="{{ route(app()->getLocale() . '.products.search') }}" method="GET" class="relative">
-                        <input type="text" 
+                        <input type="text"  
                                name="q"
                                placeholder="{{ __('search_placeholder') }}" 
                                class="w-full px-4 py-2 pr-10 rounded-full bg-white text-gray-900 focus:outline-none">
@@ -141,63 +141,65 @@
                 </button>
             </form>
         </div>
+    </div>
+</header>
 
-        <!-- Mobile Menu Sidebar -->
-        <div id="mobile-menu-sidebar" class="fixed top-0 right-0 w-[80%] h-full bg-[var(--color-primary-600)] transform translate-x-full transition-transform duration-300 z-[100] overflow-y-auto">
-            <div class="p-6">
-                <!-- Close Button -->
-                <button id="mobile-menu-close" class="absolute top-4 right-4 text-white">
-                    <i class="fas fa-times text-2xl"></i>
-                </button>
+<!-- Mobile Menu Sidebar - Moved outside header -->
+<div id="mobile-menu-sidebar" class="fixed inset-0 bg-[var(--color-primary-600)] transform translate-x-full transition-transform duration-300 z-[200] overflow-y-auto">
+    <div class="relative h-full">
+        <!-- Close Button -->
+        <button id="mobile-menu-close" class="absolute top-4 right-4 text-white z-10">
+            <i class="fas fa-times text-2xl"></i>
+        </button>
 
-                <!-- Language Switcher -->
-                <div class="flex justify-center items-center gap-4 mb-6">
-                    <a href="/vi" class="flex items-center">
-                        <img src="{{ asset('images/flags/vn.png') }}" alt="VN" class="w-6 rounded-full object-cover">
-                        <span class="text-[var(--color-secondary-300)] ml-1">VN</span>
-                    </a>
-                    <a href="/zh" class="flex items-center">
-                        <img src="{{ asset('images/flags/cn.png') }}" alt="中文" class="w-6 rounded-full object-cover">
-                        <span class="text-[var(--color-secondary-300)] ml-1">中文</span>
-                    </a>
-                </div>
+        <div class="p-6 h-full flex flex-col">
+            <!-- Language Switcher -->
+            <div class="flex justify-center items-center gap-4 mb-6">
+                <a href="/vi" class="flex items-center">
+                    <img src="{{ asset('images/flags/vn.png') }}" alt="VN" class="w-6 rounded-full object-cover">
+                    <span class="text-[var(--color-secondary-300)] ml-1">VN</span>
+                </a>
+                <a href="/zh" class="flex items-center">
+                    <img src="{{ asset('images/flags/cn.png') }}" alt="中文" class="w-6 rounded-full object-cover">
+                    <span class="text-[var(--color-secondary-300)] ml-1">中文</span>
+                </a>
+            </div>
 
-                <!-- Mobile Menu Items -->
-                <nav>
-                    @foreach($menuItems as $item)
-                        <div class="mobile-menu-group mb-2">
-                            <div class="flex justify-between items-center text-white py-3 border-b border-[var(--color-primary-500)]">
-                                <a href="{{ $item->url }}" class="text-lg">{{ $item->title }}</a>
-                                @if($item->children->count() > 0)
-                                    <button class="mobile-submenu-toggle">
-                                        <i class="fas fa-chevron-down"></i>
-                                    </button>
-                                @endif
-                            </div>
-
+            <!-- Mobile Menu Items -->
+            <nav class="flex-grow overflow-y-auto">
+                @foreach($menuItems as $item)
+                    <div class="mobile-menu-group mb-2">
+                        <div class="flex justify-between items-center text-white py-3 border-b border-[var(--color-primary-500)]">
+                            <a href="{{ $item->url }}" class="text-lg">{{ $item->title }}</a>
                             @if($item->children->count() > 0)
-                                <div class="mobile-submenu hidden">
-                                    @foreach($item->children as $child)
-                                        <a href="{{ $child->url }}" class="block text-[var(--color-secondary-300)] py-2 pl-4">
-                                            {{ $child->title }}
-                                        </a>
-                                    @endforeach
-                                </div>
+                                <button class="mobile-submenu-toggle">
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
                             @endif
                         </div>
-                    @endforeach
-                </nav>
 
-                <!-- Contact & Hotline -->
-                <div class="mt-6 text-center">
-                    <a href="tel:0772332255" class="inline-block bg-yellow-500 text-white px-6 py-3 rounded-full">
-                        <i class="fas fa-phone mr-2"></i> 0772332255
-                    </a>
-                </div>
+                        @if($item->children->count() > 0)
+                            <div class="mobile-submenu hidden">
+                                @foreach($item->children as $child)
+                                    <a href="{{ $child->url }}" class="block text-[var(--color-secondary-300)] py-2 pl-4">
+                                        {{ $child->title }}
+                                    </a>
+                                @endforeach
+                            </div>
+                        @endif
+                    </div>
+                @endforeach
+            </nav>
+
+            <!-- Contact & Hotline -->
+            <div class="mt-6 text-center">
+                <a href="tel:0772332255" class="inline-block bg-yellow-500 text-white px-6 py-3 rounded-full">
+                    <i class="fas fa-phone mr-2"></i> 0772332255
+                </a>
             </div>
         </div>
     </div>
-</header>
+</div>
 
 @push('scripts')
 <script>
@@ -269,6 +271,30 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        let lastScrollTop = 0;
+        const header = document.querySelector('header');
+        const headerHeight = header.offsetHeight;
+
+        window.addEventListener('scroll', function() {
+            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            
+            if (scrollTop > lastScrollTop && scrollTop > headerHeight) {
+                // Cuộn xuống: ẩn header
+                header.classList.add('-translate-y-full');
+                header.classList.remove('translate-y-0');
+            } else if (scrollTop < lastScrollTop) {
+                // Cuộn lên: hiện header
+                header.classList.remove('-translate-y-full');
+                header.classList.add('translate-y-0');
+            }
+            
+            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop; // For Mobile or negative scrolling
+        });
+    });
 </script>
 @endpush
 

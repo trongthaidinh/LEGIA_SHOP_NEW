@@ -25,7 +25,7 @@
             @csrf
 
             <!-- Basic Information -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="grid grid-cols-1 gap-6">
                 <!-- Name -->
                 <div>
                     <label for="name" class="block text-sm font-medium text-[var(--color-primary-700)] mb-2">
@@ -42,102 +42,18 @@
                     @enderror
                 </div>
 
-                <!-- Parent Category -->
+                <!-- Description -->
                 <div>
-                    <label for="parent_id" class="block text-sm font-medium text-[var(--color-primary-700)] mb-2">
-                        Danh mục cha
+                    <label for="description" class="block text-sm font-medium text-[var(--color-primary-700)] mb-2">
+                        Mô tả
                     </label>
-                    <select name="parent_id" 
-                            id="parent_id"
-                            class="w-full rounded-md shadow-sm border-[var(--color-primary-300)] focus:border-[var(--color-primary-500)] focus:ring focus:ring-[var(--color-primary-200)] focus:ring-opacity-50 @error('parent_id') border-[var(--color-secondary-500)] @enderror">
-                        <option value="">Không có</option>
-                        @foreach($categories as $category)
-                        <option value="{{ $category->id }}" {{ old('parent_id') == $category->id ? 'selected' : '' }}>
-                            {{ $category->name }}
-                        </option>
-                        @endforeach
-                    </select>
-                    @error('parent_id')
+                    <textarea name="description" 
+                              id="description" 
+                              rows="3"
+                              class="w-full rounded-md shadow-sm border-[var(--color-primary-300)] focus:border-[var(--color-primary-500)] focus:ring focus:ring-[var(--color-primary-200)] focus:ring-opacity-50 @error('description') border-[var(--color-secondary-500)] @enderror">{{ old('description') }}</textarea>
+                    @error('description')
                     <p class="mt-1 text-sm text-[var(--color-secondary-600)]">{{ $message }}</p>
                     @enderror
-                </div>
-            </div>
-
-            <!-- Description -->
-            <div>
-                <label for="description" class="block text-sm font-medium text-[var(--color-primary-700)] mb-2">
-                    Mô tả
-                </label>
-                <textarea name="description" 
-                          id="description" 
-                          rows="3"
-                          class="w-full rounded-md shadow-sm border-[var(--color-primary-300)] focus:border-[var(--color-primary-500)] focus:ring focus:ring-[var(--color-primary-200)] focus:ring-opacity-50 @error('description') border-[var(--color-secondary-500)] @enderror">{{ old('description') }}</textarea>
-                @error('description')
-                <p class="mt-1 text-sm text-[var(--color-secondary-600)]">{{ $message }}</p>
-                @enderror
-            </div>
-
-            <!-- Featured Image -->
-            <div>
-                <label class="block text-sm font-medium text-[var(--color-primary-700)] mb-2">
-                    Ảnh danh mục
-                </label>
-                <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-[var(--color-primary-300)] border-dashed rounded-md">
-                    <div class="space-y-1 text-center">
-                        <div class="flex flex-col items-center">
-                            <i class="fas fa-image text-[var(--color-primary-400)] text-3xl mb-3"></i>
-                            <div class="flex text-sm text-[var(--color-primary-600)]">
-                                <label for="featured_image" class="relative cursor-pointer bg-white rounded-md font-medium text-[var(--color-primary-600)] hover:text-[var(--color-primary-700)] focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-[var(--color-primary-500)]">
-                                    <span>Tải ảnh lên</span>
-                                    <input id="featured_image" 
-                                           name="featured_image" 
-                                           type="file" 
-                                           accept="image/*"
-                                           class="sr-only">
-                                </label>
-                                <p class="pl-1">hoặc kéo thả vào đây</p>
-                            </div>
-                            <p class="text-xs text-[var(--color-primary-500)]">PNG, JPG, GIF tối đa 2MB</p>
-                        </div>
-                        <div id="image-preview" class="hidden mt-4">
-                            <img src="#" alt="Preview" class="mx-auto h-32 w-auto">
-                        </div>
-                    </div>
-                </div>
-                @error('featured_image')
-                <p class="mt-1 text-sm text-[var(--color-secondary-600)]">{{ $message }}</p>
-                @enderror
-            </div>
-
-            <!-- Status and Featured -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Status -->
-                <div>
-                    <label for="status" class="block text-sm font-medium text-[var(--color-primary-700)] mb-2">
-                        Trạng thái <span class="text-[var(--color-secondary-600)]">*</span>
-                    </label>
-                    <select name="status" 
-                            id="status"
-                            required
-                            class="w-full rounded-md shadow-sm border-[var(--color-primary-300)] focus:border-[var(--color-primary-500)] focus:ring focus:ring-[var(--color-primary-200)] focus:ring-opacity-50">
-                        <option value="published" {{ old('status') == 'published' ? 'selected' : '' }}>Xuất bản</option>
-                        <option value="draft" {{ old('status') == 'draft' ? 'selected' : '' }}>Bản nháp</option>
-                    </select>
-                </div>
-
-                <!-- Featured -->
-                <div class="flex items-center space-x-4">
-                    <div class="flex items-center">
-                        <input type="checkbox" 
-                               name="is_featured" 
-                               id="is_featured" 
-                               value="1"
-                               {{ old('is_featured') ? 'checked' : '' }}
-                               class="rounded border-[var(--color-primary-300)] text-[var(--color-primary-500)] shadow-sm focus:border-[var(--color-primary-300)] focus:ring focus:ring-[var(--color-primary-200)] focus:ring-opacity-50">
-                        <label for="is_featured" class="ml-2 text-sm text-[var(--color-primary-700)]">
-                            Đánh dấu là danh mục nổi bật
-                        </label>
-                    </div>
                 </div>
             </div>
 
@@ -148,6 +64,11 @@
                     <i class="fas fa-save mr-2"></i> Lưu danh mục
                 </button>
             </div>
+
+            <!-- Hidden fields for default values -->
+            <input type="hidden" name="parent_id" value="">
+            <input type="hidden" name="is_featured" value="0">
+            <input type="hidden" name="status" value="published">
         </form>
     </div>
 </div>

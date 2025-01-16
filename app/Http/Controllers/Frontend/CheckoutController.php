@@ -32,21 +32,15 @@ class CheckoutController extends Controller
             $subtotal = $this->calculateSubtotal($validated['items']);
             $shippingAmount = $subtotal >= 500000 ? 0 : 30000;
 
-            $addressParts = explode(', ', $validated['shipping_address']);
-            $city = end($addressParts);
-            $district = prev($addressParts);
-            $ward = prev($addressParts);
-            $street = implode(', ', array_slice($addressParts, 0, count($addressParts) - 3));
-
             $order = Order::create([
                 'order_number' => 'ORD-' . strtoupper(uniqid()),
                 'customer_name' => $validated['customer_info']['full_name'],
                 'customer_phone' => $validated['customer_info']['phone'],
                 'customer_email' => $validated['customer_info']['email'],
-                'shipping_address' => $street,
-                'shipping_city' => $city || 0,
-                'shipping_district' => $district || 0,
-                'shipping_ward' => $ward || 0,
+                'shipping_address' => $validated['shipping_address'],
+                'shipping_city' => 1,
+                'shipping_district' => 1, 
+                'shipping_ward' => 1, 
                 'payment_method' => $validated['payment_method'],
                 'notes' => $request->input('notes'),
                 'status' => 'pending',

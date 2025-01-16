@@ -2,9 +2,9 @@
 
 @section('content')
 <div class="container-fluid px-4">
-    <div class="bg-white rounded-lg shadow-sm">
+    <div class="bg-white rounded-lg shadow-sm overflow-hidden">
         <!-- Header -->
-        <div class="bg-blue-600 px-6 py-4">
+        <div class="bg-[var(--color-primary-500)] px-6 py-4">
             <div class="flex justify-between items-center">
                 <h3 class="text-xl font-semibold text-white flex items-center">
                     <i class="fas fa-edit mr-2"></i> Chỉnh sửa bài viết
@@ -35,7 +35,7 @@
                        id="title" 
                        value="{{ old('title', $post->title) }}" 
                        required
-                       class="w-full rounded-md shadow-sm border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 @error('title') border-red-300 @enderror">
+                       class="w-full rounded-md shadow-sm border-gray-300 focus:border-green-300 focus:ring focus:ring-green-200 focus:ring-opacity-50 @error('title') border-red-300 @enderror">
                 @error('title')
                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
@@ -49,7 +49,7 @@
                 <select name="post_category_id" 
                         id="post_category_id" 
                         required
-                        class="w-full rounded-md shadow-sm border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 @error('post_category_id') border-red-300 @enderror">
+                        class="w-full rounded-md shadow-sm border-gray-300 focus:border-green-300 focus:ring focus:ring-green-200 focus:ring-opacity-50 @error('post_category_id') border-red-300 @enderror">
                     <option value="">Chọn danh mục</option>
                     @foreach($categories as $category)
                     <option value="{{ $category->id }}" {{ old('post_category_id', $post->post_category_id) == $category->id ? 'selected' : '' }}>
@@ -80,7 +80,7 @@
                         <div class="flex flex-col items-center">
                             <i class="fas fa-image text-gray-400 text-3xl mb-3"></i>
                             <div class="flex text-sm text-gray-600">
-                                <label for="featured_image" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
+                                <label for="featured_image" class="relative cursor-pointer bg-white rounded-md font-medium text-green-600 hover:text-green-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-green-500">
                                     <span>Tải ảnh mới</span>
                                     <input id="featured_image" 
                                            name="featured_image" 
@@ -120,7 +120,7 @@
                 <textarea name="excerpt" 
                           id="excerpt" 
                           rows="3"
-                          class="w-full rounded-md shadow-sm border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 @error('excerpt') border-red-300 @enderror">{{ old('excerpt', $post->excerpt) }}</textarea>
+                          class="w-full rounded-md shadow-sm border-gray-300 focus:border-green-300 focus:ring focus:ring-green-200 focus:ring-opacity-50 @error('excerpt') border-red-300 @enderror">{{ old('excerpt', $post->excerpt) }}</textarea>
                 @error('excerpt')
                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
@@ -134,7 +134,7 @@
                            id="status" 
                            value="published"
                            {{ old('status', $post->status === 'published') ? 'checked' : '' }}
-                           class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                           class="rounded border-gray-300 text-green-600 shadow-sm focus:border-green-300 focus:ring focus:ring-green-200 focus:ring-opacity-50">
                     <span class="ml-2 text-sm text-gray-600">Xuất bản ngay</span>
                 </label>
 
@@ -144,7 +144,7 @@
                            id="is_featured" 
                            value="1"
                            {{ old('is_featured', $post->is_featured) ? 'checked' : '' }}
-                           class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                           class="rounded border-gray-300 text-green-600 shadow-sm focus:border-green-300 focus:ring focus:ring-green-200 focus:ring-opacity-50">
                     <span class="ml-2 text-sm text-gray-600">Bài viết nổi bật</span>
                 </label>
             </div>
@@ -152,7 +152,7 @@
             <!-- Submit Button -->
             <div class="flex justify-end pt-6">
                 <button type="submit" 
-                        class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-900 focus:outline-none focus:border-blue-900 focus:ring ring-blue-300 disabled:opacity-25 transition">
+                        class="inline-flex items-center px-4 py-2 bg-[var(--color-primary-500)] border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-700 active:bg-green-900 focus:outline-none focus:border-green-900 focus:ring ring-green-300 disabled:opacity-25 transition">
                     <i class="fas fa-save mr-2"></i> Cập nhật bài viết
                 </button>
             </div>

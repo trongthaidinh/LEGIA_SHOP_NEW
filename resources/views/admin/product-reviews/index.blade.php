@@ -3,7 +3,7 @@
 @section('content')
 <div class="container-fluid px-4">
     <div class="bg-white rounded-lg shadow-sm overflow-hidden">
-        <div class="bg-blue-600 px-6 py-4">
+        <div class="bg-[var(--color-primary-500)] px-6 py-4">
             <div class="flex justify-between items-center">
                 <h3 class="text-xl font-semibold text-white flex items-center">
                     <i class="fas fa-star mr-2"></i> Đánh giá sản phẩm
@@ -51,28 +51,23 @@
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-16">ID</th>
                             <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-48">Sản phẩm</th>
                             <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-44">Người đánh giá</th>
                             <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-32">Đánh giá</th>
-                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nội dung</th>
                             <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-28">Trạng thái</th>
-                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-32">Ngày tạo</th>
                             <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-36">Thao tác</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
                         @forelse($reviews as $review)
                             <tr class="{{ $review->is_approved ? '' : 'bg-yellow-50' }} hover:bg-gray-50">
-                                <td class="px-4 py-3 text-center text-sm text-gray-500">{{ $review->id }}</td>
                                 <td class="px-4 py-3">
                                     <div class="flex items-center">
                                         @if($review->product)
                                             @if($review->product->featured_image)
-                                                <img src="{{ asset($review->product->featured_image) }}" 
+                                                <img src="{{ Storage::url($review->product->featured_image) }}" 
                                                      alt="{{ $review->product->name }}" 
                                                      class="h-12 w-12 rounded-md object-cover mr-3">
-                                            
                                             @endif
                                             <div class="text-sm">
                                                 <div class="font-medium text-gray-900">{{ $review->product->name }}</div>
@@ -113,18 +108,6 @@
                                             @endif
                                         @endfor
                                     </div>
-                                    <div class="text-sm text-gray-500">{{ $review->rating }}/5</div>
-                                </td>
-                                <td class="px-4 py-3">
-                                    <div class="text-sm text-gray-900 line-clamp-2">
-                                        {{ $review->comment }}
-                                        @if(strlen($review->comment) > 100)
-                                            <a href="{{ route(app()->getLocale() . '.admin.product-reviews.show', $review) }}" 
-                                               class="text-blue-600 hover:text-blue-800 ml-1">
-                                                Xem thêm
-                                            </a>
-                                        @endif
-                                    </div>
                                 </td>
                                 <td class="px-4 py-3">
                                     @if($review->is_approved)
@@ -136,10 +119,6 @@
                                             <i class="fas fa-clock mr-1"></i> Chờ duyệt
                                         </span>
                                     @endif
-                                </td>
-                                <td class="px-4 py-3">
-                                    <div class="text-sm text-gray-900">{{ $review->created_at->format('d/m/Y') }}</div>
-                                    <div class="text-sm text-gray-500">{{ $review->created_at->format('H:i') }}</div>
                                 </td>
                                 <td class="px-4 py-3 text-sm font-medium">
                                     <div class="flex space-x-1">

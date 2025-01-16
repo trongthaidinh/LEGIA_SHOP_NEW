@@ -107,7 +107,7 @@ class CategoryController extends Controller
             
             DB::commit();
             return redirect()->route($validated['language'] . '.admin.categories.index')
-                ->with('success', 'Category created successfully.');
+                ->with('success', 'Danh mục đã được tạo thành công.');
 
         } catch (\Exception $e) {
             DB::rollBack();
@@ -174,7 +174,7 @@ class CategoryController extends Controller
 
             DB::commit();
             return redirect()->route($validated['language'] . '.admin.categories.index')
-                ->with('success', 'Category updated successfully.');
+                ->with('success', 'Cập nhật danh mục thành công.');
 
         } catch (\Exception $e) {
             DB::rollBack();
@@ -197,12 +197,12 @@ class CategoryController extends Controller
 
             // Check if category has children
             if ($category->children()->exists()) {
-                throw new \Exception('Cannot delete category with sub-categories.');
+                throw new \Exception('Không thể xóa danh mục đang có danh mục con.');
             }
 
             // Check if category has products
             if ($category->products()->exists()) {
-                throw new \Exception('Cannot delete category with products.');
+                throw new \Exception('Không thể xóa danh mục đang có sản phẩm.');
             }
 
             // Delete category image
@@ -215,7 +215,7 @@ class CategoryController extends Controller
             DB::commit();
             $language = request()->segment(1);
             return redirect()->route($language . '.admin.categories.index')
-                ->with('success', 'Category deleted successfully.');
+                ->with('success', 'Danh mục đã được xóa thành công.');
 
         } catch (\Exception $e) {
             DB::rollBack();
