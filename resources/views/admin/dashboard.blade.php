@@ -212,10 +212,16 @@ document.addEventListener('DOMContentLoaded', function() {
                     @endforeach
                 ],
                 backgroundColor: [
-                    'var(--color-primary-500)',
-                    'var(--color-secondary-500)',
-                    'var(--color-primary-300)'
-                ]
+                    '#22c55e',    // Success/Green for completed orders
+                    '#f59e0b',    // Warning/Orange for pending orders
+                    '#ef4444'     // Danger/Red for cancelled/failed orders
+                ],
+                borderColor: [
+                    '#16a34a',    // Darker green
+                    '#d97706',    // Darker orange
+                    '#dc2626'     // Darker red
+                ],
+                borderWidth: 2
             }]
         },
         options: {

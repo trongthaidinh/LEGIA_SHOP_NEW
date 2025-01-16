@@ -4,9 +4,7 @@
 <div class="bg-white rounded-lg shadow-sm p-6">
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-semibold text-gray-900">{{ __('Testimonials') }}</h1>
-        <a href="{{ route(app()->getLocale() . '.admin.testimonials.create') }}" class="bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-md transition-colors duration-200">
-            <i class="fas fa-plus mr-2"></i>{{ __('Add New') }}
-        </a>
+        
     </div>
 
     <!-- Language Filter -->
@@ -34,7 +32,7 @@
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
                 @forelse($testimonials as $testimonial)
-                    <tr>
+                    <tr data-testimonial-id="{{ $testimonial->id }}">
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex items-center">
                                 @if($testimonial->customer_avatar)
@@ -69,9 +67,9 @@
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm">
                             <div class="flex items-center space-x-3">
-                                <a href="{{ route(app()->getLocale() . '.admin.testimonials.edit', $testimonial) }}" class="text-primary-600 hover:text-primary-900">
-                                    <i class="fas fa-edit"></i>
-                                </a>
+                                <button type="button" onclick="showTestimonialDetails('{{ $testimonial->id }}')" class="text-primary-600 hover:text-primary-900">
+                                    <i class="fas fa-eye"></i>
+                                </button>
                                 <form action="{{ route(app()->getLocale() . '.admin.testimonials.destroy', $testimonial) }}" method="POST" class="inline-block">
                                     @csrf
                                     @method('DELETE')
@@ -98,4 +96,84 @@
         {{ $testimonials->links() }}
     </div>
 </div>
-@endsection 
+
+<!-- Testimonial Details Modal -->
+<div id="testimonialModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full" style="z-index: 100;">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-medium text-gray-900">{{ __('Testimonial Details') }}</h3>
+            <button onclick="closeTestimonialModal()" class="text-gray-400 hover:text-gray-500">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div id="testimonialDetails" class="space-y-4">
+            <div class="flex items-center">
+                <img id="modalCustomerAvatar" class="h-16 w-16 rounded-full object-cover" alt="">
+                <div class="ml-4">
+                    <div id="modalCustomerName" class="font-medium text-gray-900"></div>
+                    <div id="modalCustomerPosition" class="text-sm text-gray-500"></div>
+                </div>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700">{{ __('Content') }}</label>
+                <p id="modalContent" class="mt-1 text-sm text-gray-900"></p>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700">{{ __('Rating') }}</label>
+                <div id="modalRating" class="flex items-center text-yellow-400 mt-1"></div>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700">{{ __('Status') }}</label>
+                <span id="modalStatus" class="mt-1 px-2 inline-flex text-xs leading-5 font-semibold rounded-full"></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+@endsection
+
+@push('scripts')
+<script>
+function showTestimonialDetails(testimonialId) {
+    // Find the testimonial data from the table
+    const row = document.querySelector(`tr[data-testimonial-id="${testimonialId}"]`);
+    const customerName = row.querySelector('.text-sm.font-medium').textContent;
+    const customerPosition = row.querySelector('.text-sm.text-gray-500')?.textContent || '';
+    const content = row.querySelector('td:nth-child(2) .text-sm').textContent;
+    const rating = row.querySelector('td:nth-child(3) .flex').innerHTML;
+    const status = row.querySelector('td:nth-child(4) span').textContent;
+    const statusClass = row.querySelector('td:nth-child(4) span').className;
+    const avatarSrc = row.querySelector('img')?.src || '';
+
+    // Update modal content
+    document.getElementById('modalCustomerName').textContent = customerName;
+    document.getElementById('modalCustomerPosition').textContent = customerPosition;
+    document.getElementById('modalContent').textContent = content;
+    document.getElementById('modalRating').innerHTML = rating;
+    document.getElementById('modalStatus').textContent = status;
+    document.getElementById('modalStatus').className = statusClass;
+    
+    const avatarImg = document.getElementById('modalCustomerAvatar');
+    if (avatarSrc) {
+        avatarImg.src = avatarSrc;
+        avatarImg.style.display = 'block';
+    } else {
+        avatarImg.style.display = 'none';
+    }
+
+    // Show modal
+    document.getElementById('testimonialModal').classList.remove('hidden');
+}
+
+function closeTestimonialModal() {
+    document.getElementById('testimonialModal').classList.add('hidden');
+}
+
+// Close modal when clicking outside
+document.getElementById('testimonialModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeTestimonialModal();
+    }
+});
+</script>
+@endpush 

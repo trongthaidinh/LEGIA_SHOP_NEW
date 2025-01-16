@@ -26,6 +26,7 @@ class StaticPageController extends Controller
 
     public function store(Request $request)
     {
+        $request['locale'] = app()->getLocale();
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'slug' => 'nullable|string|max:255',
@@ -35,7 +36,6 @@ class StaticPageController extends Controller
             'meta_description' => 'nullable|string|max:255',
             'meta_keywords' => 'nullable|string|max:255'
         ]);
-
         StaticPage::createOrUpdatePage($validated);
 
         return redirect()
@@ -45,6 +45,9 @@ class StaticPageController extends Controller
 
     public function edit(StaticPage $staticPage)
     {
+        if (request()->ajax()) {
+            return response()->json($staticPage);
+        }
         return view('admin.static-pages.edit', compact('staticPage'));
     }
 
