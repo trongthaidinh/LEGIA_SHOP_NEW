@@ -113,7 +113,8 @@ function renderCart() {
 
     let total = 0;
     for (const [id, item] of Object.entries(currentCart)) {
-        const itemTotal = item.price * item.quantity;
+        const itemPrice = item.price && item.price < item.original_price ? item.price : item.original_price;
+        const itemTotal = itemPrice * item.quantity;
         total += itemTotal;
         
         // Desktop view
@@ -131,8 +132,11 @@ function renderCart() {
                 </td>
                 <td class="py-6 px-6">
                     <div class="text-right">
-                        <div class="text-sm text-gray-500 line-through">${numberFormat(item.original_price, currentLang)}</div>
-                        <div class="text-base font-medium text-[var(--color-primary-600)]">${numberFormat(item.price, currentLang)}</div>
+                        ${item.price && item.price < item.original_price 
+                            ? `<div class="text-sm text-gray-400 line-through">${numberFormat(item.original_price, currentLang)}</div>
+                               <div class="text-base font-medium text-[var(--color-primary-600)]">${numberFormat(item.price, currentLang)}</div>`
+                            : `<div class="text-base font-medium text-[var(--color-primary-600)]">${numberFormat(item.original_price, currentLang)}</div>`
+                        }
                     </div>
                 </td>
                 <td class="py-6 px-6">
@@ -169,8 +173,11 @@ function renderCart() {
                         <div>
                             <h3 class="font-medium text-gray-900">${item.name}</h3>
                             <div class="mt-1">
-                                <span class="text-gray-500 line-through text-sm">${numberFormat(item.original_price, currentLang)}</span>
-                                <div class="text-[var(--color-primary-600)] font-medium">${numberFormat(item.price, currentLang)}</div>
+                                ${item.price && item.price < item.original_price 
+                                    ? `<span class="text-gray-500 line-through text-sm">${numberFormat(item.original_price, currentLang)}</span>
+                                       <div class="text-[var(--color-primary-600)] font-medium">${numberFormat(item.price, currentLang)}</div>`
+                                    : `<div class="text-[var(--color-primary-600)] font-medium">${numberFormat(item.original_price, currentLang)}</div>`
+                                }
                             </div>
                         </div>
                     </div>
@@ -236,7 +243,8 @@ function updateMobileCheckoutBar() {
     
     let total = 0;
     for (const [id, item] of Object.entries(currentCart)) {
-        total += item.price * item.quantity;
+        const itemPrice = item.price && item.price < item.original_price ? item.price : item.original_price;
+        total += itemPrice * item.quantity;
     }
     
     const mobileTotal = document.querySelector('.mobile-checkout-bar .cart-total');

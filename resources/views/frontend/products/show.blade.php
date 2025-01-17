@@ -31,9 +31,31 @@
 
             <!-- Price -->
             <div class="mt-4 flex items-center gap-4">
-                <p class="text-2xl font-bold text-[var(--color-primary-600)]">{{ number_format($product->sale_price) }}đ</p>
-                @if($product->price > $product->sale_price)
-                <p class="text-sm text-gray-400 line-through">{{ number_format($product->price) }}đ</p>
+                @php
+                    $locale = app()->getLocale();
+                    $currencySymbol = $locale === 'zh' ? '¥' : '₫';
+                    $price = $product->price;
+                    $salePrice = $product->sale_price && $product->sale_price < $product->price ? $product->sale_price : null;
+
+                    $formatPrice = function($price) use ($locale, $currencySymbol) {
+                        $formattedPrice = number_format($price, 0, ',', '.');
+                        return $locale === 'zh' ? $currencySymbol . $formattedPrice : $formattedPrice . $currencySymbol;
+                    };
+                @endphp
+
+                @if($price)
+                    <p class="text-2xl font-bold text-[var(--color-primary-600)]">
+                        {{ $formatPrice($salePrice ?: $price) }}
+                    </p>
+                    @if($salePrice)
+                        <p class="text-sm text-gray-400 line-through">
+                            {{ $formatPrice($price) }}
+                        </p>
+                    @endif
+                @else
+                    <p class="text-gray-400 italic">
+                        {{ $locale === 'vi' ? 'Liên hệ' : '联系我们' }}
+                    </p>
                 @endif
             </div>
 
@@ -61,23 +83,23 @@
             <!-- Quantity and Add to cart -->
             <div class="mt-6">
                 <div class="flex items-center gap-4">
-                    <label class="text-sm text-gray-600">{{ __('quantity') }}:</label>
+                    <label class="text-xs md:text-sm text-gray-600">{{ __('quantity') }}:</label>
                     <div class="flex items-center">
                         <button onclick="decrementQuantity()"
                             class="w-8 h-8 flex items-center justify-center bg-[var(--color-primary-600)] text-white rounded-l hover:bg-[var(--color-primary-700)]">
                             <i class="fas fa-minus text-xs"></i>
                         </button>
                         <input type="number" id="quantity" name="quantity" value="1" min="1"
-                            class="w-16 h-8 border-t border-b border-gray-300 text-center focus:outline-none focus:ring-0">
+                            class="w-12 md:w-16 h-8 border-t border-b border-gray-300 text-center focus:outline-none focus:ring-0">
                         <button onclick="incrementQuantity()"
                             class="w-8 h-8 flex items-center justify-center bg-[var(--color-primary-600)] text-white rounded-r hover:bg-[var(--color-primary-700)]">
                             <i class="fas fa-plus text-xs"></i>
                         </button>
                     </div>
                     @if($product->stock > 0)
-                    <span class="text-sm text-gray-500">({{ $product->stock }} {{ __('products_in_stock') }})</span>
+                    <span class="text-xs md:text-sm text-gray-500">({{ $product->stock }} {{ __('products_in_stock') }})</span>
                     @else
-                    <span class="text-sm text-red-500">{{ __('out_of_stock') }}</span>
+                    <span class="text-xs md:text-sm text-red-500">{{ __('out_of_stock') }}</span>
                     @endif
                 </div>
 
@@ -95,12 +117,12 @@
                     </button>
 
                     <div class="grid grid-cols-2 gap-4">
-                        <a href="tel:077 233 2255" class="flex items-center justify-center gap-2 bg-white border-2 border-[var(--color-primary-600)] text-[var(--color-primary-600)] px-6 py-3 rounded-lg hover:bg-[var(--color-primary-50)] transition-colors">
+                        <a href="tel:077 233 2255" class="flex items-center justify-center gap-2 bg-white text-xs md:text-md lg:text-lg border-2 border-[var(--color-primary-600)] text-[var(--color-primary-600)] px-2 md:px-6 py-3 rounded-lg hover:bg-[var(--color-primary-50)] transition-colors">
                             <i class="fas fa-phone"></i>
                             077 233 2255
                         </a>
                         <button type="button" onclick="window.open('https://zalo.me/0772332255', '_blank')"
-                            class="flex items-center justify-center gap-2 bg-white border-2 border-[var(--color-primary-600)] text-[var(--color-primary-600)] px-6 py-3 rounded-lg hover:bg-[var(--color-primary-50)] transition-colors">
+                            class="text-xs md:text-md lg:text-lg flex items-center justify-center gap-2 bg-white border-2 border-[var(--color-primary-600)] text-[var(--color-primary-600)] px-2 md:px-6 py-3 rounded-lg hover:bg-[var(--color-primary-50)] transition-colors">
                             <i class="fas fa-comment-dots"></i>
                             ZALO
                         </button>
@@ -114,11 +136,11 @@
     <div class="mt-12 bg-gray-100 rounded-lg py-8 px-4 lg:px-8">
         <div class="flex gap-2 sm:gap-4 mb-6">
             <button onclick="openTab('description')"
-                class="tab-btn active px-4 sm:px-8 py-2 sm:py-3 text-sm sm:text-md font-medium rounded-lg bg-transparent text-[var(--color-primary-600)] border border-[var(--color-primary-600)]">
+                class="tab-btn active px-2 md:px-8 py-2 sm:py-3 text-xs md:text-md font-medium rounded-lg bg-transparent text-[var(--color-primary-600)] border border-[var(--color-primary-600)]">
                 {{ __('product_information') }}
             </button>
             <button onclick="openTab('reviews')"
-                class="tab-btn px-4 sm:px-8 py-2 sm:py-3 text-sm sm:text-md font-medium rounded-lg bg-transparent text-[var(--color-primary-600)] border border-[var(--color-primary-600)]">
+                class="tab-btn px-2 md:px-8 py-2 sm:py-3 text-xs md:text-md font-medium rounded-lg bg-transparent text-[var(--color-primary-600)] border border-[var(--color-primary-600)]">
                 {{ __('customer_reviews') }}
             </button>
         </div>
