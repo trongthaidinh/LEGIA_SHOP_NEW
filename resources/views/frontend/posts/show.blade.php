@@ -63,7 +63,7 @@
                                                 transition-all duration-300">
                                         <div class="relative h-48 overflow-hidden">
                                             <img src="{{ Storage::url($relatedPost->featured_image) }}" 
-                                                 alt="{{ $relatedPost->title }}"
+                                                 alt="tổ yến"
                                                  class="w-full h-full object-cover transform group-hover:scale-110 
                                                         transition-transform duration-500">
                                             <div class="absolute inset-0 bg-gradient-to-t 

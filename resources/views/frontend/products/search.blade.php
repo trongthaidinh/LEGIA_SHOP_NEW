@@ -1,5 +1,7 @@
 @extends('frontend.layouts.master')
 
+@section('title', __('search_results') . ' - ' . config('app.name'))
+
 @section('content')
 <div class="container mx-auto px-4 py-8 max-w-7xl">
     <div class="mb-8">

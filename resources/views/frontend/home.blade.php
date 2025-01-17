@@ -10,7 +10,7 @@
             <div class="swiper-wrapper">
                 @foreach($sliders as $slider)
                     <div class="swiper-slide">
-                        <img src="{{ Storage::url($slider->image) }}" alt="{{ $slider->title }}" class="w-full h-full object-cover">
+                        <img src="{{ Storage::url($slider->image) }}" alt="yến hũ" class="w-full h-full object-cover">
                     </div>
                 @endforeach
             </div>
@@ -32,7 +32,7 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                 <div class="container mx-auto">
                     <div class="flex flex-col items-center text-center mb-4">
-                        <img src="{{ asset('images/title.png') }}" alt="{{ __('company_name') }}" class="mb-2 w-[200px]">
+                        <img src="{{ asset('images/title.png') }}" alt="yến sào" class="mb-2 w-[200px]">
                         <h1 class="text-3xl font-bold text-[var(--color-primary-600)]">{{ __('company_name') }}</h2>
                     </div>
                     <div id="introduction-content">
@@ -82,7 +82,7 @@
                     </button>
                 </div>
                 <div class="relative">
-                    <img src="{{ asset('images/overview.jpg') }}" alt="Yến sào Legia'Nest" class="rounded-lg shadow-xl">
+                    <img src="{{ asset('images/overview.jpg') }}" alt="yến tinh chế" class="rounded-lg shadow-xl">
                 </div>
             </div>
         </div>
@@ -191,7 +191,7 @@
                     <article class="group">
                         <div class="relative rounded-lg overflow-hidden mb-2 sm:mb-4">
                             <img src="{{ Storage::url($post->featured_image) }}" 
-                                 alt="{{ $post->title }}"
+                                 alt="nhà yến"
                                  class="w-full h-32 sm:h-48 object-cover transform group-hover:scale-110 transition-transform duration-500">
                             <div class="absolute bottom-0 left-0 right-0 p-2 sm:p-4 bg-gradient-to-t from-black to-transparent">
                                 <span class="text-xs sm:text-sm text-white">{{ $post->published_at->format('d/m/Y') }}</span>
@@ -223,7 +223,7 @@
                         <div class="flex items-center mb-4">
                             <div class="w-12 h-12 sm:w-16 sm:h-16 mr-3 sm:mr-4">
                                 <img src="{{ Storage::url($testimonial->customer_avatar) }}" 
-                                     alt="{{ $testimonial->name }}" 
+                                     alt="yến tổ" 
                                      class="w-full h-full object-cover rounded-full">
                             </div>
                             <div>
@@ -257,7 +257,7 @@
                            data-caption="{{ $certificate->name }}"
                            class="block h-[400px] lg:h-[540px]">
                             <img src="{{ Storage::url($certificate->image) }}" 
-                                 alt="{{ $certificate->name }}"
+                                 alt="yến chưng"
                                  class="w-full h-full object-contain transform group-hover:scale-105 transition-transform duration-500">
                         </a>
                     </div>

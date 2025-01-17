@@ -1,12 +1,12 @@
 @extends('frontend.layouts.master')
 
-@section('title', __('Contact Us'))
+@section('title', __('Contact Us') . ' - ' . config('app.name'))
 
 @section('content')
 <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
     <div class="grid lg:grid-cols-2 gap-12 items-center">
         {{-- Contact Information Section --}} 
-        <div class="bg-white p-8 rounded-xl shadow-2xl">
+        <div class="bg-white p-8 rounded-xl shadow-lg">
             <div class="mb-8">
                 <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl mb-4">
                     {{ __('Get in Touch') }}
@@ -79,7 +79,7 @@
 
         {{-- Contact Details and Map Section --}}
         <div class="space-y-8">
-            <div class="bg-white p-6 rounded-xl shadow-2xl">
+            <div class="bg-white p-6 rounded-xl shadow-lg">
                 <h3 class="text-2xl font-bold text-gray-900 mb-6">{{ __('Contact Details') }}</h3>
                 <div class="space-y-4">
                     <div class="flex items-center space-x-4">
@@ -102,7 +102,7 @@
                         </div>
                         <div>
                             <p class="font-semibold text-gray-700">{{ __('Phone') }}</p>
-                            <p class="text-gray-600">(+84) 123 456 789</p>
+                            <p class="text-gray-600">(+84) 772 332 255</p>
                         </div>
                     </div>
                     <div class="flex items-center space-x-4">
@@ -113,13 +113,13 @@
                         </div>
                         <div>
                             <p class="font-semibold text-gray-700">{{ __('Email') }}</p>
-                            <p class="text-gray-600">contact@legiashop.com</p>
+                            <p class="text-gray-600">lxchinh@gmail.com</p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="bg-white rounded-xl overflow-hidden shadow-2xl">
+            <div class="bg-white rounded-xl overflow-hidden shadow-lg">
                 <div class="aspect-w-16 aspect-h-9">
                     <iframe 
                     src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d3892.1975734353023!2d108.062342!3d12.700524!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3171f7e82916a097%3A0xf624f682171e01ef!2zNjIgTmd1eeG7hW4gSOG7r3UgVGjhu40sIFTDom4gQW4sIEJ1w7RuIE1hIFRodeG7mXQsIMSQ4bqvayBM4bqvaywgVmlldG5hbQ!5e0!3m2!1sen!2sus!4v1736622554726!5m2!1sen!2sus" 

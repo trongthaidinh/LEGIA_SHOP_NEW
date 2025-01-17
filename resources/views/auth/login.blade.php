@@ -14,25 +14,33 @@
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="login-body">
-    <div class="login-container">
-        <div class="login-logo">
-            <img src="{{ asset('images/nest-logo.png') }}" alt="{{ config('app.name', 'Đăng nhập') }}">
+<body class="min-h-screen bg-primary-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow-lg">
+        <div class="text-center">
+            <div class="flex justify-center mb-6">
+                <img 
+                    class="h-40 w-auto object-contain" 
+                    src="{{ asset('images/nest-logo.png') }}" 
+                    alt="{{ config('app.name', 'Đăng nhập') }}"
+                >
+            </div>
+
+            @if (session('status'))
+                <div class="bg-primary-50 text-primary-700 p-3 rounded-md mb-4 text-center">
+                    {{ session('status') }}
+                </div>
+            @endif
+
         </div>
 
-        <!-- Session Status -->
-        @if (session('status'))
-            <div class="login-status">
-                {{ session('status') }}
-            </div>
-        @endif
-
-        <form method="POST" action="{{ route(app()->getLocale() . '.login') }}" class="login-form">
+        <form method="POST" action="{{ route(app()->getLocale() . '.login') }}" class="space-y-6">
             @csrf
 
             <!-- Email Address -->
-            <div class="form-group">
-                <label for="email" class="form-label">Địa chỉ email</label>
+            <div>
+                <label for="email" class="block text-sm font-medium text-primary-700 mb-2">
+                    Địa chỉ email
+                </label>
                 <input 
                     id="email" 
                     type="email" 
@@ -41,175 +49,74 @@
                     required 
                     autofocus 
                     autocomplete="username" 
-                    class="form-control @error('email') is-invalid @enderror"
+                    class="w-full px-3 py-2 border border-primary-300 rounded-md shadow-sm 
+                           focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500
+                           @error('email') border-red-500 @enderror"
                 >
                 @error('email')
-                    <div class="error-message">{{ $message }}</div>
+                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                 @enderror
             </div>
 
             <!-- Password -->
-            <div class="form-group">
-                <label for="password" class="form-label">Mật khẩu</label>
+            <div>
+                <label for="password" class="block text-sm font-medium text-primary-700 mb-2">
+                    Mật khẩu
+                </label>
                 <input 
                     id="password" 
                     type="password" 
                     name="password" 
                     required 
                     autocomplete="current-password" 
-                    class="form-control @error('password') is-invalid @enderror"
+                    class="w-full px-3 py-2 border border-primary-300 rounded-md shadow-sm 
+                           focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500
+                           @error('password') border-red-500 @enderror"
                 >
                 @error('password')
-                    <div class="error-message">{{ $message }}</div>
+                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                 @enderror
             </div>
 
-            <!-- Remember Me -->
-            <div class="remember-forgot">
-                <label for="remember_me" class="remember-me">
-                    <input id="remember_me" type="checkbox" name="remember">
-                    <span>Ghi nhớ đăng nhập</span>
-                </label>
+            <!-- Remember Me and Forgot Password -->
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <input 
+                        id="remember_me" 
+                        type="checkbox" 
+                        name="remember" 
+                        class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+                    >
+                    <label for="remember_me" class="ml-2 block text-sm text-primary-700">
+                        Ghi nhớ đăng nhập
+                    </label>
+                </div>
 
                 @if (Route::has(app()->getLocale() . '.password.request'))
-                    <a href="{{ route(app()->getLocale() . '.password.request') }}" class="forgot-password">
-                        Quên mật khẩu?
-                    </a>
+                    <div class="text-sm">
+                        <a 
+                            href="{{ route(app()->getLocale() . '.password.request') }}" 
+                            class="font-medium text-primary-600 hover:text-primary-500"
+                        >
+                            Quên mật khẩu?
+                        </a>
+                    </div>
                 @endif
             </div>
 
-            <div class="form-actions">
-                <button type="submit" class="login-button">
+            <div>
+                <button 
+                    type="submit" 
+                    class="w-full flex justify-center py-2 px-4 
+                           border border-transparent rounded-md shadow-sm 
+                           text-sm font-medium text-white 
+                           bg-primary-500 hover:bg-primary-600 
+                           focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                >
                     Đăng nhập
                 </button>
             </div>
         </form>
     </div>
-
-    <style>
-        html, body {
-            height: 100%;
-            margin: 0;
-            font-family: 'Figtree', sans-serif;
-            background-color: var(--color-primary-100);
-        }
-
-        .login-body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-
-        .login-container {
-            width: 100%;
-            max-width: 400px;
-            padding: var(--spacing-lg);
-            background-color: white;
-            border-radius: var(--radius-lg);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-        }
-
-        .login-logo {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: var(--spacing-lg);
-        }
-
-        .login-logo img {
-            max-width: 200px;
-            height: auto;
-            object-fit: contain;
-        }
-
-        .login-status {
-            background-color: var(--color-primary-50);
-            color: var(--color-primary-700);
-            padding: var(--spacing-sm);
-            border-radius: var(--radius-md);
-            margin-bottom: var(--spacing-md);
-            text-align: center;
-        }
-
-        .login-form .form-group {
-            margin-bottom: var(--spacing-md);
-        }
-
-        .form-label {
-            display: block;
-            margin-bottom: var(--spacing-xs);
-            font-size: var(--text-sm);
-            color: var(--color-primary-700);
-        }
-
-        .form-control {
-            width: 100%;
-            padding: var(--spacing-sm);
-            border: 1px solid var(--color-primary-300);
-            border-radius: var(--radius-md);
-            font-size: var(--text-base);
-            transition: border-color 0.3s ease;
-        }
-
-        .form-control:focus {
-            outline: none;
-            border-color: var(--color-primary-500);
-        }
-
-        .form-control.is-invalid {
-            border-color: red;
-        }
-
-        .error-message {
-            color: red;
-            font-size: var(--text-sm);
-            margin-top: var(--spacing-xs);
-        }
-
-        .remember-forgot {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: var(--spacing-md);
-        }
-
-        .remember-me {
-            display: flex;
-            align-items: center;
-            font-size: var(--text-sm);
-        }
-
-        .remember-me input {
-            margin-right: var(--spacing-xs);
-        }
-
-        .forgot-password {
-            color: var(--color-primary-600);
-            text-decoration: none;
-            font-size: var(--text-sm);
-        }
-
-        .forgot-password:hover {
-            text-decoration: underline;
-        }
-
-        .login-button {
-            width: 100%;
-            padding: var(--spacing-sm);
-            background-color: var(--color-primary-500);
-            color: white;
-            border: none;
-            border-radius: var(--radius-md);
-            font-size: var(--text-base);
-            font-weight: var(--font-semibold);
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .login-button:hover {
-            background-color: var(--color-primary-600);
-        }
-    </style>
 </body>
 </html>

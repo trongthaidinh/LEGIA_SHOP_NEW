@@ -7,7 +7,7 @@
             <!-- Logo and Company Info -->
             <div class="md:col-span-3 lg:col-span-1 flex flex-col items-center md:items-start">
                 <div class="mb-6">
-                    <img src="{{ asset('images/logo.png') }}" alt="LeGia'Nest" class="h-16 mx-auto md:mx-0">
+                    <img src="{{ asset('images/logo.png') }}" alt="yến sào" class="h-16 mx-auto md:mx-0">
                 </div>
                 
                 <div class="text-center md:text-left space-y-3">
