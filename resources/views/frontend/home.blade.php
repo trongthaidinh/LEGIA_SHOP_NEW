@@ -33,7 +33,7 @@
                 <div class="container mx-auto">
                     <div class="flex flex-col items-center text-center mb-4">
                         <img src="{{ asset('images/title.png') }}" alt="yến sào" class="mb-2 w-[200px]">
-                        <h1 class="text-3xl font-bold text-[var(--color-primary-600)]">{{ __('company_name') }}</h2>
+                        <h1 class="text-xl md:text-2xl lg:text-3xl font-bold text-[var(--color-primary-600)]">{{ __('company_name') }}</h2>
                     </div>
                     <div id="introduction-content">
                         <p class="text-gray-700 mb-4 text-justify">

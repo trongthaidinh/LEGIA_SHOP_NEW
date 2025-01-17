@@ -207,14 +207,14 @@ function renderOrderItems() {
     const carts = JSON.parse(localStorage.getItem('carts')) || {};
     const currentCart = carts[currentLang] || {};
     
-    
     const orderItems = document.getElementById('order-items');
     let subtotal = 0;
-
     let html = '';
+
     if (Object.keys(currentCart).length > 0) {
         for (const [id, item] of Object.entries(currentCart)) {
-            const itemTotal = item.price * item.quantity;
+            const itemPrice = item.price && item.price < item.original_price ? item.price : item.original_price;
+            const itemTotal = itemPrice * item.quantity;
             subtotal += itemTotal;
 
             html += `
@@ -222,9 +222,14 @@ function renderOrderItems() {
                     <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-cover rounded-lg">
                     <div class="flex-1 min-w-0">
                         <h4 class="text-sm font-medium text-gray-900 truncate">${item.name}</h4>
-                        <div class="text-sm text-gray-500">${item.quantity} x ${numberFormat(item.price)}đ</div>
+                        <div class="text-sm text-gray-500">
+                            ${item.price && item.price < item.original_price 
+                                ? `${numberFormat(item.price, currentLang)}` 
+                                : `${numberFormat(item.original_price, currentLang)}`
+                            } x ${item.quantity}
+                        </div>
                     </div>
-                    <div class="font-medium text-[var(--color-primary-600)]">${numberFormat(itemTotal)}đ</div>
+                    <div class="font-medium text-[var(--color-primary-600)]">${numberFormat(itemTotal, currentLang)}</div>
                 </div>
             `;
         }
@@ -233,17 +238,32 @@ function renderOrderItems() {
     }
 
     orderItems.innerHTML = html;
-    document.querySelector('.subtotal').textContent = `${numberFormat(subtotal)}đ`;
+    document.querySelector('.subtotal').textContent = `${numberFormat(subtotal, currentLang)}`;
     
-    const shippingFee = subtotal >= 500000 ? 0 : 30000;
-    document.querySelector('.shipping-fee').textContent = `${numberFormat(shippingFee)}đ`;
+    const shippingFees = {
+        'vi': subtotal >= 500000 ? 0 : 30000,
+        'zh': subtotal >= 100 ? 0 : 50
+    };
+    const shippingFee = shippingFees[currentLang] || 30000;
+    document.querySelector('.shipping-fee').textContent = `${numberFormat(shippingFee, currentLang)}`;
     
     const total = subtotal + shippingFee;
-    document.querySelector('.total-amount').textContent = `${numberFormat(total)}đ`;
+    document.querySelector('.total-amount').textContent = `${numberFormat(total, currentLang)}`;
 }
 
-function numberFormat(number) {
-    return new Intl.NumberFormat('vi-VN').format(number);
+function numberFormat(number, lang = 'vi') {
+    const currencySymbols = {
+        'vi': 'đ',
+        'zh': '¥'
+    };
+    const locales = {
+        'vi': 'vi-VN',
+        'zh': 'zh-CN'
+    };
+    const symbol = currencySymbols[lang] || 'đ';
+    const locale = locales[lang] || 'vi-VN';
+    const formattedNumber = new Intl.NumberFormat(locale).format(number);
+    return lang === 'zh' ? `${symbol}${formattedNumber}` : `${formattedNumber}${symbol}`;
 }
 
 async function placeOrder() {
@@ -289,7 +309,8 @@ async function placeOrder() {
         notes: document.getElementById('notes').value,
         items: Object.entries(JSON.parse(localStorage.getItem('carts'))['{{ app()->getLocale() }}'] || {}).map(([id, item]) => ({
             ...item,
-            id: parseInt(id)
+            id: parseInt(id),
+            price: item.price && item.price < item.original_price ? item.price : item.original_price
         })),
         language: '{{ app()->getLocale() }}'
     };
@@ -327,10 +348,6 @@ async function placeOrder() {
         console.error('Error placing order:', error);
         alert("{{ __('An error occurred. Please try again.') }}");
     }
-}
-
-function numberFormat(number) {
-    return new Intl.NumberFormat('vi-VN').format(number);
 }
 </script>
 @endpush

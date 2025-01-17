@@ -16,15 +16,20 @@
                     $currencySymbol = $locale === 'zh' ? '¥' : '₫';
                     $price = $product->price;
                     $salePrice = $product->sale_price && $product->sale_price < $product->price ? $product->sale_price : null;
+
+                    $formatPrice = function($price) use ($locale, $currencySymbol) {
+                        $formattedPrice = number_format($price, 0, ',', '.');
+                        return $locale === 'zh' ? $currencySymbol . $formattedPrice : $formattedPrice . $currencySymbol;
+                    };
                 @endphp
 
                 @if($price)
                     <span class="text-[var(--color-primary-600)] text-sm sm:text-lg font-medium">
-                        {{ number_format($salePrice ?: $price, 0, ',', '.') }}{{ $currencySymbol }}
+                        {{ $formatPrice($salePrice ?: $price) }}
                     </span>
                     @if($salePrice)
                         <span class="text-gray-400 line-through text-xs">
-                            {{ number_format($price, 0, ',', '.') }}{{ $currencySymbol }}
+                            {{ $formatPrice($price) }}
                         </span>
                         <span class="bg-red-500 text-white text-xs px-1 sm:px-2 py-0.5 sm:py-1 rounded-full">
                             -{{ round(($price - $salePrice) / $price * 100) }}%

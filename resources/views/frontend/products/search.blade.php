@@ -27,7 +27,7 @@
     </div>
 
     @if($products->count() > 0)
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-4 lg:gap-6">
             @foreach($products as $product)
                 @include('frontend.partials.product-card', ['product' => $product])
             @endforeach
