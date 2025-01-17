@@ -11,8 +11,7 @@ class Order extends Model
     use HasFactory, SoftDeletes;
 
     const STATUS_PENDING = 'pending';
-    const STATUS_PROCESSING = 'processing';
-    const STATUS_COMPLETED = 'completed';
+    const STATUS_PROCESSED = 'processed';
     const STATUS_CANCELLED = 'cancelled';
 
     protected $fillable = [
@@ -45,16 +44,15 @@ class Order extends Model
     public static function getStatuses(): array
     {
         return [
-            self::STATUS_PENDING => 'Pending',
-            self::STATUS_PROCESSING => 'Processing',
-            self::STATUS_COMPLETED => 'Completed',
-            self::STATUS_CANCELLED => 'Cancelled'
+            self::STATUS_PENDING => 'Chờ xử lý',
+            self::STATUS_PROCESSED => 'Đã xử lý',
+            self::STATUS_CANCELLED => 'Đã hủy'
         ];
     }
 
     public function getStatusLabelAttribute(): string
     {
-        return self::getStatuses()[$this->status] ?? 'Unknown';
+        return self::getStatuses()[$this->status] ?? $this->status;
     }
 
     public function getTotalItemsAttribute(): int

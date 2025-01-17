@@ -49,7 +49,7 @@ class OrderController extends Controller
             ]);
         } catch (\Exception $e) {
             Log::error('Error in OrderController@index: ' . $e->getMessage());
-            return back()->with('error', 'An error occurred while fetching orders.');
+            return back()->with('error', 'Đã xảy ra lỗi khi tải đơn hàng.');
         }
     }
 
@@ -75,7 +75,7 @@ class OrderController extends Controller
             ]);
         } catch (\Exception $e) {
             Log::error('Error in OrderController@create: ' . $e->getMessage());
-            return back()->with('error', 'An error occurred while loading the create form.');
+            return back()->with('error', 'Đã xảy ra lỗi khi tải trang tạo đơn hàng.');
         }
     }
 
@@ -122,7 +122,7 @@ class OrderController extends Controller
                 
                 // Validate stock
                 if ($product->stock < $item['quantity']) {
-                    throw new \Exception("Insufficient stock for product: {$product->name}");
+                    throw new \Exception("Số lượng hàng không đủ cho sản phẩm: {$product->name}");
                 }
 
                 // Create order item
@@ -146,13 +146,13 @@ class OrderController extends Controller
 
             DB::commit();
             return redirect()->route($validated['language'] . '.admin.orders.show', $order)
-                ->with('success', 'Order created successfully.');
+                ->with('success', 'Đơn hàng đã được tạo thành công.');
 
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Error in OrderController@store: ' . $e->getMessage());
             return back()->withInput()
-                ->with('error', 'An error occurred while creating the order: ' . $e->getMessage());
+                ->with('error', 'Đã xảy ra lỗi khi tạo đơn hàng: ' . $e->getMessage());
         }
     }
 
@@ -173,7 +173,7 @@ class OrderController extends Controller
             ]);
         } catch (\Exception $e) {
             Log::error('Error in OrderController@show: ' . $e->getMessage());
-            return back()->with('error', 'An error occurred while loading the order.');
+            return back()->with('error', 'Đã xảy ra lỗi khi tải đơn hàng.');
         }
     }
 
@@ -193,12 +193,12 @@ class OrderController extends Controller
             $order->update($validated);
 
             DB::commit();
-            return back()->with('success', 'Order status updated successfully.');
+            return back()->with('success', 'Trạng thái đơn hàng đã được cập nhật thành công.');
 
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Error in OrderController@updateStatus: ' . $e->getMessage());
-            return back()->with('error', 'An error occurred while updating the order status.');
+            return back()->with('error', 'Đã xảy ra lỗi khi cập nhật trạng thái đơn hàng.');
         }
     }
 
@@ -214,23 +214,23 @@ class OrderController extends Controller
             DB::beginTransaction();
 
             if ($order->status !== Order::STATUS_PENDING) {
-                throw new \Exception('Only pending orders can be processed.');
+                throw new \Exception('Chỉ có thể xử lý các đơn hàng đang chờ xử lý.');
             }
 
-            $order->update(['status' => 'processing']);
+            $order->update(['status' => 'processed']);
 
             DB::commit();
-            return back()->with('success', 'Order has been moved to processing.');
+            return back()->with('success', 'Đơn hàng đã được xử lý thành công.');
 
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Error in OrderController@process: ' . $e->getMessage());
-            return back()->with('error', 'An error occurred while processing the order: ' . $e->getMessage());
+            return back()->with('error', 'Đã xảy ra lỗi khi xử lý đơn hàng: ' . $e->getMessage());
         }
     }
 
     /**
-     * Remove the specified order from storage.
+     * Cancel the specified order.
      *
      * @param Order $order
      * @return \Illuminate\Http\RedirectResponse
@@ -240,6 +240,11 @@ class OrderController extends Controller
         try {
             DB::beginTransaction();
 
+            // Check if order can be cancelled
+            if ($order->status === 'cancelled') {
+                throw new \Exception('Đơn hàng đã được hủy trước đó.');
+            }
+
             // Restore product stock
             foreach ($order->items as $item) {
                 $product = Product::find($item->product_id);
@@ -248,17 +253,20 @@ class OrderController extends Controller
                 }
             }
             
-            $order->delete();
+            // Update order status to cancelled
+            $order->update([
+                'status' => 'cancelled'
+            ]);
 
             DB::commit();
-            $language = request()->segment(2);
-            return redirect()->route('admin.' . $language . '.orders.index')
-                ->with('success', 'Order deleted successfully.');
+            $language = request()->segment(1);
+            return redirect()->route($language . '.admin.orders.index')
+                ->with('success', 'Đơn hàng đã được hủy thành công.');
 
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Error in OrderController@destroy: ' . $e->getMessage());
-            return back()->with('error', 'An error occurred while deleting the order.');
+            return back()->with('error', $e->getMessage());
         }
     }
 

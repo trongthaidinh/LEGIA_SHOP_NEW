@@ -3,7 +3,7 @@
 @section('content')
 <div class="container-fluid px-4">
     <div class="bg-white rounded-lg shadow-sm overflow-hidden">
-        <div class="bg-blue-600 px-6 py-4">
+        <div class="bg-[var(--color-primary-500)] px-6 py-4">
             <div class="flex justify-between items-center">
                 <h3 class="text-xl font-semibold text-white flex items-center">
                     <i class="fas fa-star mr-2"></i> Chi tiết đánh giá

@@ -8,8 +8,8 @@
   <link rel="canonical" href="https://yensaolegia.com" />
   <meta name="theme-color" content="#000000" />
   <meta name="description"
-    content="Yến Sào LeGia Nest chuyên phân phối tổ yến tươi, yến sào, yến chưng nguyên chất 100%, cam kết CHẤT LƯỢNG – KHÔNG PHA TRỘN để đảm bảo giữ nguyên vị thuần túy 100% từ tổ Yến tự nhiên." />
-  <meta name="keywords" content="yến, yến tươi, yến sào, yến chưng, LegiaNest" />
+    content="Yến Sào LeGia Nest chuyên phân phối tổ yến tươi, yến sào, yến chưng nguyên chất 100%, cam kết CHẤT LƯỢNG – KHÔNG PHA TRỘN để đảm bảo giữ nguyên vị thuần tỉ 100% từ tổ Yến tự nhiên." />
+  <meta name="keywords" content="Yến sào thiên nhiên, Tổ yến tinh chế, Yến sào cao cấp, Tác dụng của yến sào, Giá yến sào hiện nay, Yến sào nguyên chất, Yến sào cho người lớn tuổi, Yến chưng sẵn, Nhà yến đạt chuẩn, Cách sử dụng yến sào hiệu quả" />
   <meta name="author" content="Yến Sào LeGia'Nest" />
 
   <!-- Open Graph / Facebook -->

@@ -27,6 +27,7 @@
     "premium_birds_nest": "優質燕窩",
     "company_intro": "专业分销100%纯天然燕窝、即食燕窝和炖燕窝",
     "view_more": "查看更多",
+    "view_less": "收起",
     "product_intro": "我们提供的每一个燕窝产品都经过精心挑选，采用最优质的原料，确保安全和品质。燕窝不仅美味，还是丰富的营养来源，可以增强免疫力，改善心血管健康和促进消化。",
     "premium_gift_set": "高级礼品套装",
     "nationwide_shipping": "全国配送",
@@ -223,5 +224,19 @@
     "Thank you for your order.": "感谢您的订单。",
     "We will contact you shortly to confirm your order.": "我们将尽快与您联系以确认订单。",
     "all_rights_reserved": "All Rights Reserved",
-    "design_by": "Designed by"
+    "design_by": "Designed by",
+    "home_intro_title": "天然燕窝 - 莱佳燕窝高级产品",
+    "home_intro_description": "莱佳燕窝自豪地成为专业提供天然燕窝、精制燕窝和高端燕窝系列的品牌，采用现代工艺生产，确保保留完整的营养价值。我们的使命是为消费者带来健康和安心，承诺提供100%纯净、安全和高质量的燕窝产品。",
+    "home_why_choose_title": "为什么选择莱佳燕窝？",
+    "home_why_choose_1": "卓越品质：莱佳燕窝的所有产品都从达标的燕窝农场精心挑选，确保燕窝清洁且营养丰富。",
+    "home_why_choose_2": "产品多样：从方便的即食燕窝到原始和精制燕窝，满足各种使用需求。",
+    "home_why_choose_3": "绝对安全：封闭生产流程，无漂白化学品，保护消费者健康。",
+    "home_benefits_title": "天然燕窝的卓越益处",
+    "home_benefits_description": "燕窝长久以来被认为是一种营养丰富的食品，提供蛋白质、18种氨基酸和人体所需的矿物质。定期食用燕窝可以帮助：",
+    "home_benefits_1": "增强免疫系统，帮助患者恢复。",
+    "home_benefits_2": "美容抗衰老，效果显著。",
+    "home_benefits_3": "补充能量，改善老年人、孕妇和儿童的健康。",
+    "home_mission_title": "莱佳燕窝 - 与您的健康同行",
+    "home_mission_description_1": "我们不断提高质量，以提供最高级的燕窝产品，满足消费者严格的标准。莱佳燕窝始终将信誉和质量置于首位，成为照顾家庭健康的可靠选择。",
+    "home_mission_description_2": "让莱佳燕窝成为您通往天然燕窝精华价值的桥梁。立即联系我们，获得咨询并体验最佳产品！"
 }

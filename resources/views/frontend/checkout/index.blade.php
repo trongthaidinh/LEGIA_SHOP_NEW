@@ -257,10 +257,11 @@ async function placeOrder() {
     }
 
     let shippingAddress = '';
+    let province, district, ward;
     if ('{{ app()->getLocale() }}' === 'vi') {
-        const province = document.getElementById('province');
-        const district = document.getElementById('district');
-        const ward = document.getElementById('ward');
+        province = document.getElementById('province');
+        district = document.getElementById('district');
+        ward = document.getElementById('ward');
         
         if (!province.value || !district.value || !ward.value) {
             alert("{{ __('Please select full address information') }}");
@@ -279,6 +280,9 @@ async function placeOrder() {
             email: email
         },
         shipping_address: shippingAddress,
+        province: province,
+        district: district,
+        ward: ward,
         payment_method: paymentMethod,
         notes: document.getElementById('notes').value,
         items: Object.entries(JSON.parse(localStorage.getItem('carts'))['{{ app()->getLocale() }}'] || {}).map(([id, item]) => ({

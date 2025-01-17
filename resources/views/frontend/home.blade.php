@@ -35,16 +35,51 @@
                         <img src="{{ asset('images/title.png') }}" alt="{{ __('company_name') }}" class="mb-2 w-[200px]">
                         <h1 class="text-3xl font-bold text-[var(--color-primary-600)]">{{ __('company_name') }}</h2>
                     </div>
-                    <p class="text-gray-700 mb-4 text-justify">
-                        {{ __('company_intro') }}
-                    </p>
-                    <p class="text-gray-700 text-justify">
-                        {{ __('product_intro') }}
-                    </p>
-                    <a href="{{ route(app()->getLocale() . '.products') }}" class="flex items-center justify-center gap-2 hover:gap-4 w-full inline-block mt-6 px-6 py-2 bg-[var(--color-primary-600)] text-white text-center font-semibold rounded-[20px] hover:bg-[var(--color-primary-700)] transition-all duration-300 ease-in-out">
+                    <div id="introduction-content">
+                        <p class="text-gray-700 mb-4 text-justify">
+                            {{ __('home_intro_title') }}
+                        </p>
+                        <p class="text-gray-700 mb-4 text-justify">
+                            {{ __('home_intro_description') }}
+                        </p>
+                        
+                        <div id="extended-content" class="hidden">
+                            <h3 class="text-xl font-semibold text-[var(--color-primary-600)] mb-3">
+                                {{ __('home_why_choose_title') }}
+                            </h3>
+                            <ul class="list-disc list-inside text-gray-700 mb-4 text-justify">
+                                <li>{{ __('home_why_choose_1') }}</li>
+                                <li>{{ __('home_why_choose_2') }}</li>
+                                <li>{{ __('home_why_choose_3') }}</li>
+                            </ul>
+
+                            <h3 class="text-xl font-semibold text-[var(--color-primary-600)] mb-3">
+                                {{ __('home_benefits_title') }}
+                            </h3>
+                            <p class="text-gray-700 mb-4 text-justify">
+                                {{ __('home_benefits_description') }}
+                            </p>
+                            <ul class="list-disc list-inside text-gray-700 mb-4 text-justify">
+                                <li>{{ __('home_benefits_1') }}</li>
+                                <li>{{ __('home_benefits_2') }}</li>
+                                <li>{{ __('home_benefits_3') }}</li>
+                            </ul>
+
+                            <h3 class="text-xl font-semibold text-[var(--color-primary-600)] mb-3">
+                                {{ __('home_mission_title') }}
+                            </h3>
+                            <p class="text-gray-700 mb-4 text-justify">
+                                {{ __('home_mission_description_1') }}
+                            </p>
+                            <p class="text-gray-700 mb-4 text-justify">
+                                {{ __('home_mission_description_2') }}
+                            </p>
+                        </div>
+                    </div>
+                    <button id="toggle-introduction" class="flex items-center justify-center gap-2 hover:gap-4 w-full inline-block mt-6 px-6 py-2 bg-[var(--color-primary-600)] text-white text-center font-semibold rounded-[20px] hover:bg-[var(--color-primary-700)] transition-all duration-300 ease-in-out">
                         {{ __('view_more') }}
                         <i class="fas fa-arrow-right"></i>
-                    </a>
+                    </button>
                 </div>
                 <div class="relative">
                     <img src="{{ asset('images/overview.jpg') }}" alt="Yến sào Legia'Nest" class="rounded-lg shadow-xl">
@@ -344,5 +379,18 @@
 
         // Initialize cart count on page load
         document.addEventListener('DOMContentLoaded', updateCartCount);
+        
+        const toggleIntroductionButton = document.getElementById('toggle-introduction');
+        const introductionContent = document.getElementById('introduction-content');
+        const extendedContent = document.getElementById('extended-content');
+        
+        toggleIntroductionButton.addEventListener('click', () => {
+            extendedContent.classList.toggle('hidden');
+            if (extendedContent.classList.contains('hidden')) {
+                toggleIntroductionButton.textContent = '{{ __('view_more') }}';
+            } else {
+                toggleIntroductionButton.textContent = '{{ __('view_less') }}';
+            }
+        });
     </script>
 @endpush
