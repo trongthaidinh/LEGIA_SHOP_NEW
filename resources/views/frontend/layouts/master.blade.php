@@ -73,7 +73,7 @@
         "contactType": "customer service"
       },
       "sameAs": [
-        "https://facebook.com/yensaolegia",
+        "https://www.facebook.com/profile.php?id=100064173304425",
         "https://instagram.com/yensaolegia",
         "https://youtube.com/yensaolegia"
       ]

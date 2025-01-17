@@ -1,5 +1,7 @@
 @extends('frontend.layouts.master')
 
+@section('title', __('products') . ' - ' . config('app.name'))
+
 @section('content')
 <div class="container mx-auto py-8 px-4 max-w-7xl">
     <div class="flex flex-col lg:flex-row gap-8">

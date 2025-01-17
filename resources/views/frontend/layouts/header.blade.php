@@ -145,10 +145,10 @@
 </header>
 
 <!-- Mobile Menu Sidebar - Moved outside header -->
-<div id="mobile-menu-sidebar" class="fixed inset-0 bg-[var(--color-primary-600)] transform translate-x-full transition-transform duration-300 z-[200] overflow-y-auto">
+<div id="mobile-menu-sidebar" class="fixed inset-0 bg-[var(--color-primary-600)] transform translate-x-full transition-transform duration-300 z-50 overflow-y-auto">
     <div class="relative h-full">
         <!-- Close Button -->
-        <button id="mobile-menu-close" class="absolute top-4 right-4 text-white z-10">
+        <button id="mobile-menu-close" class="absolute top-4 right-4 text-white z-50">
             <i class="fas fa-times text-2xl"></i>
         </button>
 

@@ -1,5 +1,7 @@
 @extends('frontend.layouts.master')
 
+@section('title', __('Checkout') . ' - ' . config('app.name'))
+
 @section('content')
 <div class="container mx-auto px-4 py-8">
     <div class="max-w-7xl mx-auto">

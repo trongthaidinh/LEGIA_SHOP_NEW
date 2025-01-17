@@ -57,48 +57,6 @@
                         @endif
                     </div>
 
-                    <!-- Featured Posts Section -->
-                    @if($featuredPosts->count() > 0)
-                        <div>
-                            <h2 class="text-2xl font-bold text-[var(--color-primary-700)] mb-6">
-                                {{ __('featured_posts') }}
-                            </h2>
-                            <div class="grid md:grid-cols-3 gap-6">
-                                @foreach($featuredPosts as $featuredPost)
-                                    <div class="bg-white rounded-2xl shadow-lg overflow-hidden 
-                                                transition-all duration-300 
-                                                hover:shadow-xl 
-                                                hover:-translate-y-2 
-                                                group">
-                                        <a href="{{ route('vi.posts.show', $featuredPost->slug) }}">
-                                            <img src="{{ Storage::url($featuredPost->featured_image) }}" 
-                                                 alt="{{ $featuredPost->title }}" 
-                                                 class="w-full h-48 object-cover 
-                                                        group-hover:scale-105 
-                                                        transition-transform">
-                                        </a>
-                                        <div class="p-6">
-                                            <h3 class="text-xl font-semibold mb-2 text-[var(--color-primary-700)] 
-                                                       hover:text-[var(--color-primary-900)] 
-                                                       transition-colors">
-                                                <a href="{{ route('vi.posts.show', $featuredPost->slug) }}">
-                                                    {{ $featuredPost->title }}
-                                                </a>
-                                            </h3>
-                                            <p class="text-[var(--color-primary-600)] mb-4">
-                                                {{ Str::limit($featuredPost->excerpt, 100) }}
-                                            </p>
-                                            <div class="flex items-center text-[var(--color-primary-500)] text-sm">
-                                                <i class="far fa-calendar-alt mr-2"></i>
-                                                {{ $featuredPost->published_at->format('d/m/Y') }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
-                        </div>
-                    @endif
-
                     <!-- All Posts Grid -->
                     <div>
                         <div class="grid md:grid-cols-2 gap-8">
@@ -110,7 +68,7 @@
                                             group">
                                     <a href="{{ route('vi.posts.show', $post->slug) }}">
                                         <img src="{{ Storage::url($post->featured_image) }}" 
-                                             alt="{{ $post->title }}" 
+                                             alt="yến sào" 
                                              class="w-full h-48 object-cover 
                                                     group-hover:scale-105 
                                                     transition-transform">

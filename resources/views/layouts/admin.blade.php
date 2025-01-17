@@ -175,7 +175,7 @@
                                             <i class="fas fa-cog mr-2 text-[var(--color-primary-500)]"></i> Cài đặt tài khoản
                                         </a>
                                         <div class="border-t border-[var(--color-primary-100)]"></div>
-                                        <form method="POST" action="{{ route('logout') }}">
+                                        <form method="POST" action="{{ route(app()->getLocale() . '.logout') }}">
                                             @csrf
                                             <button type="submit" class="flex w-full items-center px-4 py-2 text-sm text-[var(--color-primary-700)] hover:bg-[var(--color-primary-50)] transition-colors duration-200">
                                                 <i class="fas fa-sign-out-alt mr-2 text-[var(--color-primary-500)]"></i> Đăng xuất

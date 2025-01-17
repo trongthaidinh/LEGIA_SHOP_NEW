@@ -1,6 +1,6 @@
 @extends('frontend.layouts.master')
 
-@section('title', $title)
+@section('title', $title . ' - ' . config('app.name'))
 
 @section('meta_description', $metaDescription)
 @section('meta_keywords', $metaKeywords)
