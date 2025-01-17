@@ -31,7 +31,10 @@ use App\Http\Controllers\Admin\VideoController;
 use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\Admin\CertificateController;
 use App\Http\Controllers\Admin\ContactSubmissionController;
+use App\Http\Controllers\Admin\ManagerController;
 use App\Http\Controllers\Admin\StaticPageController as AdminStaticPageController;
+use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\SliderController;
 use Illuminate\Support\Facades\Route;
 
 // Redirect root to Vietnamese version
@@ -237,6 +240,15 @@ Route::prefix('vi/admin')->middleware(['auth'])->group(function () {
 
     Route::resource('static-pages', AdminStaticPageController::class)->names('vi.admin.static-pages');
     Route::patch('static-pages/{staticPage}/toggle', [AdminStaticPageController::class, 'toggleStatus'])->name('vi.admin.static-pages.toggle');
+
+    Route::resource('managers', ManagerController::class)->names('vi.admin.managers');
+
+    Route::get('settings', [SettingController::class, 'index'])->name('vi.admin.settings.index');
+    Route::post('settings', [SettingController::class, 'update'])->name('vi.admin.settings.update');
+
+    Route::resource('sliders', SliderController::class)->names('vi.admin.sliders');
+    Route::post('sliders/order', [SliderController::class, 'updateOrder'])->name('vi.admin.sliders.order');
+    Route::patch('sliders/{slider}/toggle', [SliderController::class, 'toggleStatus'])->name('vi.admin.sliders.toggle');
 });
 
 // Chinese Admin Routes  
@@ -278,6 +290,15 @@ Route::prefix('zh/admin')->middleware(['auth'])->group(function () {
 
     Route::resource('static-pages', AdminStaticPageController::class)->names('zh.admin.static-pages');
     Route::patch('static-pages/{staticPage}/toggle', [AdminStaticPageController::class, 'toggleStatus'])->name('zh.admin.static-pages.toggle');
+
+    Route::resource('managers', ManagerController::class)->names('zh.admin.managers');
+
+    Route::get('settings', [SettingController::class, 'index'])->name('zh.admin.settings.index');
+    Route::post('settings', [SettingController::class, 'update'])->name('zh.admin.settings.update');
+
+    Route::resource('sliders', SliderController::class)->names('zh.admin.sliders');
+    Route::post('sliders/order', [SliderController::class, 'updateOrder'])->name('zh.admin.sliders.order');
+    Route::patch('sliders/{slider}/toggle', [SliderController::class, 'toggleStatus'])->name('zh.admin.sliders.toggle');
 });
 
 require __DIR__ . '/auth.php';

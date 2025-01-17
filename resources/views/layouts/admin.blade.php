@@ -101,6 +101,7 @@
                         $menuItems = [
                             ['route' => 'dashboard', 'icon' => 'tachometer-alt', 'label' => 'Dashboard'],
                             ['route' => 'categories.index', 'icon' => 'list', 'label' => 'Danh mục'],
+                            ['route' => 'managers.index', 'icon' => 'users-cog', 'label' => 'Quản lý quản trị viên'],
                             ['route' => 'products.index', 'icon' => 'box', 'label' => 'Sản phẩm'],
                             ['route' => 'orders.index', 'icon' => 'shopping-cart', 'label' => 'Đơn hàng'],
                             ['route' => 'post-categories.index', 'icon' => 'folder', 'label' => 'Danh mục bài viết'],
@@ -112,7 +113,8 @@
                             ['route' => 'static-pages.index', 'icon' => 'file-alt', 'label' => 'Trang tĩnh'],
                             ['route' => 'images.index', 'icon' => 'images', 'label' => 'Hình ảnh'],
                             ['route' => 'videos.index', 'icon' => 'video', 'label' => 'Video'],
-                            ['route' => '#', 'icon' => 'cog', 'label' => 'Cài đặt']
+                            ['route' => 'sliders.index', 'icon' => 'images', 'label' => 'Quản lý slider'],
+                            ['route' => 'settings.index', 'icon' => 'cogs', 'label' => 'Cài đặt hệ thống'],
                         ];
                     @endphp
                     @foreach($menuItems as $item)
