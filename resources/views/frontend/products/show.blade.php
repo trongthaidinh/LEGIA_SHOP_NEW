@@ -34,22 +34,20 @@
                 @php
                     $locale = app()->getLocale();
                     $currencySymbol = $locale === 'zh' ? '¥' : '₫';
-                    $price = $product->price;
-                    $salePrice = $product->sale_price && $product->sale_price < $product->price ? $product->sale_price : null;
 
                     $formatPrice = function($price) use ($locale, $currencySymbol) {
-                        $formattedPrice = number_format($price, 0, ',', '.');
+                        $formattedPrice = $locale === 'zh' ? number_format($price, 2, '.', ',') : number_format($price, 0, ',', '.');
                         return $locale === 'zh' ? $currencySymbol . $formattedPrice : $formattedPrice . $currencySymbol;
                     };
                 @endphp
 
-                @if($price)
+                @if($product->price)
                     <p class="text-2xl font-bold text-[var(--color-primary-600)]">
-                        {{ $formatPrice($salePrice ?: $price) }}
+                        {{ $formatPrice($product->sale_price ?: $product->price) }}
                     </p>
-                    @if($salePrice)
+                    @if($product->sale_price)
                         <p class="text-sm text-gray-400 line-through">
-                            {{ $formatPrice($price) }}
+                            {{ $formatPrice($product->price) }}
                         </p>
                     @endif
                 @else
@@ -361,11 +359,22 @@
     document.addEventListener('DOMContentLoaded', updateCartCount);
 
     function addToCartFromButton(button) {
+        const locale = '{{ app()->getLocale() }}';
+        const currencySymbol = locale === 'zh' ? '¥' : '₫';
+
+        const formatPrice = function(price) {
+            const formattedPrice = locale === 'zh' ? number_format(price, 2, '.', ',') : number_format(price, 0, ',', '.');
+            return locale === 'zh' ? currencySymbol + formattedPrice : formattedPrice + currencySymbol;
+        };
+
+        const price = formatPrice(button.dataset.price);
+        const originalPrice = formatPrice(button.dataset.originalPrice);
+
         addToCart(
             parseInt(button.dataset.id),
             button.dataset.name,
-            parseFloat(button.dataset.price),
-            parseFloat(button.dataset.originalPrice),
+            price,
+            originalPrice,
             button.dataset.image
         );
     }

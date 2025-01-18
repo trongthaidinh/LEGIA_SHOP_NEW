@@ -14,6 +14,7 @@ class PostCategory extends Model
         'slug',
         'description',
         'is_active',
+        'language'
     ];
 
     protected $casts = [
@@ -28,5 +29,25 @@ class PostCategory extends Model
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
+    }
+
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    public function getSlug()
+    {
+        return $this->slug;
+    }
+
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    public function scopeByLanguage($query)
+    {
+        return $query->where('language', app()->getLocale());
     }
 }

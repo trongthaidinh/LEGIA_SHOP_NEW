@@ -50,42 +50,32 @@
                         </div>
                     </article>
 
-                    <!-- Related Posts with enhanced styling -->
+                    <!-- Related Posts -->
                     @if($relatedPosts->count() > 0)
                         <div class="mt-12">
                             <h2 class="text-2xl font-bold text-[var(--color-primary-700)] mb-8">
                                 {{ __('related_posts') }}
                             </h2>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
                                 @foreach($relatedPosts as $relatedPost)
-                                    <article class="bg-white rounded-xl shadow-[var(--shadow)] overflow-hidden group
-                                                border border-[var(--color-primary-100)] hover:shadow-[var(--shadow-lg)]
-                                                transition-all duration-300">
-                                        <div class="relative h-48 overflow-hidden">
-                                            <img src="{{ Storage::url($relatedPost->featured_image) }}" 
-                                                 alt="tổ yến"
-                                                 class="w-full h-full object-cover transform group-hover:scale-110 
-                                                        transition-transform duration-500">
-                                            <div class="absolute inset-0 bg-gradient-to-t 
-                                                        from-[var(--color-primary-900)] to-transparent opacity-60"></div>
-                                            <div class="absolute bottom-4 left-4">
-                                                <span class="text-sm text-white bg-[var(--color-primary-600)]/80 
-                                                           px-3 py-1 rounded-full backdrop-blur-sm">
-                                                    {{ $relatedPost->published_at->format('d/m/Y') }}
-                                                </span>
+                                    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                                        <a href="{{ route(app()->getLocale() . '.posts.show', $relatedPost->slug) }}">
+                                            <div class="aspect-w-16 aspect-h-9">
+                                                <img src="{{ Storage::url($relatedPost->featured_image) }}" 
+                                                     alt="{{ $relatedPost->title }}" 
+                                                     class="w-full h-full object-cover transform hover:scale-105 transition-transform duration-300">
                                             </div>
-                                        </div>
-                                        <div class="p-6">
-                                            <h3 class="text-xl font-semibold text-[var(--color-primary-800)] 
-                                                       group-hover:text-[var(--color-primary-600)] transition-colors 
-                                                       duration-300 line-clamp-2">
-                                                <a href="{{ route(app()->getLocale() . '.posts.show', $relatedPost->slug) }}">
+                                            <div class="p-4">
+                                                <h3 class="text-lg font-bold text-[var(--color-primary-700)] mb-2 line-clamp-2">
                                                     {{ $relatedPost->title }}
-                                                </a>
-                                            </h3>
-                                            <p class="mt-2 text-gray-600 line-clamp-2">{{ $relatedPost->excerpt }}</p>
-                                        </div>
-                                    </article>
+                                                </h3>
+                                                <div class="text-sm text-gray-500 flex items-center">
+                                                    <i class="far fa-calendar-alt mr-2"></i>
+                                                    {{ $relatedPost->published_at->format('d/m/Y') }}
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
                                 @endforeach
                             </div>
                         </div>
