@@ -320,7 +320,6 @@ function removeFeaturedImage() {
 
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize TinyMCE for both editors
-    initTinyMCE('#description');
     initTinyMCE('#content');
 
     // ... rest of your existing script

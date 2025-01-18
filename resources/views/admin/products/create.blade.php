@@ -126,7 +126,7 @@
             <!-- Description -->
             <div>
                 <label for="description" class="block text-sm font-medium text-[var(--color-primary-700)] mb-2">Mô tả ngắn <span class="text-[var(--color-secondary-600)]">*</span></label>
-                <textarea name="description" id="description" class="tinymce">{{ old('description') }}</textarea>
+                <textarea name="description" id="description" class="w-full rounded-md shadow-sm border-[var(--color-primary-300)] focus:border-[var(--color-primary-500)] focus:ring focus:ring-[var(--color-primary-200)] focus:ring-opacity-50 @error('description') border-[var(--color-secondary-500)] @enderror">{{ old('description') }}</textarea>
                 @error('description')
                     <p class="mt-1 text-sm text-[var(--color-secondary-600)]">{{ $message }}</p>
                 @enderror
@@ -257,7 +257,6 @@ function previewFeaturedImage(input) {
 
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize TinyMCE for both editors
-    initTinyMCE('#description');
     initTinyMCE('#content');
 });
 </script>

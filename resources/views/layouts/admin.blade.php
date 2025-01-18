@@ -16,6 +16,8 @@
     <script src="https://cdn.tiny.cloud/1/{{ env('TINYMCE_API_KEY') }}/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
     <script>
         const initTinyMCE = (selector = '.tinymce') => {
+            console.log(selector);
+            
             tinymce.init({
                 selector: selector,
                 plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
