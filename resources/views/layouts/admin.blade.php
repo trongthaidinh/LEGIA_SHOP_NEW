@@ -16,8 +16,6 @@
     <script src="https://cdn.tiny.cloud/1/{{ env('TINYMCE_API_KEY') }}/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
     <script>
         const initTinyMCE = (selector = '.tinymce') => {
-            console.log(selector);
-            
             tinymce.init({
                 selector: selector,
                 plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
@@ -113,10 +111,7 @@
                             ['route' => 'certificates.index', 'icon' => 'certificate', 'label' => 'Chứng chỉ'],
                             ['route' => 'contact-submissions.index', 'icon' => 'envelope', 'label' => 'Liên hệ'],
                             ['route' => 'static-pages.index', 'icon' => 'file-alt', 'label' => 'Trang tĩnh'],
-                            ['route' => 'images.index', 'icon' => 'images', 'label' => 'Hình ảnh'],
-                            ['route' => 'videos.index', 'icon' => 'video', 'label' => 'Video'],
                             ['route' => 'sliders.index', 'icon' => 'images', 'label' => 'Quản lý slider'],
-                            ['route' => 'settings.index', 'icon' => 'cogs', 'label' => 'Cài đặt hệ thống'],
                         ];
                     @endphp
                     @foreach($menuItems as $item)

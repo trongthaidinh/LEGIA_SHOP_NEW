@@ -138,62 +138,115 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Biểu đồ doanh thu
     const revenueCtx = document.getElementById('revenueChart').getContext('2d');
-    new Chart(revenueCtx, {
-        type: 'line',
-        data: {
-            labels: [
-                @foreach($monthlyRevenue as $revenue)
-                    "{{ $revenue->month }}/{{ $revenue->year }}",
-                @endforeach
-            ],
-            datasets: [{
-                label: 'Doanh thu (VNĐ)',
-                data: [
+    
+    // Debug: Log revenue data
+    console.log('Monthly Revenue Data:', [
+        @foreach($monthlyRevenue as $revenue)
+            {
+                month: "{{ $revenue->month }}", 
+                year: "{{ $revenue->year }}", 
+                revenue: {{ $revenue->total_revenue }}
+            },
+        @endforeach
+    ]);
+
+    // Kiểm tra xem có dữ liệu không
+    const revenueData = [
+        @foreach($monthlyRevenue as $revenue)
+            {{ $revenue->total_revenue }},
+        @endforeach
+    ];
+
+    // Chỉ vẽ biểu đồ nếu có dữ liệu
+    if (revenueData.length > 0) {
+        // Lấy màu từ CSS variables
+        const primaryColor500 = getComputedStyle(document.documentElement).getPropertyValue('--color-primary-500').trim();
+        const primaryColor100 = getComputedStyle(document.documentElement).getPropertyValue('--color-primary-100').trim();
+        const primaryColor600 = getComputedStyle(document.documentElement).getPropertyValue('--color-primary-600').trim();
+        const primaryColor50 = getComputedStyle(document.documentElement).getPropertyValue('--color-primary-50').trim();
+
+        new Chart(revenueCtx, {
+            type: 'line',
+            data: {
+                labels: [
                     @foreach($monthlyRevenue as $revenue)
-                        {{ $revenue->total_revenue }},
+                        "{{ \Carbon\Carbon::create($revenue->year, $revenue->month)->translatedFormat('M Y') }}",
                     @endforeach
                 ],
-                borderColor: 'var(--color-primary-500)',
-                backgroundColor: 'var(--color-primary-100)',
-                tension: 0.4,
-                borderWidth: 3,
-                fill: true
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: true,
-                    position: 'top'
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            return new Intl.NumberFormat('vi-VN', { 
-                                style: 'currency', 
-                                currency: 'VND' 
-                            }).format(context.parsed.y);
+                datasets: [{
+                    label: 'Doanh thu (VNĐ)',
+                    data: revenueData,
+                    borderColor: primaryColor500,
+                    backgroundColor: primaryColor100,
+                    pointBackgroundColor: primaryColor600,
+                    pointBorderColor: primaryColor50,
+                    pointHoverBackgroundColor: primaryColor500,
+                    tension: 0.4,
+                    borderWidth: 3,
+                    pointRadius: 5,
+                    pointHoverRadius: 7,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        labels: {
+                            color: primaryColor500
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: primaryColor100,
+                        titleColor: primaryColor500,
+                        bodyColor: primaryColor500,
+                        callbacks: {
+                            label: function(context) {
+                                return new Intl.NumberFormat('vi-VN', { 
+                                    style: 'currency', 
+                                    currency: 'VND' 
+                                }).format(context.parsed.y);
+                            }
                         }
                     }
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: {
-                        callback: function(value) {
-                            return new Intl.NumberFormat('vi-VN', { 
-                                style: 'currency', 
-                                currency: 'VND' 
-                            }).format(value);
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            color: primaryColor500,
+                            callback: function(value) {
+                                return new Intl.NumberFormat('vi-VN', { 
+                                    style: 'currency', 
+                                    currency: 'VND' 
+                                }).format(value);
+                            }
+                        },
+                        grid: {
+                            color: primaryColor100
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            color: primaryColor500
+                        },
+                        grid: {
+                            color: primaryColor100
                         }
                     }
                 }
             }
-        }
-    });
+        });
+    } else {
+        // Hiển thị thông báo nếu không có dữ liệu
+        revenueCtx.fillStyle = 'var(--color-primary-500)';
+        revenueCtx.font = '16px Inter, sans-serif';
+        revenueCtx.textAlign = 'center';
+        revenueCtx.fillText('Không có dữ liệu doanh thu', revenueCtx.canvas.width / 2, revenueCtx.canvas.height / 2);
+        console.warn('Không có dữ liệu doanh thu để hiển thị');
+    }
 
     // Biểu đồ trạng thái đơn hàng
     const orderStatusCtx = document.getElementById('orderStatusChart').getContext('2d');
