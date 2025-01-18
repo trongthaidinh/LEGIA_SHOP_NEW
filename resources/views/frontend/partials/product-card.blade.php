@@ -18,7 +18,7 @@
                     $salePrice = $product->sale_price && $product->sale_price < $product->price ? $product->sale_price : null;
 
                     $formatPrice = function($price) use ($locale, $currencySymbol) {
-                        $formattedPrice = number_format($price, 0, ',', '.');
+                        $formattedPrice = $locale === 'zh' ? number_format($price, 2, '.', ',') : number_format($price, 0, ',', '.');
                         return $locale === 'zh' ? $currencySymbol . $formattedPrice : $formattedPrice . $currencySymbol;
                     };
                 @endphp

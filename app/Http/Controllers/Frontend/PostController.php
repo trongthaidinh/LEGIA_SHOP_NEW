@@ -16,12 +16,13 @@ class PostController extends Controller
         // Filter by category
         if ($request->category) {
             $query->whereHas('category', function($q) use ($request) {
-                $q->where('slug', $request->category);
+                $q->where('slug', $request->category)
+                  ->where('language', app()->getLocale());
             });
         }
 
         $posts = $query->latest()->paginate(9);
-        $categories = PostCategory::active()->withCount('posts')->get();
+        $categories = PostCategory::active()->byLanguage()->get();
         $featuredPosts = Post::published()
             ->byLanguage(app()->getLocale())
             ->featured()
@@ -36,10 +37,12 @@ class PostController extends Controller
     {
         $post = Post::where('slug', $slug)
             ->where('status', 'published')
+            ->byLanguage(app()->getLocale())
             ->firstOrFail();
 
         $relatedPosts = Post::where('id', '!=', $post->id)
             ->where('status', 'published')
+            ->byLanguage(app()->getLocale())
             ->latest()
             ->take(4)
             ->get();

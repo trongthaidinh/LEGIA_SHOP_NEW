@@ -173,14 +173,13 @@
                 <!-- Sale Price -->
                 <div>
                     <label for="sale_price" class="block text-sm font-medium text-[var(--color-primary-700)] mb-2">
-                        Giá bán <span class="text-[var(--color-secondary-600)]">*</span>
+                        Giá bán (đã giảm giá)
                     </label>
                     <div class="relative">
                         <input type="number" 
                                name="sale_price" 
                                id="sale_price" 
                                value="{{ old('sale_price', $product->sale_price) }}"
-                               required
                                min="0"
                                step="1000"
                                class="w-full rounded-md shadow-sm border-[var(--color-primary-300)] focus:border-[var(--color-primary-500)] focus:ring focus:ring-[var(--color-primary-200)] focus:ring-opacity-50 @error('sale_price') border-[var(--color-secondary-500)] @enderror">
