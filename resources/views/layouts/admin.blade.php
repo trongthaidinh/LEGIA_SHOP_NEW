@@ -137,12 +137,57 @@
                         
                         <div class="flex items-center space-x-4">
                             <!-- Language Switcher -->
-                            <div class="relative" x-data="{ open: false }">
-                                <select onchange="window.location.href = '/' + this.value + window.location.pathname.substring(3)" class="flex items-center px-3 py-2 border border-[var(--color-primary-300)] rounded-md text-sm font-medium text-[var(--color-primary-700)] bg-white hover:bg-[var(--color-primary-50)] focus:outline-none transition-colors duration-200">
-                                    <option value="vi" {{ app()->getLocale() == 'vi' ? 'selected' : '' }}>Tiếng Việt</option>
-                                    <option value="zh" {{ app()->getLocale() == 'zh' ? 'selected' : '' }}>Tiếng Trung</option>
-                                </select>
-                        
+                            <div class="relative" x-data="{ languageOpen: false }">
+                                <button 
+                                    @click="languageOpen = !languageOpen"
+                                    class="flex items-center px-3 py-2 border border-[var(--color-primary-300)] rounded-md text-sm font-medium text-[var(--color-primary-700)] bg-white hover:bg-[var(--color-primary-50)] focus:outline-none transition-colors duration-200"
+                                >
+                                    <i class="fas fa-globe mr-2 text-[var(--color-primary-500)]"></i>
+                                    @switch(app()->getLocale())
+                                        @case('vi')
+                                            <span>Tiếng Việt</span>
+                                            @break
+                                        @case('zh')
+                                            <span>Tiếng Trung</span>
+                                            @break
+                                        @default
+                                            <span>Ngôn Ngữ</span>
+                                    @endswitch
+                                    <i class="fas fa-chevron-down ml-2 text-xs"></i>
+                                </button>
+                                
+                                <div 
+                                    x-show="languageOpen" 
+                                    @click.away="languageOpen = false"
+                                    x-transition:enter="transition ease-out duration-200"
+                                    x-transition:enter-start="opacity-0 scale-95"
+                                    x-transition:enter-end="opacity-100 scale-100"
+                                    x-transition:leave="transition ease-in duration-150"
+                                    x-transition:leave-start="opacity-100 scale-100"
+                                    x-transition:leave-end="opacity-0 scale-95"
+                                    class="absolute right-0 mt-2 w-48 bg-white border border-[var(--color-primary-200)] rounded-md shadow-lg overflow-hidden z-20"
+                                >
+                                    <a 
+                                        href="{{ str_replace('/' . app()->getLocale() . '/', '/vi/', request()->fullUrl()) }}" 
+                                        class="flex items-center px-4 py-2 text-sm text-[var(--color-primary-700)] hover:bg-[var(--color-primary-50)] transition-colors duration-200 {{ app()->getLocale() == 'vi' ? 'bg-[var(--color-primary-50)] font-semibold' : '' }}"
+                                    >
+                                        <img src="{{ asset('images/flags/vn.png') }}" alt="Vietnam Flag" class="w-5 h-5 mr-2 rounded-full">
+                                        Tiếng Việt
+                                        @if(app()->getLocale() == 'vi')
+                                            <i class="fas fa-check ml-auto text-[var(--color-primary-500)]"></i>
+                                        @endif
+                                    </a>
+                                    <a 
+                                        href="{{ str_replace('/' . app()->getLocale() . '/', '/zh/', request()->fullUrl()) }}" 
+                                        class="flex items-center px-4 py-2 text-sm text-[var(--color-primary-700)] hover:bg-[var(--color-primary-50)] transition-colors duration-200 {{ app()->getLocale() == 'zh' ? 'bg-[var(--color-primary-50)] font-semibold' : '' }}"
+                                    >
+                                        <img src="{{ asset('images/flags/cn.png') }}" alt="China Flag" class="w-5 h-5 mr-2 rounded-full">
+                                        Tiếng Trung
+                                        @if(app()->getLocale() == 'zh')
+                                            <i class="fas fa-check ml-auto text-[var(--color-primary-500)]"></i>
+                                        @endif
+                                    </a>
+                                </div>
                             </div>
 
                             <!-- User Dropdown -->
