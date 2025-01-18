@@ -105,7 +105,11 @@
                         </td>
                         <td class="px-6 py-4">
                             @if($product->sale_price > 0)
-                            <div class="text-sm text-[var(--color-primary-900)]">{{ number_format($product->sale_price) }}đ</div>
+                                @if($product->language == 'vi')
+                                    <div class="text-sm text-[var(--color-primary-900)]">{{ number_format($product->sale_price) }}đ</div>
+                                @else
+                                    <div class="text-sm text-[var(--color-primary-900)]">{{ number_format($product->sale_price) }}¥</div>
+                                @endif
                             @endif
                             <div class="text-sm @if($product->sale_price > 0) line-through text-[var(--color-primary-500)] @endif">{{ number_format($product->price) }}đ</div>
                         </td>

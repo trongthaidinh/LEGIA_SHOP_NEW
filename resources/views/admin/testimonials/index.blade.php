@@ -3,31 +3,22 @@
 @section('content')
 <div class="bg-white rounded-lg shadow-sm p-6">
     <div class="flex justify-between items-center mb-6">
-        <h1 class="text-2xl font-semibold text-gray-900">{{ __('Testimonials') }}</h1>
+        <h1 class="text-2xl font-semibold text-gray-900">Bình luận</h1>
         
     </div>
 
-    <!-- Language Filter -->
-    <div class="mb-6">
-        <form action="{{ route(app()->getLocale() . '.admin.testimonials.index') }}" method="GET" class="flex items-center space-x-4">
-            <label for="language" class="text-sm font-medium text-gray-700">{{ __('Language') }}:</label>
-            <select name="language" id="language" class="rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring focus:ring-primary-200" onchange="this.form.submit()">
-                <option value="vi" {{ $language === 'vi' ? 'selected' : '' }}>{{ __('Vietnamese') }}</option>
-                <option value="zh" {{ $language === 'zh' ? 'selected' : '' }}>{{ __('Chinese') }}</option>
-            </select>
-        </form>
-    </div>
+   
 
     <!-- Testimonials List -->
     <div class="overflow-x-auto">
         <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
                 <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Customer') }}</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Content') }}</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Rating') }}</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Status') }}</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Actions') }}</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Khách hàng</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nội dung</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Đánh giá</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trạng thái</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Thao tác</th>
                 </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">

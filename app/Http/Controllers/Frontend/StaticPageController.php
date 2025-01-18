@@ -14,7 +14,6 @@ class StaticPageController extends Controller
         try {
             // Find the static page by slug and current locale
             $page = StaticPage::findBySlug($slug);
-
             // Render the static page view
             return view('frontend.static-page', [
                 'page' => $page,

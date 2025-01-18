@@ -141,13 +141,11 @@
                         <div class="flex items-center space-x-4">
                             <!-- Language Switcher -->
                             <div class="relative" x-data="{ open: false }">
-                                <button @click="open = !open" class="flex items-center px-3 py-2 border border-[var(--color-primary-300)] rounded-md text-sm font-medium text-[var(--color-primary-700)] bg-white hover:bg-[var(--color-primary-50)] focus:outline-none transition-colors duration-200">
-                                    @if(app()->getLocale() == 'vi')
-                                        <i class="fas fa-flag mr-2 text-[var(--color-primary-500)]"></i> Tiếng Việt
-                                    @else
-                                        <i class="fas fa-flag mr-2 text-[var(--color-primary-500)]"></i> Tiếng Trung
-                                    @endif
-                                </button>
+                                <select onchange="window.location.href = '/' + this.value + window.location.pathname.substring(3)" class="flex items-center px-3 py-2 border border-[var(--color-primary-300)] rounded-md text-sm font-medium text-[var(--color-primary-700)] bg-white hover:bg-[var(--color-primary-50)] focus:outline-none transition-colors duration-200">
+                                    <option value="vi" {{ app()->getLocale() == 'vi' ? 'selected' : '' }}>Tiếng Việt</option>
+                                    <option value="zh" {{ app()->getLocale() == 'zh' ? 'selected' : '' }}>Tiếng Trung</option>
+                                </select>
+                        
                             </div>
 
                             <!-- User Dropdown -->

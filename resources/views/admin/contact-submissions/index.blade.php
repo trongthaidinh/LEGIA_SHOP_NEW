@@ -3,17 +3,17 @@
 @section('content')
 <div class="bg-white rounded-lg shadow-sm overflow-hidden">
     <div class="flex justify-between items-center mb-6">
-        <h1 class="text-2xl font-semibold text-gray-900">{{ __('Contact Submissions') }}</h1>
+        <h1 class="text-2xl font-semibold text-gray-900">Liên hệ</h1>
         
         <!-- Status Filter -->
         <div class="flex items-center space-x-4">
             <form action="{{ route(app()->getLocale() . '.admin.contact-submissions.index') }}" method="GET" class="flex items-center space-x-4">
-                <label for="status" class="text-sm font-medium text-gray-700">{{ __('Status') }}:</label>
+                <label for="status" class="text-sm font-medium text-gray-700">Trạng thái:</label>
                 <select name="status" id="status" class="rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring focus:ring-primary-200" onchange="this.form.submit()">
-                    <option value="all" {{ $status === 'all' ? 'selected' : '' }}>{{ __('All') }}</option>
-                    <option value="new" {{ $status === 'new' ? 'selected' : '' }}>{{ __('New') }}</option>
-                    <option value="read" {{ $status === 'read' ? 'selected' : '' }}>{{ __('Read') }}</option>
-                    <option value="replied" {{ $status === 'replied' ? 'selected' : '' }}>{{ __('Replied') }}</option>
+                    <option value="all" {{ $status === 'all' ? 'selected' : '' }}>Tất cả</option>
+                    <option value="new" {{ $status === 'new' ? 'selected' : '' }}>Mới</option>
+                    <option value="read" {{ $status === 'read' ? 'selected' : '' }}>Đã đọc</option>
+                    <option value="replied" {{ $status === 'replied' ? 'selected' : '' }}>Đã trả lời</option>
                 </select>
             </form>
         </div>
@@ -24,12 +24,12 @@
         <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
                 <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Name') }}</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Email') }}</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Message') }}</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Status') }}</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Date') }}</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Actions') }}</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tên</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nội dung</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trạng thái</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ngày</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Thao tác</th>
                 </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">

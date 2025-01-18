@@ -3,19 +3,13 @@
 @section('content')
 <div class="bg-white rounded-lg shadow-sm p-6">
     <div class="flex justify-between items-center mb-6">
-        <h1 class="text-2xl font-semibold text-gray-900">{{ __('Static Pages') }}</h1>
+        <h1 class="text-2xl font-semibold text-gray-900">Quản lý trang tĩnh</h1>
         <div class="flex items-center space-x-4">
             <!-- Language Filter -->
-            <form action="{{ route(app()->getLocale() . '.admin.static-pages.index') }}" method="GET" class="flex items-center space-x-4">
-                <label for="locale" class="text-sm font-medium text-gray-700">{{ __('Language') }}:</label>
-                <select name="locale" id="locale" class="rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring focus:ring-primary-200" onchange="this.form.submit()">
-                    <option value="vi" {{ $locale === 'vi' ? 'selected' : '' }}>{{ __('Vietnamese') }}</option>
-                    <option value="zh" {{ $locale === 'zh' ? 'selected' : '' }}>{{ __('Chinese') }}</option>
-                </select>
-            </form>
+          
 
             <a href="{{ route(app()->getLocale() . '.admin.static-pages.create') }}" class="bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-md transition-colors duration-200">
-                <i class="fas fa-plus mr-2"></i>{{ __('Add New') }}
+                <i class="fas fa-plus mr-2"></i>Thêm mới
             </a>
         </div>
     </div>
@@ -25,11 +19,11 @@
         <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
                 <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Title') }}</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Slug') }}</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Status') }}</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Last Updated') }}</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Actions') }}</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tên</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Slug</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trạng thái</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ngày cập nhật</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Thao tác</th>
                 </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
@@ -47,7 +41,7 @@
                                 class="toggle-status px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $page->is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}"
                                 data-url="{{ route(app()->getLocale() . '.admin.static-pages.toggle', $page) }}"
                             >
-                                {{ $page->is_active ? __('Active') : __('Inactive') }}
+                                {{ $page->is_active ? 'Hoạt động' : 'Không hoạt động' }}
                             </button>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -71,7 +65,7 @@
                 @empty
                     <tr>
                         <td colspan="5" class="px-6 py-4 text-center text-gray-500">
-                            {{ __('No static pages found.') }}
+                            Không có trang tĩnh nào.
                         </td>
                     </tr>
                 @endforelse

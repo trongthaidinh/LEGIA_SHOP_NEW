@@ -162,7 +162,11 @@
                                step="1000"
                                class="w-full rounded-md shadow-sm border-[var(--color-primary-300)] focus:border-[var(--color-primary-500)] focus:ring focus:ring-[var(--color-primary-200)] focus:ring-opacity-50 @error('price') border-[var(--color-secondary-500)] @enderror">
                         <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                            <span class="text-[var(--color-primary-500)]">đ</span>
+                            @if(request()->segment(1) == 'vi')
+                                <span class="text-[var(--color-primary-500)]">đ</span>
+                            @else
+                                <span class="text-[var(--color-primary-500)]">¥</span>
+                            @endif
                         </div>
                     </div>
                     @error('price')
@@ -184,7 +188,11 @@
                                step="1000"
                                class="w-full rounded-md shadow-sm border-[var(--color-primary-300)] focus:border-[var(--color-primary-500)] focus:ring focus:ring-[var(--color-primary-200)] focus:ring-opacity-50 @error('sale_price') border-[var(--color-secondary-500)] @enderror">
                         <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                            <span class="text-[var(--color-primary-500)]">đ</span>
+                            @if(request()->segment(1) == 'vi')
+                                <span class="text-[var(--color-primary-500)]">đ</span>
+                            @else
+                                <span class="text-[var(--color-primary-500)]">¥</span>
+                            @endif
                         </div>
                     </div>
                     @error('sale_price')

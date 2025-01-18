@@ -3,34 +3,24 @@
 @section('content')
 <div class="bg-white rounded-lg shadow-sm overflow-hidden">
     <div class="flex justify-between items-center mb-6">
-        <h1 class="text-2xl font-semibold text-gray-900">{{ __('Certificates') }}</h1>
+        <h1 class="text-2xl font-semibold text-gray-900">Chứng chỉ</h1>
         <a href="{{ route(app()->getLocale() . '.admin.certificates.create') }}" class="bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-md transition-colors duration-200">
-            <i class="fas fa-plus mr-2"></i>{{ __('Add New') }}
+            <i class="fas fa-plus mr-2"></i>Thêm mới
         </a>
     </div>
 
-    <!-- Language Filter -->
-    <div class="mb-6">
-        <form action="{{ route(app()->getLocale() . '.admin.certificates.index') }}" method="GET" class="flex items-center space-x-4">
-            <label for="language" class="text-sm font-medium text-gray-700">{{ __('Language') }}:</label>
-            <select name="language" id="language" class="rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring focus:ring-primary-200" onchange="this.form.submit()">
-                <option value="vi" {{ $language === 'vi' ? 'selected' : '' }}>{{ __('Vietnamese') }}</option>
-                <option value="zh" {{ $language === 'zh' ? 'selected' : '' }}>{{ __('Chinese') }}</option>
-            </select>
-        </form>
-    </div>
 
     <!-- Certificates List -->
     <div class="overflow-x-auto">
         <table class="min-w-full divide-y divide-gray-200" id="sortable-table">
             <thead class="bg-gray-50">
                 <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Image') }}</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Name') }}</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Description') }}</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Status') }}</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Order') }}</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Actions') }}</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ảnh</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tên</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mô tả</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trạng thái</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Thứ tự</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Thao tác</th>
                 </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">

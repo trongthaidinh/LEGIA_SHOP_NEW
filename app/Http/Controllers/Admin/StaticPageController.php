@@ -11,11 +11,10 @@ class StaticPageController extends Controller
     public function index(Request $request)
     {
         $locale = $request->get('locale', app()->getLocale());
-        
         $pages = StaticPage::where('locale', $locale)
             ->orderBy('title')
             ->paginate(10);
-            
+
         return view('admin.static-pages.index', compact('pages', 'locale'));
     }
 
@@ -73,7 +72,7 @@ class StaticPageController extends Controller
     public function destroy(StaticPage $staticPage)
     {
         $staticPage->delete();
-        
+
         return redirect()
             ->route(app()->getLocale() . '.admin.static-pages.index')
             ->with('success', __('Static page deleted successfully'));
@@ -82,10 +81,10 @@ class StaticPageController extends Controller
     public function toggleStatus(StaticPage $staticPage)
     {
         $staticPage->update(['is_active' => !$staticPage->is_active]);
-        
+
         return response()->json([
             'message' => __('Static page status updated successfully'),
             'is_active' => $staticPage->is_active
         ]);
     }
-} 
+}
