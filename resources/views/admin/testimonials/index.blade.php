@@ -8,6 +8,7 @@
                 <h3 class="text-xl font-semibold text-white flex items-center">
                     <i class="fas fa-comment mr-2"></i> Bình luận
                 </h3>
+               
                 <div class="flex space-x-2">
                     <a href="{{ route(app()->getLocale() . '.admin.testimonials.index') }}" 
                        class="inline-flex items-center px-4 py-2 bg-white text-sm font-medium text-[var(--color-primary-700)] hover:bg-[var(--color-primary-50)] rounded-md transition-colors duration-200">
@@ -30,6 +31,11 @@
                             {{ $testimonials->where('status', 'draft')->count() }}
                         </span>
                     </button>
+                    <!--add button -->
+                    <a href="{{ route(app()->getLocale() . '.admin.testimonials.create') }}" class="bg-[var(--color-primary-500)] text-[var(--color-primary-100)] font-medium py-2 px-4 rounded-lg inline-flex items-center">
+                        <i class="fas fa-plus mr-2"></i> Thêm bình luận
+                    </a>
+
                 </div>
             </div>
         </div>
@@ -99,6 +105,10 @@
                                                 class="inline-flex items-center p-1.5 bg-[var(--color-primary-100)] text-[var(--color-primary-700)] hover:bg-[var(--color-primary-200)] rounded-md transition-colors duration-200">
                                             <i class="fas fa-eye"></i>
                                         </button>
+                                        <!--edit button-->
+                                        <a href="{{ route(app()->getLocale() . '.admin.testimonials.edit', $testimonial) }}" class="inline-flex items-center p-1.5 bg-[var(--color-primary-100)] text-[var(--color-primary-700)] hover:bg-[var(--color-primary-200)] rounded-md transition-colors duration-200">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
                                         <form action="{{ route(app()->getLocale() . '.admin.testimonials.destroy', $testimonial) }}" method="POST" class="inline-block">
                                             @csrf
                                             @method('DELETE')
