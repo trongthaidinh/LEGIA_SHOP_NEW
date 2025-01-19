@@ -76,31 +76,36 @@
                             </div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <form action="{{ route(app()->getLocale() . '.admin.sliders.toggle', $slider) }}" 
-                                  method="POST" 
-                                  class="inline-block">
-                                @csrf
-                                @method('PATCH')
-                                <button type="submit" 
-                                        class="text-[var(--color-primary-600)] hover:text-[var(--color-primary-900)] mr-3">
-                                    <i class="fas {{ $slider->is_active ? 'fa-eye-slash' : 'fa-eye' }}"></i>
-                                </button>
-                            </form>
-                            <a href="{{ route(app()->getLocale() . '.admin.sliders.edit', $slider) }}" 
-                               class="text-[var(--color-primary-600)] hover:text-[var(--color-primary-900)] mr-3">
-                                <i class="fas fa-edit"></i>
-                            </a>
-                            <form action="{{ route(app()->getLocale() . '.admin.sliders.destroy', $slider) }}" 
-                                  method="POST" 
-                                  class="inline-block">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" 
-                                        class="text-red-600 hover:text-red-900"
-                                        onclick="return confirm('Bạn có chắc chắn muốn xóa slider này?')">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </form>
+                            <div class="flex space-x-1 justify-end">
+                                <form action="{{ route(app()->getLocale() . '.admin.sliders.toggle', $slider) }}" 
+                                      method="POST" 
+                                      class="inline-block">
+                                    @csrf
+                                    @method('PATCH')
+                                    <button type="submit" 
+                                            class="inline-flex items-center p-1.5 bg-[var(--color-primary-100)] text-[var(--color-primary-700)] hover:bg-[var(--color-primary-200)] rounded-md transition-colors duration-200"
+                                            title="{{ $slider->is_active ? 'Ẩn slider' : 'Hiển thị slider' }}">
+                                        <i class="fas {{ $slider->is_active ? 'fa-eye-slash' : 'fa-eye' }} text-sm"></i>
+                                    </button>
+                                </form>
+                                <a href="{{ route(app()->getLocale() . '.admin.sliders.edit', $slider) }}" 
+                                   class="inline-flex items-center p-1.5 bg-[var(--color-primary-100)] text-[var(--color-primary-700)] hover:bg-[var(--color-primary-200)] rounded-md transition-colors duration-200"
+                                   title="Chỉnh sửa slider">
+                                    <i class="fas fa-edit text-sm"></i>
+                                </a>
+                                <form action="{{ route(app()->getLocale() . '.admin.sliders.destroy', $slider) }}" 
+                                      method="POST" 
+                                      class="inline-block">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" 
+                                            class="inline-flex items-center p-1.5 bg-red-100 text-red-700 hover:bg-red-200 rounded-md transition-colors duration-200"
+                                            onclick="return confirm('Bạn có chắc chắn muốn xóa slider này?')"
+                                            title="Xóa slider">
+                                        <i class="fas fa-trash text-sm"></i>
+                                    </button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                     @endforeach
@@ -139,4 +144,4 @@
         }
     });
 </script>
-@endpush 
+@endpush

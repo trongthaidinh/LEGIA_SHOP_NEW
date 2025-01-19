@@ -23,17 +23,19 @@ class DashboardController extends Controller
         ];
 
         // Doanh thu theo tháng (6 tháng gần nhất)
-        $monthlyRevenue = Order::where('status', 'completed')
-            ->select(
-                DB::raw('MONTH(created_at) as month'),
-                DB::raw('YEAR(created_at) as year'),
-                DB::raw('SUM(total_amount) as total_revenue')
-            )
-            ->groupBy('year', 'month')
-            ->orderBy('year', 'desc')
-            ->orderBy('month', 'desc')
-            ->limit(6)
-            ->get();
+        $monthlyRevenue = Order::select(
+            DB::raw('MONTH(created_at) as month'),
+            DB::raw('YEAR(created_at) as year'),
+            DB::raw('SUM(total_amount) as total_revenue')
+        )
+        ->groupBy('year', 'month')
+        ->orderBy('year', 'asc')
+        ->orderBy('month', 'asc')
+        ->limit(6)
+        ->get();
+
+        // Debug: Log monthly revenue data
+        \Log::info('Monthly Revenue Data:', $monthlyRevenue->toArray());
 
         // Top sản phẩm bán chạy
         $topProducts = Product::select(
