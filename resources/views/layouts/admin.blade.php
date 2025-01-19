@@ -102,7 +102,8 @@
                     @php
                         $menuItems = [
                             ['route' => 'dashboard', 'icon' => 'tachometer-alt', 'label' => 'Dashboard'],
-                            ['route' => 'categories.index', 'icon' => 'list', 'label' => 'Danh mục'],
+                            ['route' => 'categories.index', 'icon' => 'database', 'label' => 'Danh mục'],
+                            ['route' => 'menus.index', 'icon' => 'list-ul', 'label' => 'Menu'],
                             ['route' => 'managers.index', 'icon' => 'users-cog', 'label' => 'Quản lý quản trị viên'],
                             ['route' => 'products.index', 'icon' => 'box', 'label' => 'Sản phẩm'],
                             ['route' => 'orders.index', 'icon' => 'shopping-cart', 'label' => 'Đơn hàng'],

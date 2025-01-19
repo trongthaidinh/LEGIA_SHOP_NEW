@@ -32,6 +32,7 @@ use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\Admin\CertificateController;
 use App\Http\Controllers\Admin\ContactSubmissionController;
 use App\Http\Controllers\Admin\ManagerController;
+use App\Http\Controllers\Admin\MenuController;
 use App\Http\Controllers\Admin\StaticPageController as AdminStaticPageController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\SliderController;
@@ -249,6 +250,8 @@ Route::prefix('vi/admin')->middleware(['auth'])->group(function () {
     Route::resource('sliders', SliderController::class)->names('vi.admin.sliders');
     Route::post('sliders/order', [SliderController::class, 'updateOrder'])->name('vi.admin.sliders.order');
     Route::patch('sliders/{slider}/toggle', [SliderController::class, 'toggleStatus'])->name('vi.admin.sliders.toggle');
+
+    Route::resource('menus', MenuController::class)->names('vi.admin.menus');
 });
 
 // Chinese Admin Routes  
@@ -299,6 +302,8 @@ Route::prefix('zh/admin')->middleware(['auth'])->group(function () {
     Route::resource('sliders', SliderController::class)->names('zh.admin.sliders');
     Route::post('sliders/order', [SliderController::class, 'updateOrder'])->name('zh.admin.sliders.order');
     Route::patch('sliders/{slider}/toggle', [SliderController::class, 'toggleStatus'])->name('zh.admin.sliders.toggle');
+
+    Route::resource('menus', MenuController::class)->names('zh.admin.menus');
 });
 
 require __DIR__ . '/auth.php';
