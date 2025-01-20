@@ -34,7 +34,7 @@ class MenuController extends Controller
 
         return redirect()
             ->route(app()->getLocale() . '.admin.menus.index')
-            ->with('success', 'Menu created successfully.');
+            ->with('success', 'Menu đã được tạo thành công.');
     }
 
     public function edit(Menu $menu)
@@ -55,7 +55,7 @@ class MenuController extends Controller
 
         return redirect()
             ->route(app()->getLocale() . '.admin.menus.index')
-            ->with('success', 'Menu updated successfully.');
+            ->with('success', 'Menu đã được cập nhật thành công.');
     }
 
     public function destroy(Menu $menu)
@@ -64,7 +64,7 @@ class MenuController extends Controller
 
         return redirect()
             ->route(app()->getLocale() . '.admin.menus.index')
-            ->with('success', 'Menu deleted successfully.');
+            ->with('success', 'Menu đã được xóa thành công.');
     }
 
     // Menu Items Management
@@ -86,7 +86,7 @@ class MenuController extends Controller
 
         return redirect()
             ->back()
-            ->with('success', 'Menu item added successfully.');
+            ->with('success', 'Menu item đã được thêm thành công.');
     }
 
     public function editItem(MenuItem $menuItem)
@@ -107,7 +107,7 @@ class MenuController extends Controller
 
         return redirect()
             ->back()
-            ->with('success', 'Menu item updated successfully.');
+            ->with('success', 'Menu item đã được cập nhật thành công.');
     }
 
     public function destroyItem(MenuItem $menuItem)
@@ -116,7 +116,7 @@ class MenuController extends Controller
 
         return redirect()
             ->back()
-            ->with('success', 'Menu item deleted successfully.');
+            ->with('success', 'Menu item đã được xóa thành công.');
     }
 
     public function reorderItems(Request $request)
@@ -135,6 +135,6 @@ class MenuController extends Controller
             ]);
         }
 
-        return response()->json(['message' => 'Menu items reordered successfully.']);
+        return response()->json(['message' => 'Menu đã được cập nhật thứ tự thành công.']);
     }
 } 
