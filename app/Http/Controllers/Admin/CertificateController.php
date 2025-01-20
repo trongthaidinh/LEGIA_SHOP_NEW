@@ -27,6 +27,19 @@ class CertificateController extends Controller
 
     public function store(Request $request)
     {
+        $messages = [
+            'name.required' => __('The certificate name is required'),
+            'name.max' => __('The certificate name must not exceed 255 characters'),
+            'image.required' => __('The certificate image is required'),
+            'image.image' => __('The file must be an image'),
+            'image.max' => __('The image size must not exceed 2MB'),
+            'status.required' => __('The status is required'),
+            'status.in' => __('Invalid status value'),
+            'order.integer' => __('The order must be a number'),
+            'language.required' => __('The language is required'),
+            'language.in' => __('Invalid language selection')
+        ];
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -35,7 +48,7 @@ class CertificateController extends Controller
             'is_active' => 'boolean',
             'order' => 'integer',
             'language' => 'required|string|in:vi,zh'
-        ]);
+        ], $messages);
 
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('certificates', 'public');
@@ -56,6 +69,18 @@ class CertificateController extends Controller
 
     public function update(Request $request, Certificate $certificate)
     {
+        $messages = [
+            'name.required' => __('The certificate name is required'),
+            'name.max' => __('The certificate name must not exceed 255 characters'),
+            'image.image' => __('The file must be an image'),
+            'image.max' => __('The image size must not exceed 2MB'),
+            'status.required' => __('The status is required'),
+            'status.in' => __('Invalid status value'),
+            'order.integer' => __('The order must be a number'),
+            'language.required' => __('The language is required'),
+            'language.in' => __('Invalid language selection')
+        ];
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -64,7 +89,7 @@ class CertificateController extends Controller
             'is_active' => 'boolean',
             'order' => 'integer',
             'language' => 'required|string|in:vi,zh'
-        ]);
+        ], $messages);
 
         if ($request->hasFile('image')) {
             // Delete old image

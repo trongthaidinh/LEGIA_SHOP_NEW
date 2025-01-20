@@ -19,17 +19,8 @@
             <form action="{{ route(app()->getLocale() . '.admin.certificates.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
                 @csrf
 
-                <!-- Language -->
-                <div>
-                    <label for="language" class="block text-sm font-medium text-[var(--color-primary-700)]">{{ __('Ngôn ngữ') }} <span class="text-[var(--color-secondary-500)]">*</span></label>
-                    <select name="language" id="language" class="mt-1 block w-full rounded-md border-[var(--color-primary-300)] shadow-sm focus:border-[var(--color-primary-500)] focus:ring focus:ring-[var(--color-primary-200)]" required>
-                        <option value="vi" {{ old('language') === 'vi' ? 'selected' : '' }}>{{ __('Tiếng Việt') }}</option>
-                        <option value="zh" {{ old('language') === 'zh' ? 'selected' : '' }}>{{ __('Tiếng Trung') }}</option>
-                    </select>
-                    @error('language')
-                        <p class="mt-1 text-sm text-[var(--color-secondary-500)]">{{ $message }}</p>
-                    @enderror
-                </div>
+                <!-- Language by slug -->
+                <input type="hidden" name="language" value="{{ app()->getLocale() }}">
 
                 <!-- Image -->
                 <div>
@@ -68,13 +59,25 @@
                     @enderror
                 </div>
 
-                <!-- Trạng thái -->
+                <!-- Status -->
                 <div>
-                    <label for="is_active" class="block text-sm font-medium text-[var(--color-primary-700)]">{{ __('Trạng thái') }}</label>
+                    <label for="status" class="block text-sm font-medium text-[var(--color-primary-700)]">{{ __('Trạng thái') }}</label>
+                    <select name="status" id="status" class="mt-1 block w-full rounded-md border-[var(--color-primary-300)] shadow-sm focus:border-[var(--color-primary-500)] focus:ring focus:ring-[var(--color-primary-200)]">
+                        <option value="draft" {{ old('status') === 'draft' ? 'selected' : '' }}>{{ __('Bản nháp') }}</option>
+                        <option value="published" {{ old('status', 'published') === 'published' ? 'selected' : '' }}>{{ __('Đã xuất bản') }}</option>
+                    </select>
+                    @error('status')
+                        <p class="mt-1 text-sm text-[var(--color-secondary-500)]">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Kích hoạt -->
+                <div>
+                    <label for="is_active" class="block text-sm font-medium text-[var(--color-primary-700)]">{{ __('Kích hoạt') }}</label>
                     <div class="mt-1">
                         <label class="inline-flex items-center">
                             <input type="checkbox" name="is_active" id="is_active" class="rounded border-[var(--color-primary-300)] text-[var(--color-primary-600)] shadow-sm focus:border-[var(--color-primary-500)] focus:ring focus:ring-[var(--color-primary-200)]" value="1" {{ old('is_active', true) ? 'checked' : '' }}>
-                            <span class="ml-2 text-sm text-[var(--color-primary-600)]">{{ __('Hoạt động') }}</span>
+                            <span class="ml-2 text-sm text-[var(--color-primary-600)]">{{ __('Hiển thị chứng nhận này trên website') }}</span>
                         </label>
                     </div>
                     @error('is_active')
