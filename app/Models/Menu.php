@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Collection;
 
 class Menu extends Model
 {
@@ -48,5 +49,61 @@ class Menu extends Model
             ->active()
             ->orderBy('order')
             ->get();
+    }
+
+    // New methods for menu management
+    public function addItem(array $data): MenuItem
+    {
+        return $this->items()->create($data);
+    }
+
+    public function updateItem(MenuItem $item, array $data): bool
+    {
+        return $item->update($data);
+    }
+
+    public function deleteItem(MenuItem $item): bool
+    {
+        return $item->delete();
+    }
+
+    public function reorderItems(array $items): bool
+    {
+        try {
+            collect($items)->each(function ($item) {
+                $this->items()->where('id', $item['id'])->update([
+                    'parent_id' => $item['parent_id'] ?? null,
+                    'order' => $item['order']
+                ]);
+            });
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    public function getMenuTree(): Collection
+    {
+        return $this->items()
+            ->parents()
+            ->with(['children' => function ($query) {
+                $query->active()->ordered();
+            }])
+            ->active()
+            ->ordered()
+            ->get();
+    }
+
+    public function getActiveItems(): Collection
+    {
+        return $this->items()
+            ->active()
+            ->ordered()
+            ->get();
+    }
+
+    public function findItem($id): ?MenuItem
+    {
+        return $this->items()->find($id);
     }
 }

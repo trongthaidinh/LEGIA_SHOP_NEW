@@ -13,83 +13,90 @@
         </a>
     </div>
 
-    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-        <div class="p-6">
-            <form action="{{ route(app()->getLocale() . '.admin.menus.store') }}" method="POST">
-                @csrf
+    <div class="max-w-2xl">
+        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="p-6">
+                <form action="{{ route(app()->getLocale() . '.admin.menus.store') }}" method="POST">
+                    @csrf
 
-                <div class="grid grid-cols-1 gap-6">
-                    <div>
-                        <label for="name" class="block text-sm font-medium text-gray-700 mb-1">
-                            Name <span class="text-red-600">*</span>
-                        </label>
-                        <input type="text" 
-                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('name') border-red-500 @enderror" 
-                               id="name" 
-                               name="name" 
-                               value="{{ old('name') }}" 
-                               required>
-                        @error('name')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
+                    <div class="space-y-6">
+                        <div>
+                            <label for="name" class="block text-sm font-medium text-gray-700 mb-1">
+                                Name <span class="text-red-600">*</span>
+                            </label>
+                            <input type="text" 
+                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('name') border-red-500 @enderror" 
+                                   id="name" 
+                                   name="name" 
+                                   value="{{ old('name') }}" 
+                                   required>
+                            @error('name')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div>
+                            <label for="type" class="block text-sm font-medium text-gray-700 mb-1">
+                                Type <span class="text-red-600">*</span>
+                            </label>
+                            <select class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('type') border-red-500 @enderror" 
+                                    id="type" 
+                                    name="type" 
+                                    required>
+                                <option value="">Select Type</option>
+                                <option value="main" {{ old('type') == 'main' ? 'selected' : '' }}>Main Menu</option>
+                                <option value="footer" {{ old('type') == 'footer' ? 'selected' : '' }}>Footer Menu</option>
+                                <option value="sidebar" {{ old('type') == 'sidebar' ? 'selected' : '' }}>Sidebar Menu</option>
+                            </select>
+                            @error('type')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        {{-- add language by url --}}
+                        <input type="hidden" name="language" value="{{ request()->segment(1) }}">
+
+                        {{-- <div class="mb-6">
+                            <label for="language" class="block text-sm font-medium text-gray-700 mb-2">
+                                Language <span class="text-red-600">*</span>
+                            </label>
+                            <select class="form-select w-full rounded-md shadow-sm border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 @error('language') border-red-500 @enderror" 
+                                    id="language" 
+                                    name="language" 
+                                    required>
+                                <option value="vi" {{ old('language') == 'vi' ? 'selected' : '' }}>Vietnamese</option>
+                                <option value="en" {{ old('language') == 'en' ? 'selected' : '' }}>English</option>
+                            </select>
+                            @error('language')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div> --}}
+
+                        <div>
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" 
+                                       class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" 
+                                       id="is_active" 
+                                       name="is_active" 
+                                       value="1" 
+                                       {{ old('is_active', 1) ? 'checked' : '' }}>
+                                <span class="ml-2 text-sm text-gray-600">Active</span>
+                            </label>
+                        </div>
+
+                        <div class="flex items-center justify-end space-x-3">
+                            <a href="{{ route(app()->getLocale() . '.admin.menus.index') }}" 
+                               class="bg-gray-100 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
+                                Cancel
+                            </a>
+                            <button type="submit" 
+                                    class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                                Create Menu
+                            </button>
+                        </div>
                     </div>
-
-                    <div>
-                        <label for="type" class="block text-sm font-medium text-gray-700 mb-1">
-                            Type <span class="text-red-600">*</span>
-                        </label>
-                        <select class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('type') border-red-500 @enderror" 
-                                id="type" 
-                                name="type" 
-                                required>
-                            <option value="main" {{ old('type') == 'main' ? 'selected' : '' }}>Main Menu</option>
-                            <option value="footer" {{ old('type') == 'footer' ? 'selected' : '' }}>Footer Menu</option>
-                            <option value="sidebar" {{ old('type') == 'sidebar' ? 'selected' : '' }}>Sidebar Menu</option>
-                        </select>
-                        @error('type')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    {{-- add language by url --}}
-                    <input type="hidden" name="language" value="{{ request()->segment(1) }}">
-
-                    {{-- <div class="mb-6">
-                        <label for="language" class="block text-sm font-medium text-gray-700 mb-2">
-                            Language <span class="text-red-600">*</span>
-                        </label>
-                        <select class="form-select w-full rounded-md shadow-sm border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 @error('language') border-red-500 @enderror" 
-                                id="language" 
-                                name="language" 
-                                required>
-                            <option value="vi" {{ old('language') == 'vi' ? 'selected' : '' }}>Vietnamese</option>
-                            <option value="en" {{ old('language') == 'en' ? 'selected' : '' }}>English</option>
-                        </select>
-                        @error('language')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div> --}}
-
-                    <div>
-                        <label class="inline-flex items-center">
-                            <input type="checkbox" 
-                                   class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" 
-                                   id="is_active" 
-                                   name="is_active" 
-                                   value="1" 
-                                   {{ old('is_active', 1) ? 'checked' : '' }}>
-                            <span class="ml-2 text-sm text-gray-600">Active</span>
-                        </label>
-                    </div>
-                </div>
-
-                <div class="mt-6 flex items-center justify-end">
-                    <button type="submit" 
-                            class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                        Create Menu
-                    </button>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
     </div>
 </div>

@@ -243,6 +243,16 @@ Route::prefix('vi/admin')->middleware(['auth'])->group(function () {
     Route::patch('static-pages/{staticPage}/toggle', [AdminStaticPageController::class, 'toggleStatus'])->name('vi.admin.static-pages.toggle');
 
     Route::resource('managers', ManagerController::class)->names('vi.admin.managers');
+    Route::resource('menus', MenuController::class)->names('vi.admin.menus');
+    
+    // Menu Items Management
+    Route::prefix('menu-items')->name('vi.admin.menu-items.')->group(function () {
+        Route::post('/', [MenuController::class, 'storeItem'])->name('store');
+        Route::get('/{menuItem}/edit', [MenuController::class, 'editItem'])->name('edit');
+        Route::put('/{menuItem}', [MenuController::class, 'updateItem'])->name('update');
+        Route::delete('/{menuItem}', [MenuController::class, 'destroyItem'])->name('destroy');
+        Route::post('/reorder', [MenuController::class, 'reorderItems'])->name('reorder');
+    });
 
     Route::get('settings', [SettingController::class, 'index'])->name('vi.admin.settings.index');
     Route::post('settings', [SettingController::class, 'update'])->name('vi.admin.settings.update');
@@ -250,8 +260,6 @@ Route::prefix('vi/admin')->middleware(['auth'])->group(function () {
     Route::resource('sliders', SliderController::class)->names('vi.admin.sliders');
     Route::post('sliders/order', [SliderController::class, 'updateOrder'])->name('vi.admin.sliders.order');
     Route::patch('sliders/{slider}/toggle', [SliderController::class, 'toggleStatus'])->name('vi.admin.sliders.toggle');
-
-    Route::resource('menus', MenuController::class)->names('vi.admin.menus');
 });
 
 // Chinese Admin Routes  
@@ -295,6 +303,16 @@ Route::prefix('zh/admin')->middleware(['auth'])->group(function () {
     Route::patch('static-pages/{staticPage}/toggle', [AdminStaticPageController::class, 'toggleStatus'])->name('zh.admin.static-pages.toggle');
 
     Route::resource('managers', ManagerController::class)->names('zh.admin.managers');
+    Route::resource('menus', MenuController::class)->names('zh.admin.menus');
+    
+    // Menu Items Management
+    Route::prefix('menu-items')->name('zh.admin.menu-items.')->group(function () {
+        Route::post('/', [MenuController::class, 'storeItem'])->name('store');
+        Route::get('/{menuItem}/edit', [MenuController::class, 'editItem'])->name('edit');
+        Route::put('/{menuItem}', [MenuController::class, 'updateItem'])->name('update');
+        Route::delete('/{menuItem}', [MenuController::class, 'destroyItem'])->name('destroy');
+        Route::post('/reorder', [MenuController::class, 'reorderItems'])->name('reorder');
+    });
 
     Route::get('settings', [SettingController::class, 'index'])->name('zh.admin.settings.index');
     Route::post('settings', [SettingController::class, 'update'])->name('zh.admin.settings.update');
@@ -302,8 +320,6 @@ Route::prefix('zh/admin')->middleware(['auth'])->group(function () {
     Route::resource('sliders', SliderController::class)->names('zh.admin.sliders');
     Route::post('sliders/order', [SliderController::class, 'updateOrder'])->name('zh.admin.sliders.order');
     Route::patch('sliders/{slider}/toggle', [SliderController::class, 'toggleStatus'])->name('zh.admin.sliders.toggle');
-
-    Route::resource('menus', MenuController::class)->names('zh.admin.menus');
 });
 
 require __DIR__ . '/auth.php';
