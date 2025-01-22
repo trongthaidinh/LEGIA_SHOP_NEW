@@ -40,14 +40,13 @@ class ProductController extends Controller
                     ->orWhere('sku', 'like', "%{$search}%");
             }
 
-            // Filter by type
-            if ($type = $request->input('type')) {
-                $query->where('type', $type);
+            // Filter by category
+            if ($category = $request->input('category')) {
+                $query->where('category_id', $category);
             }
-
-            // Filter by status
-            if ($status = $request->input('status')) {
-                $query->where('status', $status);
+            // Filter by is_active
+            if ($is_active = $request->input('is_active')) {
+                $query->where('is_active', $is_active);
             }
             $categories = Category::where('language', $language)->get();
 

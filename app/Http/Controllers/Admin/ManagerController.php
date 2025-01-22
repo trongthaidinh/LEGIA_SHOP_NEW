@@ -11,10 +11,44 @@ use Illuminate\Support\Facades\DB;
 
 class ManagerController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $managers = Admin::latest()->paginate(10);
-        return view('admin.managers.index', compact('managers'));
+        try {
+            $query = Admin::query();
+
+            // Search by name or email
+            if ($request->filled('search')) {
+                $search = $request->search;
+                $query->where(function($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                      ->orWhere('email', 'like', "%{$search}%");
+                });
+            }
+
+            // Filter by role
+            if ($request->filled('role')) {
+                if ($request->role === 'super_admin') {
+                    $query->where('is_super_admin', true);
+                } else if ($request->role === 'admin') {
+                    $query->where('is_super_admin', false);
+                }
+            }
+
+            // Sort
+            $sortField = $request->get('sort', 'created_at');
+            $sortDirection = $request->get('direction', 'desc');
+            
+            if (in_array($sortField, ['name', 'email', 'created_at'])) {
+                $query->orderBy($sortField, $sortDirection);
+            }
+
+            $managers = $query->paginate(10)->appends($request->query());
+
+            return view('admin.managers.index', compact('managers'));
+        } catch (\Exception $e) {
+            Log::error('Error in ManagerController@index: ' . $e->getMessage());
+            return back()->with('error', 'Đã xảy ra lỗi khi tải danh sách quản trị viên.');
+        }
     }
 
     public function create()

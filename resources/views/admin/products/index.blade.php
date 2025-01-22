@@ -20,50 +20,89 @@
 
         <!-- Filters -->
         <div class="p-6 border-b border-[var(--color-primary-100)]">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <!-- Category Filter -->
-                <div>
-                    <label for="category" class="block text-sm font-medium text-[var(--color-primary-700)] mb-2">Danh mục</label>
-                    <select name="category" 
-                            id="category" 
-                            class="w-full rounded-md shadow-sm border-[var(--color-primary-300)] focus:border-[var(--color-primary-500)] focus:ring focus:ring-[var(--color-primary-200)] focus:ring-opacity-50">
-                        <option value="">Tất cả danh mục</option>
-                        @foreach($categories as $category)
-                        <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>
-                            {{ $category->name }}
-                        </option>
-                        @endforeach
-                    </select>
-                </div>
+            <form action="{{ route(app()->getLocale() . '.admin.products.index') }}" method="GET">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <!-- Category Filter -->
+                    <div>
+                        <label for="category" class="block text-sm font-medium text-[var(--color-primary-700)] mb-2">Danh mục</label>
+                        <select name="category" 
+                                id="category" 
+                                class="w-full rounded-md shadow-sm border-[var(--color-primary-300)] focus:border-[var(--color-primary-500)] focus:ring focus:ring-[var(--color-primary-200)] focus:ring-opacity-50"
+                                onchange="this.form.submit()">
+                            <option value="">Tất cả danh mục</option>
+                            @foreach($categories as $category)
+                            <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>
+                                {{ $category->name }}
+                            </option>
+                            @endforeach
+                        </select>
+                    </div>
 
-                <!-- Status Filter -->
-                <div>
-                    <label for="status" class="block text-sm font-medium text-[var(--color-primary-700)] mb-2">Trạng thái</label>
-                    <select name="status" 
-                            id="status" 
-                            class="w-full rounded-md shadow-sm border-[var(--color-primary-300)] focus:border-[var(--color-primary-500)] focus:ring focus:ring-[var(--color-primary-200)] focus:ring-opacity-50">
-                        <option value="">Tất cả trạng thái</option>
-                        <option value="1" {{ request('status') == '1' ? 'selected' : '' }}>Đang bán</option>
-                        <option value="0" {{ request('status') == '0' ? 'selected' : '' }}>Ngừng bán</option>
-                    </select>
-                </div>
+                    <!-- Status Filter -->
+                    <div>
+                        <label for="is_active" class="block text-sm font-medium text-[var(--color-primary-700)] mb-2">Trạng thái</label>
+                        <select name="is_active" 
+                                id="is_active" 
+                                class="w-full rounded-md shadow-sm border-[var(--color-primary-300)] focus:border-[var(--color-primary-500)] focus:ring focus:ring-[var(--color-primary-200)] focus:ring-opacity-50"
+                                onchange="this.form.submit()">
+                            <option value="">Tất cả trạng thái</option>
+                            <option value="1" {{ request('is_active') == '1' ? 'selected' : '' }}>Đang bán</option>
+                            <option value="0" {{ request('is_active') == '0' ? 'selected' : '' }}>Ngừng bán</option>
+                        </select>
+                    </div>
 
-                <!-- Search -->
-                <div class="md:col-span-2">
-                    <label for="search" class="block text-sm font-medium text-[var(--color-primary-700)] mb-2">Tìm kiếm</label>
-                    <div class="relative">
-                        <input type="text" 
-                               name="search"
-                               id="search" 
-                               value="{{ request('search') }}"
-                               placeholder="Tìm theo tên, mã sản phẩm..."
-                               class="w-full rounded-md shadow-sm border-[var(--color-primary-300)] focus:border-[var(--color-primary-500)] focus:ring focus:ring-[var(--color-primary-200)] focus:ring-opacity-50 pl-10">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <i class="fas fa-search text-[var(--color-primary-400)]"></i>
+                    <!-- Search -->
+                    <div class="md:col-span-2">
+                        <label for="search" class="block text-sm font-medium text-[var(--color-primary-700)] mb-2">Tìm kiếm</label>
+                        <div class="relative flex">
+                            <input type="text" 
+                                   name="search"
+                                   id="search" 
+                                   value="{{ request('search') }}"
+                                   placeholder="Tìm theo tên, mã sản phẩm..."
+                                   class="w-full rounded-l-md shadow-sm border-[var(--color-primary-300)] focus:border-[var(--color-primary-500)] focus:ring focus:ring-[var(--color-primary-200)] focus:ring-opacity-50">
+                            <button type="submit" 
+                                    class="inline-flex items-center px-4 py-2 bg-[var(--color-primary-500)] text-white text-sm font-medium rounded-r-md hover:bg-[var(--color-primary-600)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-500)] focus:ring-offset-2">
+                                <i class="fas fa-search"></i>
+                            </button>
+                            @if(request('search'))
+                                <a href="{{ route(app()->getLocale() . '.admin.products.index', array_merge(request()->except('search'), ['page' => 1])) }}" 
+                                   class="absolute right-14 inset-y-0 flex items-center pr-3 text-[var(--color-primary-400)] hover:text-[var(--color-primary-600)]">
+                                    <i class="fas fa-times"></i>
+                                </a>
+                            @endif
                         </div>
                     </div>
                 </div>
-            </div>
+
+                <!-- Active Filters -->
+                @if(request()->anyFilled(['search', 'category', 'status']))
+                    <div class="mt-4 flex items-center space-x-2 text-sm text-[var(--color-primary-600)]">
+                        <span>Bộ lọc đang dùng:</span>
+                        <div class="flex flex-wrap gap-2">
+                            @if(request('search'))
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[var(--color-primary-100)] text-[var(--color-primary-800)]">
+                                    Tìm kiếm: {{ request('search') }}
+                                </span>
+                            @endif
+                            @if(request('category'))
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[var(--color-primary-100)] text-[var(--color-primary-800)]">
+                                    Danh mục: {{ $categories->find(request('category'))->name }}
+                                </span>
+                            @endif
+                            @if(request('status') !== null)
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[var(--color-primary-100)] text-[var(--color-primary-800)]">
+                                    Trạng thái: {{ request('status') == '1' ? 'Đang bán' : 'Ngừng bán' }}
+                                </span>
+                            @endif
+                            <a href="{{ route(app()->getLocale() . '.admin.products.index') }}" 
+                               class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[var(--color-primary-50)] text-[var(--color-primary-700)] hover:bg-[var(--color-primary-100)]">
+                                <i class="fas fa-times mr-1"></i> Xóa bộ lọc
+                            </a>
+                        </div>
+                    </div>
+                @endif
+            </form>
         </div>
 
         <!-- Products Table -->
@@ -156,15 +195,6 @@ $(document).ready(function() {
     // Auto-submit form when filters change
     $('#category, #status').change(function() {
         $(this).closest('form').submit();
-    });
-
-    // Handle search with debounce
-    let searchTimeout;
-    $('#search').on('input', function() {
-        clearTimeout(searchTimeout);
-        searchTimeout = setTimeout(() => {
-            $(this).closest('form').submit();
-        }, 500);
     });
 });
 </script>
