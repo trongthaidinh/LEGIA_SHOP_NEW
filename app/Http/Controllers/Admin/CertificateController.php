@@ -4,11 +4,19 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Certificate;
+use App\Traits\HandleUploadImage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class CertificateController extends Controller
 {
+    use HandleUploadImage;
+
+    /**
+     * Folder path for storing certificate images
+     */
+    const IMAGE_FOLDER = 'certificates';
+
     public function index(Request $request)
     {
         $language = $request->get('language', app()->getLocale());
@@ -51,8 +59,10 @@ class CertificateController extends Controller
         ], $messages);
 
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('certificates', 'public');
-            $validated['image'] = $path;
+            $validated['image'] = $this->handleUploadImage(
+                $request->file('image'),
+                self::IMAGE_FOLDER,
+            );
         }
 
         Certificate::create($validated);
@@ -92,13 +102,11 @@ class CertificateController extends Controller
         ], $messages);
 
         if ($request->hasFile('image')) {
-            // Delete old image
-            if ($certificate->image) {
-                Storage::disk('public')->delete($certificate->image);
-            }
-            
-            $path = $request->file('image')->store('certificates', 'public');
-            $validated['image'] = $path;
+            $validated['image'] = $this->handleUploadImage(
+                $request->file('image'),
+                self::IMAGE_FOLDER,
+                $certificate->image
+            );
         }
 
         $certificate->update($validated);

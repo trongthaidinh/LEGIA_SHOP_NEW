@@ -154,7 +154,59 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize TinyMCE
-    initTinyMCE('#content');
+    initTinyMCE('#content', {
+        // Add file upload logging
+        images_upload_handler: function (blobInfo, success, failure, progress) {
+            console.log('Starting file upload:', blobInfo.filename());
+            
+            const formData = new FormData();
+            formData.append('file', blobInfo.blob(), blobInfo.filename());
+            
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', '{{ route(app()->getLocale() . ".admin.images.upload") }}');
+            xhr.setRequestHeader('X-CSRF-TOKEN', '{{ csrf_token() }}');
+            
+            xhr.upload.onprogress = function (e) {
+                progress(e.loaded / e.total * 100);
+                console.log('Upload progress:', Math.round(e.loaded / e.total * 100) + '%');
+            };
+            
+            xhr.onload = function() {
+                if (xhr.status === 403) {
+                    failure('HTTP Error: ' + xhr.status, { remove: true });
+                    console.error('Upload failed: Forbidden');
+                    return;
+                }
+                
+                if (xhr.status < 200 || xhr.status >= 300) {
+                    failure('HTTP Error: ' + xhr.status);
+                    console.error('Upload failed: HTTP Error', xhr.status);
+                    return;
+                }
+                
+                const json = JSON.parse(xhr.responseText);
+                
+                if (!json || typeof json.location != 'string') {
+                    failure('Invalid JSON: ' + xhr.responseText);
+                    console.error('Upload failed: Invalid response');
+                    return;
+                }
+                
+                console.log('Upload successful:', json.location);
+                // Insert image at cursor position
+                const editor = tinymce.activeEditor;
+                editor.insertContent(`<img src="${json.location}" alt="" />`);
+                success(json.location);
+            };
+            
+            xhr.onerror = function () {
+                failure('Image upload failed due to a XHR Transport error. Code: ' + xhr.status);
+                console.error('Upload failed: XHR Transport error');
+            };
+            
+            xhr.send(formData);
+        }
+    });
 
     // Handle thumbnail preview
     $('#thumbnail').change(function() {

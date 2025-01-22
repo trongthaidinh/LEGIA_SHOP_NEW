@@ -15,35 +15,15 @@
     <!-- TinyMCE -->
     <script src="https://cdn.tiny.cloud/1/{{ env('TINYMCE_API_KEY') }}/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
     <script>
-        const initTinyMCE = (selector = '.tinymce') => {
-            tinymce.init({
+        const initTinyMCE = (selector = '.tinymce', customConfig = {}) => {
+            const defaultConfig = {
                 selector: selector,
                 plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
                 toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
                 images_upload_url: '{{ route(app()->getLocale() . ".admin.images.upload") }}',
-                images_upload_handler: function (blobInfo, success, failure) {
-                    var xhr, formData;
-                    xhr = new XMLHttpRequest();
-                    xhr.withCredentials = false;
-                    xhr.open('POST', '{{ route(app()->getLocale() . ".admin.images.upload") }}');
-                    xhr.setRequestHeader('X-CSRF-TOKEN', document.querySelector('meta[name="csrf-token"]').content);
-                    xhr.onload = function() {
-                        var json;
-                        if (xhr.status != 200) {
-                            failure('HTTP Error: ' + xhr.status);
-                            return;
-                        }
-                        json = JSON.parse(xhr.responseText);
-                        if (!json || typeof json.location != 'string') {
-                            failure('Invalid JSON: ' + xhr.responseText);
-                            return;
-                        }
-                        success(json.location);
-                    };
-                    formData = new FormData();
-                    formData.append('file', blobInfo.blob(), blobInfo.filename());
-                    xhr.send(formData);
-                },
+                automatic_uploads: true,
+                images_reuse_filename: true,
+                images_upload_credentials: true,
                 height: 500,
                 menubar: true,
                 statusbar: true,
@@ -51,7 +31,20 @@
                 relative_urls: false,
                 remove_script_host: false,
                 convert_urls: true,
-            });
+                setup: function(editor) {
+                    editor.on('init', function() {
+                        console.log('TinyMCE initialized successfully');
+                    });
+                }
+            };
+
+            // Merge default config with custom config
+            const config = { ...defaultConfig, ...customConfig };
+            try {
+                return tinymce.init(config);
+            } catch (e) {
+                console.error('TinyMCE initialization error:', e);
+            }
         };
     </script>
     

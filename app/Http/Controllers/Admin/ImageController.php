@@ -196,20 +196,27 @@ class ImageController extends Controller
 
     public function upload(Request $request)
     {
-        $request->validate([
-            'file' => 'required|image|max:2048'
-        ]);
-
-        if ($request->hasFile('file')) {
-            $path = $request->file('file')->store('editor-images', 'public');
-            
-            return response()->json([
-                'location' => Storage::url($path)
+        try {
+            $request->validate([
+                'file' => 'required|image|max:2048'
             ]);
-        }
 
-        return response()->json([
-            'error' => 'No file uploaded'
-        ], 400);
+            if ($request->hasFile('file')) {
+                $filePath = $this->handleUploadImage($request->file('file'), 'editor-images');
+                
+                return response()->json([
+                    'location' => Storage::url($filePath)
+                ]);
+            }
+
+            return response()->json([
+                'error' => 'No file uploaded'
+            ], 400);
+        } catch (\Exception $e) {
+            Log::error('Error in ImageController@upload: ' . $e->getMessage());
+            return response()->json([
+                'error' => 'Upload failed: ' . $e->getMessage()
+            ], 500);
+        }
     }
 } 
