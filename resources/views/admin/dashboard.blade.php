@@ -254,8 +254,16 @@ document.addEventListener('DOMContentLoaded', function() {
         type: 'pie',
         data: {
             labels: [
+                @php
+                    $statusLabels = [
+                        'pending' => 'Chờ xác nhận',
+                        'processed' => 'Đã xử lý',
+                        'completed' => 'Hoàn thành',
+                        'cancelled' => 'Đã hủy'
+                    ];
+                @endphp
                 @foreach($orderStatus as $status)
-                    "{{ $status->status }}",
+                    "{{ $statusLabels[$status->status] ?? $status->status }}",
                 @endforeach
             ],
             datasets: [{
@@ -265,32 +273,26 @@ document.addEventListener('DOMContentLoaded', function() {
                     @endforeach
                 ],
                 backgroundColor: [
-                    '#22c55e',    // Success/Green for completed orders
-                    '#f59e0b',    // Warning/Orange for pending orders
-                    '#ef4444'     // Danger/Red for cancelled/failed orders
-                ],
-                borderColor: [
-                    '#16a34a',    // Darker green
-                    '#d97706',    // Darker orange
-                    '#dc2626'     // Darker red
-                ],
-                borderWidth: 2
+                    '#f97316',    
+                    '#22c55e',    
+                    '#3b82f6',    
+                    '#ef4444'     
+                ]
             }]
         },
         options: {
             responsive: true,
-            maintainAspectRatio: false,
             plugins: {
                 legend: {
-                    display: true,
-                    position: 'bottom'
+                    position: 'bottom',
                 },
                 datalabels: {
                     color: 'white',
+                    font: {
+                        weight: 'bold'
+                    },
                     formatter: function(value, context) {
-                        let total = context.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
-                        let percentage = Math.round((value/total) * 100);
-                        return percentage + '%';
+                        return value > 0 ? value : '';
                     }
                 }
             }
