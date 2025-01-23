@@ -4,11 +4,16 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Testimonial;
+use App\Traits\HandleUploadImage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class TestimonialController extends Controller
 {
+    use HandleUploadImage;
+
+    const IMAGE_FOLDER = 'testimonials';
+
     public function index(Request $request)
     {
         $language = $request->get('language', app()->getLocale());
@@ -41,8 +46,10 @@ class TestimonialController extends Controller
         ]);
 
         if ($request->hasFile('customer_avatar')) {
-            $path = $request->file('customer_avatar')->store('testimonials', 'public');
-            $validated['customer_avatar'] = $path;
+            $validated['customer_avatar'] = $this->handleUploadImage(
+                $request->file('customer_avatar'),
+                self::IMAGE_FOLDER
+            );
         }
 
         Testimonial::create($validated);
@@ -73,13 +80,11 @@ class TestimonialController extends Controller
         ]);
 
         if ($request->hasFile('customer_avatar')) {
-            // Delete old avatar if exists
-            if ($testimonial->customer_avatar) {
-                Storage::disk('public')->delete($testimonial->customer_avatar);
-            }
-            
-            $path = $request->file('customer_avatar')->store('testimonials', 'public');
-            $validated['customer_avatar'] = $path;
+            $validated['customer_avatar'] = $this->handleUploadImage(
+                $request->file('customer_avatar'),
+                self::IMAGE_FOLDER,
+                $testimonial->customer_avatar
+            );
         }
 
         $testimonial->update($validated);
@@ -92,7 +97,7 @@ class TestimonialController extends Controller
     public function destroy(Testimonial $testimonial)
     {
         if ($testimonial->customer_avatar) {
-            Storage::disk('public')->delete($testimonial->customer_avatar);
+            $this->deleteImage($testimonial->customer_avatar);
         }
         
         $testimonial->delete();

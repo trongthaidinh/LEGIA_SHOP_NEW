@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Slider;
+use App\Traits\HandleUploadImage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
@@ -11,6 +12,10 @@ use Illuminate\Support\Facades\Storage;
 
 class SliderController extends Controller
 {
+    use HandleUploadImage;
+
+    const IMAGE_FOLDER = 'sliders';
+
     public function index()
     {
         $sliders = Slider::orderBy('order')
@@ -43,8 +48,10 @@ class SliderController extends Controller
             ]);
 
             if ($request->hasFile('image')) {
-                $path = $request->file('image')->store('public/sliders');
-                $validated['image'] = str_replace('public/', '', $path);
+                $validated['image'] = $this->handleUploadImage(
+                    $request->file('image'),
+                    self::IMAGE_FOLDER
+                );
             }
 
             $validated['language'] = app()->getLocale();
@@ -86,12 +93,11 @@ class SliderController extends Controller
             ]);
 
             if ($request->hasFile('image')) {
-                // Delete old image
-                if ($slider->image) {
-                    Storage::delete('public/' . $slider->image);
-                }
-                $path = $request->file('image')->store('public/sliders');
-                $validated['image'] = str_replace('public/', '', $path);
+                $validated['image'] = $this->handleUploadImage(
+                    $request->file('image'),
+                    self::IMAGE_FOLDER,
+                    $slider->image
+                );
             }
 
             $slider->update($validated);
@@ -114,7 +120,7 @@ class SliderController extends Controller
             DB::beginTransaction();
 
             if ($slider->image) {
-                Storage::delete('public/' . $slider->image);
+                $this->deleteImage($slider->image);
             }
             $slider->delete();
 
