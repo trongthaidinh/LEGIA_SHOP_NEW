@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
-use App\Traits\HandleUploadImage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
@@ -12,10 +11,6 @@ use Illuminate\Support\Facades\DB;
 
 class SettingController extends Controller
 {
-    use HandleUploadImage;
-
-    const IMAGE_FOLDER = 'settings';
-
     public function index()
     {
         $settings = Setting::orderBy('group')
@@ -34,13 +29,6 @@ class SettingController extends Controller
             foreach ($request->settings as $id => $value) {
                 $setting = Setting::find($id);
                 if ($setting) {
-                    if ($setting->type == 'image' && $request->hasFile("settings.{$id}")) {
-                        $value = $this->handleUploadImage(
-                            $request->file("settings.{$id}"),
-                            self::IMAGE_FOLDER,
-                            $setting->value
-                        );
-                    }
                     $setting->value = $value;
                     $setting->save();
                 }
